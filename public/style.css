@@ -1,0 +1,210 @@
+/* ==========================================================================
+   CUPERTINO / macOS & iOS MINIMALIST DASHBOARD DESIGN SYSTEM (v4.0.0)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --apple-bg: #090a0f;
+  --apple-surface: rgba(22, 24, 34, 0.7);
+  --apple-surface-hover: rgba(30, 33, 48, 0.85);
+  --apple-border: rgba(255, 255, 255, 0.08);
+  --apple-border-focus: rgba(10, 132, 255, 0.5);
+  
+  /* Apple System Colors (Dark Mode) */
+  --system-blue: #0A84FF;
+  --system-red: #FF453A;
+  --system-orange: #FF9F0A;
+  --system-green: #30D158;
+  --system-purple: #BF5AF2;
+  --system-gray: #8E8E93;
+  --system-gray-dark: #1C1C1E;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+  background-color: var(--apple-bg);
+  background-image: radial-gradient(ellipse at 50% -20%, rgba(10, 132, 255, 0.07), transparent 60%);
+  background-attachment: fixed;
+  color: #F5F5F7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   FROSTED GLASS / CUPERTINO SQUIRCLE CARDS
+   ========================================================================== */
+.apple-card {
+  background: var(--apple-surface);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--apple-border);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Apple Pill Badges */
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* macOS Segmented Control */
+.segmented-control {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 3px;
+  display: inline-flex;
+}
+
+.segmented-btn {
+  padding: 0.35rem 0.85rem;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #8E8E93;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+.segmented-btn:hover {
+  color: #F5F5F7;
+}
+
+.segmented-btn.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Filter Pills */
+.filter-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #8E8E93;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.18s ease;
+}
+
+.filter-pill:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #F5F5F7;
+}
+
+.filter-pill.active {
+  background: var(--system-blue);
+  color: #FFFFFF;
+  border-color: var(--system-blue);
+  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+}
+
+/* News Cards */
+.news-row {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Custom Minimal Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Marquee News Bar */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% - var(--gap, 2rem))); }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 45s) linear infinite;
+}
+
+/* Minimal Pulse Markers */
+.pulse-indicator {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+}
+
+.pulse-indicator::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.4;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Leaflet Map Cupertino Style */
+.leaflet-popup-content-wrapper {
+  background: rgba(20, 22, 32, 0.9) !important;
+  backdrop-filter: blur(20px) !important;
+  color: #F5F5F7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(20, 22, 32, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Traffic lights for macOS window feel */
+.window-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.window-dot-red { background: #FF5F56; }
+.window-dot-yellow { background: #FFBD2E; }
+.window-dot-green { background: #27C93F; }

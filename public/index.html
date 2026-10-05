@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vigilância em Saúde | Monitor de Alertas & Surtos</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            apple: {
+              blue: '#0A84FF',
+              red: '#FF453A',
+              orange: '#FF9F0A',
+              green: '#30D158',
+              purple: '#BF5AF2',
+              gray: '#8E8E93'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Leaflet CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Estilo Minimalista Cupertino (macOS / iOS v4.0.0) -->
+  <link rel="stylesheet" href="style.css?v=4.0.0">
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-[#0A84FF]/30 selection:text-white">
+
+  <!-- ========================================================================= -->
+  <!-- 1. BARRA SUPERIOR MINIMALISTA DE NOTÍCIAS (ESTILO APPLE STOCKS / NEWS)    -->
+  <!-- ========================================================================= -->
+  <div class="w-full bg-[#0d0e14]/90 border-b border-white/[0.06] py-1.5 px-4 backdrop-blur-xl z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
+      <div class="flex items-center space-x-2 shrink-0 pr-4">
+        <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>
+        <span class="font-semibold text-white/90 tracking-tight">Plantão de Notícias</span>
+      </div>
+
+      <div class="overflow-hidden w-full relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#0d0e14] to-transparent z-10"></div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#0d0e14] to-transparent z-10"></div>
+
+        <div class="flex overflow-hidden [--gap:2rem] [gap:var(--gap)]">
+          <div id="marqueeTrack1" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70">
+            <span>Sincronizando agências oficiais e comunicados em tempo real...</span>
+          </div>
+          <div id="marqueeTrack2" aria-hidden="true" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70">
+            <span>Sincronizando agências oficiais e comunicados em tempo real...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hidden sm:flex items-center space-x-3 shrink-0 pl-4 text-white/50 text-[11px]">
+        <span id="syncStatusText">Atualiza em 60s</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. HEADER DA APLICAÇÃO (ESTILO macOS APP / NAVIGATION BAR)                -->
+  <!-- ========================================================================= -->
+  <header class="bg-[#12141c]/80 border-b border-white/[0.08] sticky top-0 z-40 backdrop-blur-2xl">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Identificação & Window Dots macOS -->
+      <div class="flex items-center space-x-3.5">
+        <!-- macOS Window Dots -->
+        <div class="hidden md:flex items-center space-x-1.5 pr-2 border-r border-white/10">
+          <div class="window-dot window-dot-red"></div>
+          <div class="window-dot window-dot-yellow"></div>
+          <div class="window-dot window-dot-green"></div>
+        </div>
+
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0A84FF] to-[#0051C6] flex items-center justify-center text-white shadow-md shadow-[#0A84FF]/20">
+          <i data-lucide="shield" class="w-5 h-5"></i>
+        </div>
+
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-base sm:text-lg font-bold text-white tracking-tight">
+              Vigilância Sanitária
+            </h1>
+            <span class="pill-badge bg-white/10 text-white/80 border border-white/10">
+              Irkutsk • Sibéria
+            </span>
+          </div>
+          <p class="text-xs text-white/50 flex items-center gap-1.5">
+            <span>Acompanhamento Epidemiológico & Disseminação Internacional</span>
+            <span>•</span>
+            <span class="text-[#30D158] font-medium flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#30D158]"></span>
+              Ao Vivo
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Ações Rápidas & Controles Cupertino -->
+      <div class="flex items-center space-x-2">
+        <!-- Toggle Som -->
+        <button id="toggleAudioBtn" title="Ativar/desativar alertas sonoros"
+          class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] hover:bg-white/[0.1] text-white/80 border border-white/[0.08] transition">
+          <i data-lucide="volume-2" class="w-4 h-4 text-[#0A84FF]" id="audioIcon"></i>
+          <span class="hidden sm:inline" id="audioText">Som Ativo</span>
+        </button>
+
+        <!-- Configuração de Camadas OSM -->
+        <button id="openMapSettingsBtn" title="Configurar camadas do OpenStreetMap"
+          class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] hover:bg-white/[0.1] text-white/80 border border-white/[0.08] transition">
+          <i data-lucide="map" class="w-4 h-4 text-white/70"></i>
+          <span class="hidden md:inline">Camadas Mapa</span>
+        </button>
+
+        <!-- Botão Atualizar -->
+        <button id="refreshBtn"
+          class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#0A84FF] hover:bg-[#0071E3] text-white shadow-sm shadow-[#0A84FF]/30 transition active:scale-95">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5" id="refreshIcon"></i>
+          <span>Atualizar</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 3. WIDGETS DE MÉTRICAS (ESTILO APPLE HEALTH & WEATHER BENTO)              -->
+  <!-- ========================================================================= -->
+  <section class="max-w-7xl mx-auto px-4 pt-4 pb-2 w-full">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+      
+      <!-- Widget 1: Disseminação Externa -->
+      <div class="apple-card p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-white/60">Disseminação Externa</span>
+          <span class="pill-badge bg-[#30D158]/15 text-[#30D158] border border-[#30D158]/30">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#30D158]"></span>
+            Seguro
+          </span>
+        </div>
+        <div class="my-2">
+          <div class="text-xl font-bold text-white tracking-tight" id="cardSpreadStatus">
+            Contido Localmente
+          </div>
+          <p class="text-xs text-white/50 mt-0.5 leading-relaxed">
+            Nenhum caso confirmado fora do grupo hospitalar isolado na Sibéria.
+          </p>
+        </div>
+        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]">
+          Risco Global OMS: Baixo
+        </div>
+      </div>
+
+      <!-- Widget 2: Quarentena e Isolamento -->
+      <div class="apple-card p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-white/60">Contatos em Observação</span>
+          <span class="pill-badge bg-[#FF9F0A]/15 text-[#FF9F0A] border border-[#FF9F0A]/30">
+            Quarentena
+          </span>
+        </div>
+        <div class="my-2">
+          <div class="text-2xl font-bold text-[#FF9F0A] tracking-tight" id="cardQuarantine">
+            ~200 Pessoas
+          </div>
+          <p class="text-xs text-white/50 mt-0.5 leading-relaxed">
+            Hospitais de Shelekhov e Irkutsk com alas isoladas preventivamente.
+          </p>
+        </div>
+        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]">
+          Inquérito Sanitário: Ativo
+        </div>
+      </div>
+
+      <!-- Widget 3: Despachos Prioritários -->
+      <div class="apple-card p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-white/60">Alertas de Alta Atenção</span>
+          <span class="pill-badge bg-[#FF453A]/15 text-[#FF453A] border border-[#FF453A]/30">
+            Prioritário
+          </span>
+        </div>
+        <div class="my-2 flex items-baseline gap-2">
+          <div class="text-3xl font-bold text-[#FF453A] tracking-tight" id="cardHighAlerts">
+            --
+          </div>
+          <span class="text-xs text-white/50">notícias apuradas</span>
+        </div>
+        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]" id="feedCountBadge">
+          Total: -- fontes ativas
+        </div>
+      </div>
+
+      <!-- Widget 4: Redes Sociais & TikTok Pulse -->
+      <div class="apple-card p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-white/60">TikTok & Redes Sociais</span>
+          <span class="pill-badge bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/30">
+            Tendências
+          </span>
+        </div>
+        <div class="my-2">
+          <div class="text-lg font-bold text-white tracking-tight" id="socialWidgetStatus">
+            Atenção Moderada
+          </div>
+          <p class="text-xs text-white/50 mt-0.5 leading-relaxed">
+            Rumores e vídeos monitorados via #Irkutsk e #RussiaPlague.
+          </p>
+        </div>
+        <div class="text-[11px] text-[#0A84FF] pt-1 border-t border-white/[0.06] flex items-center justify-between">
+          <span>Sentimento Público</span>
+          <span id="socialWidgetPanic">65% Alerta</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 4. MODAL MINIMALISTA DE CAMADAS OPENSTREETMAP                             -->
+  <!-- ========================================================================= -->
+  <div id="mapSettingsModal" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+    <div class="apple-card max-w-md w-full p-6 shadow-2xl relative bg-[#181a24]">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-[#0A84FF]"></i>
+          Camadas do OpenStreetMap
+        </h3>
+        <button id="closeMapSettingsBtn" class="text-white/50 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-medium text-white/80 mb-1">Estilo do Mapa Base:</label>
+          <select id="mapStyleSelect" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#0A84FF] text-xs">
+            <option value="carto-dark">🌙 Carto Dark Matter (Contraste Noturno Recomendado)</option>
+            <option value="osm-standard">🌍 OpenStreetMap Padrão (Oficial)</option>
+            <option value="maptiler-dark">🗺️ MapTiler Dark (Requer Chave API)</option>
+            <option value="stadia-dark">🛰️ Stadia Alidade Dark (Requer Chave API)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-medium text-white/80 mb-1">Chave de API do Provedor (Opcional):</label>
+          <input type="text" id="customApiKeyInput" placeholder="Ex: sua_chave_api_maptiler"
+            class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2 text-white placeholder-white/30 text-xs focus:outline-none focus:border-[#0A84FF]">
+          <p class="text-[11px] text-white/40 mt-1">
+            * O OpenStreetMap e o Carto Dark funcionam de forma livre e não requerem chave.
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-white/10 flex justify-end">
+          <button id="saveMapSettingsBtn" class="px-4 py-2 rounded-xl bg-[#0A84FF] hover:bg-[#0071E3] text-white font-medium text-xs shadow transition">
+            Salvar e Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 5. GRID PRINCIPAL: FEED (ESQ) & VISUALIZADORES / TABS (DIR)               -->
+  <!-- ========================================================================= -->
+  <main class="max-w-7xl mx-auto px-4 py-3 w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+    <!-- COLUNA DA ESQUERDA: FEED DE NOTÍCIAS & APURAÇÕES (7 colunas) -->
+    <section class="lg:col-span-7 flex flex-col space-y-3">
+      
+      <!-- Barra de Busca & Filtros Cupertino -->
+      <div class="apple-card p-3 space-y-2.5">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-white/40 absolute left-3.5 top-3"></i>
+          <input type="text" id="searchInput" placeholder="Buscar por termo (Irkutsk, peste, quarentena, OMS, BNO, Shipilova)..."
+            class="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl pl-10 pr-8 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0A84FF] transition">
+          <button id="clearSearchBtn" class="hidden absolute right-3 top-2.5 text-white/40 hover:text-white">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <!-- Filtros em Pílulas -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+          <button class="filter-pill active" data-filter="all">Todos (<span id="countAll">0</span>)</button>
+          <button class="filter-pill" data-filter="irkutsk">Irkutsk / Sibéria</button>
+          <button class="filter-pill" data-filter="russia">Rússia</button>
+          <button class="filter-pill" data-filter="high">Alta Atenção</button>
+          <button class="filter-pill" data-filter="who">OMS / Global</button>
+          <button class="filter-pill" data-filter="social">Redes / Reddit</button>
+        </div>
+      </div>
+
+      <!-- Lista de Notícias em Cards Limpos -->
+      <div class="apple-card p-3.5 flex-1 flex flex-col min-h-[500px]">
+        <div class="flex items-center justify-between pb-2 border-b border-white/[0.06] mb-2 px-1">
+          <h2 class="text-xs font-semibold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="newspaper" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
+            Despachos & Notícias
+          </h2>
+          <span class="text-[11px] text-white/40" id="filteredCountText">Carregando...</span>
+        </div>
+
+        <div id="newsFeedContainer" class="space-y-2 overflow-y-auto max-h-[750px] pr-1 custom-scrollbar">
+          <!-- Carregamento via app.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- COLUNA DA DIREITA: MAPA, TIKTOK, DOSSIÊ & FRONTEIRAS (5 colunas) -->
+    <section class="lg:col-span-5 flex flex-col space-y-3">
+      
+      <!-- macOS Segmented Control Tabs -->
+      <div class="segmented-control w-full flex">
+        <button class="segmented-btn active flex-1 flex items-center justify-center gap-1.5" data-tab="tabMap">
+          <i data-lucide="map" class="w-3.5 h-3.5"></i>
+          Mapa
+        </button>
+        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabSocial">
+          <i data-lucide="smartphone" class="w-3.5 h-3.5 text-[#BF5AF2]"></i>
+          TikTok / Redes
+        </button>
+        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabDossier">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+          Dossiê
+        </button>
+        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabSpread">
+          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+          Fronteiras
+        </button>
+      </div>
+
+      <!-- ABA 1: MAPA GEOGRÁFICO INTERATIVO -->
+      <div id="tabMap" class="tab-content block apple-card p-3 flex flex-col">
+        <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>
+            <h3 class="text-xs font-semibold text-white/80">Localização do Foco & Monitoramento</h3>
+          </div>
+          <span class="text-[11px] text-white/40" id="currentMapTileLabel">Carto Dark (OSM)</span>
+        </div>
+
+        <div id="mapContainer" class="w-full h-[360px] rounded-xl border border-white/10 overflow-hidden relative z-10"></div>
+
+        <div class="grid grid-cols-2 gap-2 mt-2.5 text-[11px] text-white/60 bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.06]">
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#FF453A] shrink-0"></span>
+            <span><strong>Irkutsk:</strong> Quarentena (~200)</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#FF9F0A] shrink-0"></span>
+            <span><strong>Moscou:</strong> Rospotrebnadzor</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#0A84FF] shrink-0"></span>
+            <span><strong>Genebra:</strong> Vigilância OMS</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#30D158] shrink-0"></span>
+            <span><strong>Pequim / Ásia:</strong> Vigilância Portuária</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 2: TIKTOK & RADAR SOCIAL -->
+      <div id="tabSocial" class="tab-content hidden apple-card p-4 space-y-3.5">
+        <div class="border-b border-white/[0.06] pb-2 flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
+              <i data-lucide="smartphone" class="w-4 h-4 text-[#BF5AF2]"></i>
+              Radar de Redes Sociais & TikTok
+            </h3>
+            <p class="text-[11px] text-white/50 mt-0.5">Acompanhamento de vídeos e hashtags em alta sobre o caso.</p>
+          </div>
+          <span class="pill-badge bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/30">
+            Tempo Real
+          </span>
+        </div>
+
+        <!-- Termômetro de Sentimento Social -->
+        <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06] space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-white/70 font-medium">Índice de Rumores nas Redes:</span>
+            <span class="text-[#FF9F0A] font-semibold" id="socialPanicStatus">Carregando...</span>
+          </div>
+          <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+            <div id="socialPanicBar" class="bg-gradient-to-r from-[#0A84FF] via-[#FF9F0A] to-[#FF453A] h-full transition-all duration-500" style="width: 65%;"></div>
+          </div>
+          <div class="flex justify-between text-[10px] text-white/40">
+            <span>Calmo</span>
+            <span>Moderado</span>
+            <span>Alerta Elevado</span>
+          </div>
+        </div>
+
+        <!-- Hashtags no TikTok -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
+            <i data-lucide="hash" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
+            Hashtags Populares no TikTok (Busca Direta)
+          </h4>
+          <div id="trendingHashtagsContainer" class="flex flex-wrap gap-1.5 text-xs">
+            <!-- Injetado dinamicamente via app.js -->
+          </div>
+        </div>
+
+        <!-- Vídeos e Postagens Recentes -->
+        <div>
+          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
+            <i data-lucide="video" class="w-3.5 h-3.5 text-[#BF5AF2]"></i>
+            Postagens e Vídeos Recentes
+          </h4>
+          <div id="socialPostsContainer" class="space-y-2 max-h-56 overflow-y-auto custom-scrollbar text-xs">
+            <!-- Injetado dinamicamente via app.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: DOSSIÊ E FATOS VERIFICADOS -->
+      <div id="tabDossier" class="tab-content hidden apple-card p-4 space-y-3">
+        <div class="border-b border-white/[0.06] pb-2">
+          <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
+            <i data-lucide="file-check" class="w-4 h-4 text-[#0A84FF]"></i>
+            Dossiê: Instituto Anti-Peste de Irkutsk
+          </h3>
+          <p class="text-[11px] text-white/50 mt-0.5">Fatos checados e cronologia dos eventos (Outubro 2026).</p>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06]">
+            <span class="font-semibold text-[#FF9F0A] flex items-center gap-1.5">
+              <i data-lucide="shield" class="w-3.5 h-3.5"></i> Versão Oficial (Rospotrebnadzor):
+            </span>
+            <p class="text-white/70 mt-1 text-[11px] leading-relaxed">
+              Classificado como <em>"pneumonia de etiologia desconhecida"</em>. Nega quebra de contenção física ou presença de peste nos laudos iniciais. Dra. Anna Popova inspecionou os hospitais locais.
+            </p>
+          </div>
+
+          <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06]">
+            <span class="font-semibold text-[#0A84FF] flex items-center gap-1.5">
+              <i data-lucide="radio" class="w-3.5 h-3.5"></i> Apurações Independentes (BMJ, Time, Reuters):
+            </span>
+            <p class="text-white/70 mt-1 text-[11px] leading-relaxed">
+              Técnica Darya Shipilova (28 anos) teria sofrido exposição acidental após quebra de tubo com <em>Yersinia pestis</em> em ~25 de setembro. Hospitalizada em Shelekhov e falecida em 1-2 de outubro. Quarentena de ~200 contatos.
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
+            <i data-lucide="clock" class="w-3.5 h-3.5 text-[#0A84FF]"></i> Linha do Tempo dos Eventos
+          </h4>
+          <div id="timelineContainer" class="space-y-2 text-xs border-l border-white/10 ml-2 pl-3"></div>
+        </div>
+      </div>
+
+      <!-- ABA 4: FRONTEIRAS & DISSEMINAÇÃO EXTERNA -->
+      <div id="tabSpread" class="tab-content hidden apple-card p-4 space-y-3">
+        <div class="border-b border-white/[0.06] pb-2">
+          <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
+            <i data-lucide="plane" class="w-4 h-4 text-[#30D158]"></i>
+            Vigilância de Fronteiras & Risco Externo
+          </h3>
+          <p class="text-[11px] text-white/50 mt-0.5">Rotas de trânsito, voos e monitoramento diplomático.</p>
+        </div>
+
+        <div class="space-y-2.5 text-xs">
+          <div class="p-3 bg-[#30D158]/10 border border-[#30D158]/20 rounded-xl">
+            <div class="flex items-center space-x-1.5 text-[#30D158] font-semibold">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+              <span>Risco Global: Baixo / Sem Casos Externos</span>
+            </div>
+            <p class="text-white/70 mt-1 text-[11px] leading-relaxed">
+              Nenhum caso secundário foi detectado fora do círculo de isolamento hospitalar na Sibéria.
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06] flex justify-between items-center">
+              <div>
+                <strong class="text-white/90">EUA / OMS</strong>
+                <p class="text-[11px] text-white/50">Atenção diplomática declarada por Washington.</p>
+              </div>
+              <span class="pill-badge bg-[#0A84FF]/15 text-[#0A84FF]">Monitorando</span>
+            </div>
+
+            <div class="bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06] flex justify-between items-center">
+              <div>
+                <strong class="text-white/90">Fronteira com a Mongólia</strong>
+                <p class="text-[11px] text-white/50">Triagem sanitária reforçada no sul do Baikal.</p>
+              </div>
+              <span class="pill-badge bg-[#FF9F0A]/15 text-[#FF9F0A]">Triagem Ativa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráfico Minimalista de Distribuição -->
+      <div class="apple-card p-3.5">
+        <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-[#0A84FF]"></i> Distribuição por Severidade
+          </span>
+          <span class="text-[11px] text-white/40">Classificação</span>
+        </h4>
+        <div class="h-28">
+          <canvas id="alertSeverityChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ MINIMALISTA -->
+  <footer class="bg-[#0b0c10] border-t border-white/[0.06] py-3 text-xs text-white/40 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-2">
+        <i data-lucide="activity" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
+        <span>Painel de Vigilância Epidemiológica • Dados de Fontes Públicas Abertas e OpenStreetMap</span>
+      </div>
+      <div class="text-[11px] text-white/40 flex items-center space-x-4">
+        <span>Última atualização: <span id="footerLastSync" class="text-white/70">--</span></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script da Aplicação v4.0.0 -->
+  <script src="app.js?v=4.0.0"></script>
+</body>
+</html>
