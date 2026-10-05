@@ -232,6 +232,43 @@
   </section>
 
   <!-- ========================================================================= -->
+  <!-- 4. HEADLINE & BRIEFING EXECUTIVO DA ÚLTIMA HORA                           -->
+  <!-- ========================================================================= -->
+  <section class="max-w-7xl mx-auto px-4 pt-1 pb-2 w-full">
+    <div class="apple-card p-4 sm:p-5 border border-[#0A84FF]/25 bg-gradient-to-br from-[#0A84FF]/[0.08] via-white/[0.02] to-transparent relative overflow-hidden">
+      <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#0A84FF]/10 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-white/[0.08]">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-[#0A84FF] animate-pulse"></span>
+          <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
+            Situação nas Últimas Horas • Briefing Executivo
+          </h2>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="pill-badge bg-[#30D158]/15 text-[#30D158] border border-[#30D158]/30 text-[11px]" id="briefingStatusBadge">
+            Contido Localmente
+          </span>
+          <span class="pill-badge bg-white/[0.06] text-white/60 border border-white/10 text-[11px]" id="briefingTimeWindowBadge">
+            Última Hora
+          </span>
+        </div>
+      </div>
+
+      <div class="my-1.5">
+        <h3 class="text-sm sm:text-base md:text-lg font-bold text-white leading-snug tracking-tight" id="briefingHeadline">
+          Carregando síntese dos acontecimentos mais recentes...
+        </h3>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-white/[0.06] text-xs" id="briefingBulletsContainer">
+        <!-- Bullets dinâmicos injetados via app.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
   <!-- 4. MODAL MINIMALISTA DE CAMADAS OPENSTREETMAP                             -->
   <!-- ========================================================================= -->
   <div id="mapSettingsModal" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
@@ -540,7 +577,7 @@
     </div>
   </footer>
 
-  <!-- Script da Aplicação v4.0.0 -->
-  <script src="app.js?v=4.0.0"></script>
+  <!-- Script da Aplicação v4.1.0 -->
+  <script src="app.js?v=4.1.0"></script>
 </body>
 </html>

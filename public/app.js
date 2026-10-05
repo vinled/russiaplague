@@ -12,6 +12,7 @@ const state = {
   currentTileLayer: null,
   activeMapStyle: localStorage.getItem('osm_map_style') || 'osm-standard',
   customApiKey: localStorage.getItem('osm_api_key') || '',
+  briefing: null,
   chart: null,
   lastKnownFirstId: null
 };
@@ -467,21 +468,55 @@ function renderChart() {
   });
 }
 
+// Renderizar Headline & Briefing Executivo
+function renderBriefing() {
+  if (!state.briefing) return;
+
+  const headlineEl = document.getElementById('briefingHeadline');
+  const timeBadgeEl = document.getElementById('briefingTimeWindowBadge');
+  const statusBadgeEl = document.getElementById('briefingStatusBadge');
+  const bulletsContainer = document.getElementById('briefingBulletsContainer');
+
+  if (headlineEl) {
+    headlineEl.textContent = state.briefing.headline;
+  }
+  if (timeBadgeEl) {
+    timeBadgeEl.textContent = state.briefing.timeWindow;
+  }
+  if (statusBadgeEl) {
+    statusBadgeEl.textContent = state.briefing.statusBadge;
+  }
+
+  if (bulletsContainer && state.briefing.bullets) {
+    bulletsContainer.innerHTML = state.briefing.bullets.map(b => `
+      <div class="flex items-start space-x-2 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.05]">
+        <div class="w-1.5 h-1.5 rounded-full bg-[#0A84FF] mt-1.5 shrink-0"></div>
+        <div>
+          <strong class="text-white/90 font-semibold block mb-0.5">${b.topic}:</strong>
+          <span class="text-white/70 leading-relaxed text-xs">${b.text}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
 // Carregar Dados das APIs
 async function loadData(forceRefresh = false) {
   const refreshIcon = document.getElementById('refreshIcon');
   if (refreshIcon) refreshIcon.classList.add('animate-spin');
 
   try {
-    const [newsRes, socialRes, incidentRes] = await Promise.all([
+    const [newsRes, socialRes, incidentRes, briefingRes] = await Promise.all([
       fetch(`/api/news${forceRefresh ? '?refresh=true' : ''}`),
       fetch('/api/social'),
-      fetch('/api/incident')
+      fetch('/api/incident'),
+      fetch('/api/briefing')
     ]);
 
     const newsData = await newsRes.json();
     const socialData = await socialRes.json();
     const incidentData = await incidentRes.json();
+    const briefingData = await briefingRes.json();
 
     if (newsData.success) {
       if (state.news.length > 0 && newsData.data.length > 0) {
@@ -505,7 +540,12 @@ async function loadData(forceRefresh = false) {
       state.incident = incidentData.data;
     }
 
+    if (briefingData && briefingData.success) {
+      state.briefing = briefingData;
+    }
+
     updateMetrics();
+    renderBriefing();
     renderTicker();
     renderNewsFeed();
     renderSocialModule();

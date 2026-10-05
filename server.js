@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const { fetchAllFeeds, getCachedNews, getLastFetchTime } = require('./services/rssService');
 const { fetchSocialFeed } = require('./services/socialService');
+const { generateHourlyBriefing } = require('./services/briefingService');
 const incidentData = require('./services/incidentData');
 
 const app = express();
@@ -94,13 +95,25 @@ app.get('/api/news', async (req, res) => {
   }
 });
 
-// NOVO: Endpoint do Radar Social & TikTok
+// Endpoint do Radar Social & TikTok
 app.get('/api/social', async (req, res) => {
   try {
     const socialData = await fetchSocialFeed();
     res.json(socialData);
   } catch (error) {
     console.error('Erro na rota /api/social:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// NOVO: Endpoint do Resumo Executivo / Headline da Última Hora
+app.get('/api/briefing', async (req, res) => {
+  try {
+    const { news } = await fetchAllFeeds();
+    const briefing = generateHourlyBriefing(news);
+    res.json(briefing);
+  } catch (error) {
+    console.error('Erro na rota /api/briefing:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
