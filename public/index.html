@@ -250,8 +250,8 @@
         <div>
           <label class="block font-medium text-white/80 mb-1">Estilo do Mapa Base:</label>
           <select id="mapStyleSelect" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#0A84FF] text-xs">
-            <option value="carto-dark">🌙 Carto Dark Matter (Contraste Noturno Recomendado)</option>
-            <option value="osm-standard">🌍 OpenStreetMap Padrão (Oficial)</option>
+            <option value="osm-standard" selected>🌍 OpenStreetMap Padrão (Oficial)</option>
+            <option value="carto-dark">🌙 Carto Dark Matter (Contraste Noturno)</option>
             <option value="maptiler-dark">🗺️ MapTiler Dark (Requer Chave API)</option>
             <option value="stadia-dark">🛰️ Stadia Alidade Dark (Requer Chave API)</option>
           </select>
@@ -352,7 +352,7 @@
             <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>
             <h3 class="text-xs font-semibold text-white/80">Localização do Foco & Monitoramento</h3>
           </div>
-          <span class="text-[11px] text-white/40" id="currentMapTileLabel">Carto Dark (OSM)</span>
+          <span class="text-[11px] text-white/40" id="currentMapTileLabel">OpenStreetMap Padrão</span>
         </div>
 
         <div id="mapContainer" class="w-full h-[360px] rounded-xl border border-white/10 overflow-hidden relative z-10"></div>

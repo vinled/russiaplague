@@ -10,7 +10,7 @@ const state = {
   countdownInterval: null,
   map: null,
   currentTileLayer: null,
-  activeMapStyle: localStorage.getItem('osm_map_style') || 'carto-dark',
+  activeMapStyle: localStorage.getItem('osm_map_style') || 'osm-standard',
   customApiKey: localStorage.getItem('osm_api_key') || '',
   chart: null,
   lastKnownFirstId: null
