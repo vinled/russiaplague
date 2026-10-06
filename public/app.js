@@ -74,7 +74,27 @@ const TRANSLATIONS = {
       minutes: '{n}m ago',
       hours: '{n}h ago',
       days: '{n}d ago'
-    }
+    },
+    themeDark: 'Dark',
+    themeContrast: 'Contrast',
+    themeLight: 'Light',
+    threatLow: 'LOW',
+    threatGuarded: 'GUARDED',
+    threatElevated: 'ELEVATED',
+    threatHigh: 'HIGH',
+    threatCritical: 'CRITICAL',
+    geoStatusLocalVal: 'Contained',
+    geoStatusRussiaVal: 'Monitoring',
+    geoStatusIntlVal: 'None detected',
+    geoStatusBordersVal: 'Screening / Monitoring',
+    criteriaSecTransVal: 'None',
+    criteriaExtSpreadVal: 'None',
+    criteriaGeoExpandVal: 'None',
+    criteriaQuarantineVal: 'Active',
+    riskHumanSpreadVal: 'None',
+    riskGeoExpansionVal: 'None',
+    riskBordersVal: 'Monitoring',
+    riskFacilityVal: 'BSL-3 Inspected'
   },
   pt: {
     brandTitle: 'OUTBREAK INTELLIGENCE',
@@ -145,7 +165,61 @@ const TRANSLATIONS = {
       minutes: 'Há {n}m',
       hours: 'Há {n}h',
       days: 'Há {n}d'
-    }
+    },
+    themeDark: 'Escuro',
+    themeContrast: 'Contraste',
+    themeLight: 'Claro',
+    threatLow: 'BAIXO',
+    threatGuarded: 'MODERADO',
+    threatElevated: 'ELEVADO',
+    threatHigh: 'ALTO',
+    threatCritical: 'CRÍTICO',
+    geoStatusLocalVal: 'Contido',
+    geoStatusRussiaVal: 'Monitoramento',
+    geoStatusIntlVal: 'Nenhum detectado',
+    geoStatusBordersVal: 'Triagem / Monitoramento',
+    criteriaSecTransVal: 'Nenhuma',
+    criteriaExtSpreadVal: 'Nenhuma',
+    criteriaGeoExpandVal: 'Nenhuma',
+    criteriaQuarantineVal: 'Ativa',
+    riskHumanSpreadVal: 'Nenhuma',
+    riskGeoExpansionVal: 'Nenhuma',
+    riskBordersVal: 'Monitoramento',
+    riskFacilityVal: 'BSL-3 Inspecionado'
+  }
+};
+
+// Threat Level Localized Names Dictionary
+const THREAT_LEVEL_NAMES = {
+  en: {
+    LOW: 'LOW',
+    GUARDED: 'GUARDED',
+    ELEVATED: 'ELEVATED',
+    HIGH: 'HIGH',
+    CRITICAL: 'CRITICAL'
+  },
+  pt: {
+    LOW: 'BAIXO',
+    GUARDED: 'MODERADO',
+    ELEVATED: 'ELEVADO',
+    HIGH: 'ALTO',
+    CRITICAL: 'CRÍTICO'
+  }
+};
+
+// Map Tile Layer Configurations per Theme
+const TILE_CONFIGS = {
+  dark: {
+    url: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Esri World Dark'
+  },
+  'high-contrast': {
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; CartoDB &copy; OpenStreetMap'
+  },
+  light: {
+    url: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: 'Esri World Light Gray'
   }
 };
 
@@ -158,9 +232,14 @@ const state = {
   flights: null,
   currentTab: 'navOverview',
   currentLang: 'en',
+  currentTheme: localStorage.getItem('theme_preference') || 'dark',
   audioEnabled: true,
   countdown: 60,
   countdownInterval: null,
+  
+  // Audio & Escalation State Tracking
+  lastKnownThreatLevelRank: null,
+  lastKnownDeaths: null,
   
   // Sources Filter & Pagination State
   sourcesCategory: 'all',
@@ -181,13 +260,69 @@ const state = {
   mainMap: null,
   overviewMarkerGroup: null,
   mainMarkerGroup: null,
+  overviewTileLayer: null,
+  mainTileLayer: null,
 
   // Last State Tracking for "What Changed"
   lastVisitState: null,
   lastKnownFirstId: null
 };
 
-// Audio notification (subtle discrete intelligence tone)
+// Emergency Situation Room Alarm (Intense Klaxon / Horn for Escalation or Death Increases)
+function playCriticalEmergencyAlarm() {
+  if (!state.audioEnabled) return;
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
+
+    const playKlaxonBurst = (startTime, duration) => {
+      const osc = audioCtx.createOscillator();
+      const oscSub = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sawtooth';
+      oscSub.type = 'square';
+
+      // Pitch sweep downward: tactical situation-room emergency horn / klaxon
+      osc.frequency.setValueAtTime(880, startTime);
+      osc.frequency.exponentialRampToValueAtTime(440, startTime + duration);
+
+      oscSub.frequency.setValueAtTime(440, startTime);
+      oscSub.frequency.exponentialRampToValueAtTime(220, startTime + duration);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1600, startTime);
+      filter.Q.setValueAtTime(3.5, startTime);
+
+      gain.gain.setValueAtTime(0.001, startTime);
+      gain.gain.linearRampToValueAtTime(0.28, startTime + 0.04);
+      gain.gain.setValueAtTime(0.24, startTime + duration - 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc.connect(filter);
+      oscSub.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(startTime);
+      oscSub.start(startTime);
+      osc.stop(startTime + duration);
+      oscSub.stop(startTime + duration);
+    };
+
+    // 3 rapid, powerful klaxon wails
+    playKlaxonBurst(now, 0.38);
+    playKlaxonBurst(now + 0.45, 0.38);
+    playKlaxonBurst(now + 0.90, 0.55);
+
+    console.warn('[OUTBREAK INTELLIGENCE] CRITICAL EMERGENCY ALARM TRIGGERED (ESCALATION / DEATH EVENT)');
+  } catch (e) {
+    console.warn('AudioContext alarm error:', e);
+  }
+}
+
+// Audio notification (subtle discrete intelligence tone for new dispatches)
 function playNotificationChime() {
   if (!state.audioEnabled) return;
   try {
@@ -307,6 +442,57 @@ function setLanguage(lang) {
   applyTranslations(lang);
 }
 
+// Map Tile Layer Updater for Theme Switching
+function updateMapTileLayers(theme) {
+  const config = TILE_CONFIGS[theme] || TILE_CONFIGS.dark;
+
+  if (state.overviewMap) {
+    if (state.overviewTileLayer) {
+      state.overviewMap.removeLayer(state.overviewTileLayer);
+    }
+    state.overviewTileLayer = L.tileLayer(config.url, {
+      maxZoom: 16,
+      attribution: config.attribution
+    }).addTo(state.overviewMap);
+  }
+
+  if (state.mainMap) {
+    if (state.mainTileLayer) {
+      state.mainMap.removeLayer(state.mainTileLayer);
+    }
+    state.mainTileLayer = L.tileLayer(config.url, {
+      maxZoom: 16,
+      attribution: config.attribution
+    }).addTo(state.mainMap);
+  }
+}
+
+// Theme Switcher (Dark, High Contrast, Light)
+function setTheme(themeName) {
+  const validThemes = ['dark', 'high-contrast', 'light'];
+  const theme = validThemes.includes(themeName) ? themeName : 'dark';
+  state.currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme_preference', theme);
+
+  // Update theme buttons
+  const btnDark = document.getElementById('themeBtnDark');
+  const btnContrast = document.getElementById('themeBtnContrast');
+  const btnLight = document.getElementById('themeBtnLight');
+
+  [btnDark, btnContrast, btnLight].forEach(btn => {
+    if (!btn) return;
+    const val = btn.getAttribute('data-theme-val');
+    if (val === theme) {
+      btn.className = 'px-2 py-0.5 rounded flex items-center gap-1 transition bg-white/10 text-white font-bold active-theme';
+    } else {
+      btn.className = 'px-2 py-0.5 rounded flex items-center gap-1 transition text-white/50 hover:text-white';
+    }
+  });
+
+  updateMapTileLayers(theme);
+}
+
 // ============================================================================
 // RENDERERS
 // ============================================================================
@@ -321,23 +507,27 @@ function renderOverviewThreatAndKPIs() {
   const threatBadgeText = document.getElementById('threatBadgeText');
   const threatHeadline = document.getElementById('threatHeadline');
 
-  if (threatBadgeText) threatBadgeText.textContent = threatLevel;
+  const levelNames = THREAT_LEVEL_NAMES[state.currentLang] || THREAT_LEVEL_NAMES.en;
+  const translatedLevel = levelNames[threatLevel] || threatLevel;
+
+  if (threatBadgeText) threatBadgeText.textContent = translatedLevel;
   if (threatHeadline) {
     threatHeadline.textContent = isEn
       ? (incident?.threatAssessment?.headline || 'No evidence of secondary transmission')
       : (incident?.threatAssessment?.headlinePt || 'Sem evidência de transmissão secundária');
   }
 
-  // Highlight active level in horizontal track
+  // Highlight active level in horizontal track and translate step labels
   document.querySelectorAll('.threat-step').forEach(step => {
-    const level = step.getAttribute('data-level');
+    const levelKey = step.getAttribute('data-level');
+    step.textContent = levelNames[levelKey] || levelKey;
     step.className = 'threat-step';
-    if (level === threatLevel) {
-      if (level === 'LOW') step.classList.add('active-low');
-      else if (level === 'GUARDED') step.classList.add('active-guarded');
-      else if (level === 'ELEVATED') step.classList.add('active-elevated');
-      else if (level === 'HIGH') step.classList.add('active-high');
-      else if (level === 'CRITICAL') step.classList.add('active-critical');
+    if (levelKey === threatLevel) {
+      if (levelKey === 'LOW') step.classList.add('active-low');
+      else if (levelKey === 'GUARDED') step.classList.add('active-guarded');
+      else if (levelKey === 'ELEVATED') step.classList.add('active-elevated');
+      else if (levelKey === 'HIGH') step.classList.add('active-high');
+      else if (levelKey === 'CRITICAL') step.classList.add('active-critical');
     }
   });
 
@@ -369,6 +559,30 @@ function renderOverviewThreatAndKPIs() {
   if (elInvestigation) elInvestigation.textContent = kpis.underInvestigation !== undefined ? kpis.underInvestigation : 1;
   if (elDeaths) elDeaths.textContent = kpis.deaths !== undefined ? kpis.deaths : 1;
 
+  // Check for Situation Escalation or Increased Deaths to trigger emergency situation-room alarm
+  const threatLevelRanks = {
+    LOW: 1,
+    GUARDED: 2,
+    ELEVATED: 3,
+    HIGH: 4,
+    CRITICAL: 5
+  };
+
+  const currentLevelRank = threatLevelRanks[threatLevel] || 2;
+  const currentDeaths = kpis.deaths !== undefined ? Number(kpis.deaths) : 1;
+
+  if (state.lastKnownThreatLevelRank !== null && currentLevelRank > state.lastKnownThreatLevelRank) {
+    console.log(`[ALERT] Threat level escalated from rank ${state.lastKnownThreatLevelRank} to ${currentLevelRank}`);
+    playCriticalEmergencyAlarm();
+  } else if (state.lastKnownDeaths !== null && currentDeaths > state.lastKnownDeaths) {
+    console.log(`[ALERT] Deaths increased from ${state.lastKnownDeaths} to ${currentDeaths}`);
+    playCriticalEmergencyAlarm();
+  }
+
+  // Update last known state
+  state.lastKnownThreatLevelRank = currentLevelRank;
+  state.lastKnownDeaths = currentDeaths;
+
   // Contacts monitored dynamically from briefing NLP if present
   let dynamicContacts = briefing?.patientMetrics?.detectedCount;
   if (!dynamicContacts) dynamicContacts = '~200';
@@ -389,8 +603,8 @@ function renderOverviewThreatAndKPIs() {
   const geoStatusBorders = document.getElementById('geoStatusBorders');
   if (geoStatusLocal) geoStatusLocal.textContent = isEn ? 'Contained' : 'Contido';
   if (geoStatusRussia) geoStatusRussia.textContent = isEn ? 'Monitoring' : 'Monitoramento';
-  if (geoStatusIntl) geoStatusIntl.textContent = isEn ? 'None detected' : 'Nenhuma detectada';
-  if (geoStatusBorders) geoStatusBorders.textContent = isEn ? 'Screening / Monitoring' : 'Triagem Ativa';
+  if (geoStatusIntl) geoStatusIntl.textContent = isEn ? 'None detected' : 'Nenhum detectado';
+  if (geoStatusBorders) geoStatusBorders.textContent = isEn ? 'Screening / Monitoring' : 'Triagem / Monitoramento';
 
   // Risk matrix indicators
   const riskHuman = document.getElementById('riskHumanSpreadVal');
@@ -458,10 +672,14 @@ function updateWhatChangedDelta() {
   const summaryEl = document.getElementById('whatChangedSummary');
   const timestampEl = document.getElementById('lastVisitTimestamp');
 
+  const levelNames = THREAT_LEVEL_NAMES[state.currentLang] || THREAT_LEVEL_NAMES.en;
+  const threatLevel = state.incident?.threatAssessment?.level || 'GUARDED';
+  const translatedLevel = levelNames[threatLevel] || threatLevel;
+
   if (summaryEl) {
     const text = isEn
-      ? `+${deltaNews} new verified reports · 0 new cases · Risk level unchanged (GUARDED) · Contact testing remains negative`
-      : `+${deltaNews} novos despachos verificados · 0 novos casos · Nível inalterado (GUARDED) · Testagem de contatos permanece negativa`;
+      ? `+${deltaNews} new verified reports · 0 new cases · Risk level unchanged (${translatedLevel}) · Contact testing remains negative`
+      : `+${deltaNews} novos despachos verificados · 0 novos casos · Nível inalterado (${translatedLevel}) · Testagem de contatos permanece negativa`;
     summaryEl.textContent = text;
   }
 
@@ -1070,13 +1288,14 @@ function initOverviewMap() {
   if (!container || state.overviewMap || container._leaflet_id) return;
 
   state.overviewMap = L.map('overviewMapPreview', {
-    zoomControl: false,
+    zoomControl: true,
     attributionControl: false
   }).setView([52.2869, 104.3050], 4);
 
-  L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  const config = TILE_CONFIGS[state.currentTheme] || TILE_CONFIGS.dark;
+  state.overviewTileLayer = L.tileLayer(config.url, {
     maxZoom: 16,
-    attribution: 'Esri World Dark'
+    attribution: config.attribution
   }).addTo(state.overviewMap);
 
   // Add subtle ring around epicenter
@@ -1112,9 +1331,10 @@ function initMainMap() {
     attributionControl: false
   }).setView([52.2869, 104.3050], 4);
 
-  L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  const config = TILE_CONFIGS[state.currentTheme] || TILE_CONFIGS.dark;
+  state.mainTileLayer = L.tileLayer(config.url, {
     maxZoom: 16,
-    attribution: 'Esri World Dark'
+    attribution: config.attribution
   }).addTo(state.mainMap);
 
   state.mainMarkerGroup = L.layerGroup().addTo(state.mainMap);
@@ -1280,6 +1500,14 @@ function setupEventListeners() {
   const btnPt = document.getElementById('langBtnPt');
   if (btnEn) btnEn.addEventListener('click', () => setLanguage('en'));
   if (btnPt) btnPt.addEventListener('click', () => setLanguage('pt'));
+
+  // Theme Selector buttons
+  const btnDark = document.getElementById('themeBtnDark');
+  const btnContrast = document.getElementById('themeBtnContrast');
+  const btnLight = document.getElementById('themeBtnLight');
+  if (btnDark) btnDark.addEventListener('click', () => setTheme('dark'));
+  if (btnContrast) btnContrast.addEventListener('click', () => setTheme('high-contrast'));
+  if (btnLight) btnLight.addEventListener('click', () => setTheme('light'));
 
   // Audio toggle
   const toggleAudioBtn = document.getElementById('toggleAudioBtn');
@@ -1469,14 +1697,21 @@ function setupEventListeners() {
 
 // Initial bootstrap
 window.addEventListener('DOMContentLoaded', () => {
-  const savedLang = localStorage.getItem('preferred_language') || 'en';
+  const savedLang = localStorage.getItem('preferred_language') || (navigator.language && navigator.language.startsWith('pt') ? 'pt' : 'en');
   state.currentLang = savedLang;
+  state.currentTheme = localStorage.getItem('theme_preference') || 'dark';
 
   lucide.createIcons();
   setupEventListeners();
+  setTheme(state.currentTheme);
   initOverviewMap();
   applyTranslations(state.currentLang);
   loadData();
   setupSSE();
   startCountdown();
 });
+
+// Test / audit helpers
+window.playCriticalEmergencyAlarm = playCriticalEmergencyAlarm;
+window.setTheme = setTheme;
+window.outbreakState = state;

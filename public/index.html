@@ -141,6 +141,22 @@
           <button id="langBtnPt" class="px-2 py-0.5 rounded text-white/50 hover:text-white" data-lang="pt">PT</button>
         </div>
 
+        <!-- Theme Selector (Dark / High Contrast / Light) -->
+        <div class="flex items-center bg-white/[0.04] rounded border border-white/[0.08] p-0.5 text-[10px] font-mono" id="themeSelectorGroup" title="Theme Selector">
+          <button id="themeBtnDark" class="px-2 py-0.5 rounded flex items-center gap-1 transition bg-white/10 text-white font-bold" data-theme-val="dark" title="Dark Theme">
+            <i data-lucide="moon" class="w-3 h-3"></i>
+            <span class="hidden md:inline" data-i18n="themeDark">Dark</span>
+          </button>
+          <button id="themeBtnContrast" class="px-2 py-0.5 rounded flex items-center gap-1 transition text-white/50 hover:text-white" data-theme-val="high-contrast" title="High Contrast Dark">
+            <i data-lucide="contrast" class="w-3 h-3"></i>
+            <span class="hidden md:inline" data-i18n="themeContrast">Contrast</span>
+          </button>
+          <button id="themeBtnLight" class="px-2 py-0.5 rounded flex items-center gap-1 transition text-white/50 hover:text-white" data-theme-val="light" title="Light Theme">
+            <i data-lucide="sun" class="w-3 h-3"></i>
+            <span class="hidden md:inline" data-i18n="themeLight">Light</span>
+          </button>
+        </div>
+
         <!-- Audio Alert Toggle -->
         <button id="toggleAudioBtn" title="Toggle audio alert"
           class="p-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white border border-white/[0.08] transition">
@@ -230,11 +246,11 @@
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 pt-2.5 mt-2.5 border-t border-white/[0.06] text-xs">
           <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
             <span class="text-white/50 text-[11px]" data-i18n="threatSecTrans">Secondary transmission:</span>
-            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaSecTrans">None</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaSecTrans" data-i18n="criteriaSecTransVal">None</span>
           </div>
           <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
             <span class="text-white/50 text-[11px]" data-i18n="threatExtSpread">Confirmed external spread:</span>
-            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaExtSpread">None</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaExtSpread" data-i18n="criteriaExtSpreadVal">None</span>
           </div>
           <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
             <span class="text-white/50 text-[11px]" data-i18n="threatContInfect">Contacts infected:</span>
@@ -242,11 +258,11 @@
           </div>
           <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
             <span class="text-white/50 text-[11px]" data-i18n="threatGeoExpand">Geographic expansion:</span>
-            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaGeoExpand">None</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaGeoExpand" data-i18n="criteriaGeoExpandVal">None</span>
           </div>
           <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
             <span class="text-white/50 text-[11px]" data-i18n="threatQuarantine">Quarantine:</span>
-            <span class="font-bold text-[#D29922] font-mono text-[11px]" id="criteriaQuarantine">Active</span>
+            <span class="font-bold text-[#D29922] font-mono text-[11px]" id="criteriaQuarantine" data-i18n="criteriaQuarantineVal">Active</span>
           </div>
         </div>
       </section>
@@ -381,19 +397,19 @@
             <div class="grid grid-cols-2 gap-2 text-xs">
               <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
                 <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoLocalSpread">Local spread</div>
-                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusLocal">Contained</div>
+                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusLocal" data-i18n="geoStatusLocalVal">Contained</div>
               </div>
               <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
                 <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoRussia">Russia</div>
-                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusRussia">Monitoring</div>
+                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusRussia" data-i18n="geoStatusRussiaVal">Monitoring</div>
               </div>
               <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
                 <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoIntlSpread">International spread</div>
-                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusIntl">None detected</div>
+                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusIntl" data-i18n="geoStatusIntlVal">None detected</div>
               </div>
               <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
                 <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoBorders">Borders</div>
-                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusBorders">Screening / Monitoring</div>
+                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusBorders" data-i18n="geoStatusBordersVal">Screening / Monitoring</div>
               </div>
             </div>
           </div>
@@ -413,7 +429,7 @@
             <div class="space-y-2 text-xs">
               <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
                 <span class="text-white/60" data-i18n="riskHumanSpread">Human transmission</span>
-                <span class="font-bold text-[#2EA043] font-mono" id="riskHumanSpreadVal">None</span>
+                <span class="font-bold text-[#2EA043] font-mono" id="riskHumanSpreadVal" data-i18n="riskHumanSpreadVal">None</span>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
                 <span class="text-white/60" data-i18n="riskContactInfect">Contact infections</span>
@@ -421,15 +437,15 @@
               </div>
               <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
                 <span class="text-white/60" data-i18n="riskGeoExpansion">Geographic spread</span>
-                <span class="font-bold text-[#2EA043] font-mono" id="riskGeoExpansionVal">None</span>
+                <span class="font-bold text-[#2EA043] font-mono" id="riskGeoExpansionVal" data-i18n="riskGeoExpansionVal">None</span>
               </div>
               <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
                 <span class="text-white/60" data-i18n="riskBordersStatus">Borders</span>
-                <span class="font-bold text-[#D29922] font-mono" id="riskBordersVal">Monitoring</span>
+                <span class="font-bold text-[#D29922] font-mono" id="riskBordersVal" data-i18n="riskBordersVal">Monitoring</span>
               </div>
               <div class="flex items-center justify-between py-1">
                 <span class="text-white/60" data-i18n="riskFacilityContain">Facility Biocontainment</span>
-                <span class="font-bold text-[#388BFD] font-mono" id="riskFacilityVal">BSL-3 Inspected</span>
+                <span class="font-bold text-[#388BFD] font-mono" id="riskFacilityVal" data-i18n="riskFacilityVal">BSL-3 Inspected</span>
               </div>
             </div>
           </div>

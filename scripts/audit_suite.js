@@ -402,39 +402,139 @@ async function runAudit() {
     }
     await client.captureScreenshot(path.join(rootDir, 'audit_result_5_sources.png'));
 
-    // 8.1. Teste de Alternador Bilíngue EN / PT
-    console.log('\n🌐 [TESTE 6.1/7] Testando Alternador de Idioma EN / PT...');
+    // 8.1. Teste de Alternador Bilíngue EN / PT e Tradução dos Níveis de Ameaça
+    console.log('\n🌐 [TESTE 6.1/9] Testando Alternador de Idioma EN / PT e Tradução de Níveis de Ameaça...');
     const langAudit = await client.eval(`
       (() => {
         const btnPt = document.getElementById('langBtnPt');
         const btnEn = document.getElementById('langBtnEn');
         if (!btnPt || !btnEn) return { error: 'Botões EN/PT não encontrados' };
 
+        // Voltar para Overview
+        document.getElementById('btnNavOverview')?.click();
+
         // Testar alternância para PT
         btnPt.click();
         const ptLang = document.documentElement.lang;
         const ptOverviewLabel = document.querySelector('[data-i18n="navOverview"]')?.textContent;
         const ptThreatLabel = document.querySelector('[data-i18n="currentThreatTitle"]')?.textContent;
+        const ptBadge = document.getElementById('threatBadgeText')?.textContent;
+        const ptSteps = Array.from(document.querySelectorAll('.threat-step')).map(s => s.textContent.trim());
+        const ptWhatChanged = document.getElementById('whatChangedSummary')?.textContent;
+        const ptGeoLocal = document.getElementById('geoStatusLocal')?.textContent;
+        const ptGeoBorders = document.getElementById('geoStatusBorders')?.textContent;
+
+        const ptThreatOk = ptBadge === 'MODERADO' && ptSteps.includes('MODERADO') && ptSteps.includes('BAIXO') && ptSteps.includes('CRÍTICO');
 
         // Testar alternância de volta para EN
         btnEn.click();
         const enLang = document.documentElement.lang;
         const enOverviewLabel = document.querySelector('[data-i18n="navOverview"]')?.textContent;
         const enThreatLabel = document.querySelector('[data-i18n="currentThreatTitle"]')?.textContent;
+        const enBadge = document.getElementById('threatBadgeText')?.textContent;
 
         return {
           ptOk: ptLang === 'pt' && ptOverviewLabel.includes('PANORAMA') && ptThreatLabel.includes('AMEAÇA'),
-          enOk: enLang === 'en' && enOverviewLabel.includes('OVERVIEW') && enThreatLabel.includes('THREAT'),
+          ptThreatOk,
+          ptBadge,
+          ptSteps,
+          ptWhatChanged,
+          ptGeoLocal,
+          ptGeoBorders,
+          enOk: enLang === 'en' && enOverviewLabel.includes('OVERVIEW') && enThreatLabel.includes('THREAT') && enBadge === 'GUARDED',
           ptOverviewLabel,
           enOverviewLabel
         };
       })()
     `);
 
-    if (langAudit.ptOk && langAudit.enOk) {
-      auditResults.checks.push(`Alternador Bilíngue validado: PT ("${langAudit.ptOverviewLabel}") e EN ("${langAudit.enOverviewLabel}")`);
+    if (langAudit.ptOk && langAudit.ptThreatOk && langAudit.enOk) {
+      auditResults.checks.push(`Tradução PT dos Níveis de Ameaça validada (Badge: "${langAudit.ptBadge}", Steps: [${langAudit.ptSteps.join(', ')}], Status: ${langAudit.ptGeoLocal})`);
     } else {
-      auditResults.warnings.push(`Comportamento do seletor bilíngue: ${JSON.stringify(langAudit)}`);
+      auditResults.errors.push(`Falha na tradução de níveis de ameaça em PT: ${JSON.stringify(langAudit)}`);
+    }
+
+    // 8.2. Teste do Controle de Zoom no Mapa da Direita (Overview Map)
+    console.log('\n🔍 [TESTE 6.2/9] Testando Controle de Zoom no Mapa Overview (#overviewMapPreview)...');
+    const zoomAudit = await client.eval(`
+      (() => {
+        const previewMap = document.getElementById('overviewMapPreview');
+        if (!previewMap) return { error: 'overviewMapPreview não encontrado' };
+        const zoomControl = previewMap.querySelector('.leaflet-control-zoom');
+        const zoomIn = previewMap.querySelector('.leaflet-control-zoom-in');
+        const zoomOut = previewMap.querySelector('.leaflet-control-zoom-out');
+        return {
+          hasZoomControl: !!zoomControl,
+          hasZoomIn: !!zoomIn,
+          hasZoomOut: !!zoomOut
+        };
+      })()
+    `);
+
+    if (zoomAudit.hasZoomControl && zoomAudit.hasZoomIn && zoomAudit.hasZoomOut) {
+      auditResults.checks.push('Controle de zoom (+ / -) presente e ativo no mapa da direita da tela Overview (#overviewMapPreview)');
+    } else {
+      auditResults.errors.push(`Controle de zoom ausente no mapa da direita: ${JSON.stringify(zoomAudit)}`);
+    }
+
+    // 8.3. Teste do Alternador de Temas (Dark / High Contrast / Light)
+    console.log('\n🎨 [TESTE 6.3/9] Testando Alternador de Temas (Dark / Contrast / Light)...');
+    const themeAudit = await client.eval(`
+      (() => {
+        const btnDark = document.getElementById('themeBtnDark');
+        const btnContrast = document.getElementById('themeBtnContrast');
+        const btnLight = document.getElementById('themeBtnLight');
+
+        if (!btnDark || !btnContrast || !btnLight) {
+          return { error: 'Botões de tema não encontrados' };
+        }
+
+        // Testar High Contrast
+        btnContrast.click();
+        const contrastTheme = document.documentElement.getAttribute('data-theme');
+
+        // Testar Light
+        btnLight.click();
+        const lightTheme = document.documentElement.getAttribute('data-theme');
+
+        // Voltar para Dark
+        btnDark.click();
+        const darkTheme = document.documentElement.getAttribute('data-theme');
+
+        return {
+          contrastOk: contrastTheme === 'high-contrast',
+          lightOk: lightTheme === 'light',
+          darkOk: darkTheme === 'dark'
+        };
+      })()
+    `);
+
+    if (themeAudit.contrastOk && themeAudit.lightOk && themeAudit.darkOk) {
+      auditResults.checks.push('Alternador de 3 temas validado com sucesso (Dark, High Contrast e Light)');
+    } else {
+      auditResults.errors.push(`Falha no alternador de temas: ${JSON.stringify(themeAudit)}`);
+    }
+
+    // 8.4. Teste de Síntese do Alarme de Emergência Intenso
+    console.log('\n🚨 [TESTE 6.4/9] Testando Alarme de Emergência de Alta Intensidade...');
+    const alarmAudit = await client.eval(`
+      (() => {
+        try {
+          if (typeof window.playCriticalEmergencyAlarm === 'function') {
+            window.playCriticalEmergencyAlarm();
+            return { ok: true };
+          }
+          return { ok: false, error: 'playCriticalEmergencyAlarm não definida' };
+        } catch (e) {
+          return { ok: false, error: e.message };
+        }
+      })()
+    `);
+
+    if (alarmAudit.ok) {
+      auditResults.checks.push('Alarme de emergência intenso sintetizado com sucesso via Web Audio API (klaxon oscilador de situação de risco)');
+    } else {
+      auditResults.errors.push(`Falha no alarme de emergência: ${alarmAudit.error}`);
     }
 
     // 9. Auditoria Responsiva Mobile (390x844)
