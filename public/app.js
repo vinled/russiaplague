@@ -382,6 +382,28 @@ function renderOverviewThreatAndKPIs() {
   if (elCountries) elCountries.textContent = kpis.countriesAffected !== undefined ? kpis.countriesAffected : 1;
   if (elExternal) elExternal.textContent = kpis.externalCases !== undefined ? kpis.externalCases : 0;
 
+  // Geographic preview status
+  const geoStatusLocal = document.getElementById('geoStatusLocal');
+  const geoStatusRussia = document.getElementById('geoStatusRussia');
+  const geoStatusIntl = document.getElementById('geoStatusIntl');
+  const geoStatusBorders = document.getElementById('geoStatusBorders');
+  if (geoStatusLocal) geoStatusLocal.textContent = isEn ? 'Contained' : 'Contido';
+  if (geoStatusRussia) geoStatusRussia.textContent = isEn ? 'Monitoring' : 'Monitoramento';
+  if (geoStatusIntl) geoStatusIntl.textContent = isEn ? 'None detected' : 'Nenhuma detectada';
+  if (geoStatusBorders) geoStatusBorders.textContent = isEn ? 'Screening / Monitoring' : 'Triagem Ativa';
+
+  // Risk matrix indicators
+  const riskHuman = document.getElementById('riskHumanSpreadVal');
+  const riskContact = document.getElementById('riskContactInfectVal');
+  const riskGeo = document.getElementById('riskGeoExpansionVal');
+  const riskBorders = document.getElementById('riskBordersVal');
+  const riskFacility = document.getElementById('riskFacilityVal');
+  if (riskHuman) riskHuman.textContent = isEn ? (reasons.secondaryTransmission || 'None') : (reasons.secondaryTransmissionPt || 'Nenhuma');
+  if (riskContact) riskContact.textContent = reasons.contactsInfected !== undefined ? reasons.contactsInfected : 0;
+  if (riskGeo) riskGeo.textContent = isEn ? (reasons.geographicExpansion || 'None') : (reasons.geographicExpansionPt || 'Nenhuma');
+  if (riskBorders) riskBorders.textContent = isEn ? 'Monitoring' : 'Monitoramento';
+  if (riskFacility) riskFacility.textContent = isEn ? 'BSL-3 Inspected' : 'BSL-3 Inspecionado';
+
   // Significant Change Alert System (Req 25)
   const changeAlert = document.getElementById('significantChangeAlert');
   const changeTextEl = document.getElementById('significantChangeText');
@@ -871,7 +893,7 @@ function renderSourcesFeed() {
   // Source Filter (Req 15)
   if (state.sourcesSource !== 'all') {
     const srcQuery = state.sourcesSource.toLowerCase();
-    filtered = filtered.filter(item => item.source.toLowerCase().includes(srcQuery));
+    filtered = filtered.filter(item => item.source && item.source.toLowerCase().includes(srcQuery));
   }
 
   // Language Filter (Req 15)
@@ -883,9 +905,9 @@ function renderSourcesFeed() {
   if (state.sourcesSearch.trim()) {
     const q = state.sourcesSearch.toLowerCase().trim();
     filtered = filtered.filter(item =>
-      item.title.toLowerCase().includes(q) ||
+      (item.title && item.title.toLowerCase().includes(q)) ||
       (item.summary && item.summary.toLowerCase().includes(q)) ||
-      item.source.toLowerCase().includes(q)
+      (item.source && item.source.toLowerCase().includes(q))
     );
   }
 
