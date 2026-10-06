@@ -4,6 +4,7 @@ const path = require('path');
 const { fetchAllFeeds, getCachedNews, getLastFetchTime } = require('./services/rssService');
 const { fetchSocialFeed } = require('./services/socialService');
 const { generateHourlyBriefing, extractDynamicPatientMetrics } = require('./services/briefingService');
+const { fetchFlightSurveillance } = require('./services/flightService');
 const incidentData = require('./services/incidentData');
 
 const app = express();
@@ -114,6 +115,17 @@ app.get('/api/briefing', async (req, res) => {
     res.json(briefing);
   } catch (error) {
     console.error('Erro na rota /api/briefing:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// NOVO: Endpoint do Monitor de Voos e Rotas Aéreas (Hub de Irkutsk)
+app.get('/api/flights', async (req, res) => {
+  try {
+    const flightData = await fetchFlightSurveillance();
+    res.json(flightData);
+  } catch (error) {
+    console.error('Erro na rota /api/flights:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

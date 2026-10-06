@@ -133,9 +133,10 @@ function generateDynamicNlpBriefing(newsList) {
     }
   });
 
-  // Headline mais recente e de maior peso
-  const leadItem = pool[0] || newsList[0];
-  let headline = leadItem ? leadItem.title : "Vigilância Ativa no Foco de Irkutsk";
+  // Headline mais recente e de maior peso jornalístico
+  const priorityItems = pool.filter(item => item.severity === 'high' && !item.source.includes('Reddit'));
+  const leadItem = priorityItems[0] || pool.find(item => !item.source.includes('Reddit')) || pool[0] || newsList[0];
+  let headline = leadItem ? leadItem.title.replace(/\s+-\s+[A-Za-z0-9\s.,]+$/, '').trim() : "Vigilância Ativa no Foco de Irkutsk";
 
   // Montagem dinâmica dos 4 tópicos com fontes reais e fatos extraídos dos artigos reais
   const bullets = [];

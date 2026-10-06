@@ -13,6 +13,7 @@ const state = {
   activeMapStyle: localStorage.getItem('osm_map_style') || 'osm-standard',
   customApiKey: localStorage.getItem('osm_api_key') || '',
   briefing: null,
+  flights: null,
   chart: null,
   lastKnownFirstId: null
 };
@@ -521,23 +522,78 @@ function renderBriefing() {
   }
 }
 
+// Renderizar Monitor de Voos & Conexões Aéreas (IKT)
+function renderFlights() {
+  if (!state.flights) return;
+
+  const overheadBadge = document.getElementById('overheadAirspaceBadge');
+  const container = document.getElementById('flightsContainer');
+
+  if (overheadBadge && state.flights.liveAirspace) {
+    const count = state.flights.liveAirspace.activeTranspondersOverhead;
+    overheadBadge.textContent = count > 0 ? `OpenSky: ${count} no Raio` : 'OpenSky: Espaço Aéreo Calmo';
+  }
+
+  if (container && state.flights.scheduledRoutes) {
+    container.innerHTML = state.flights.scheduledRoutes.map(f => {
+      let statusColor = 'bg-[#30D158]/15 text-[#30D158] border-[#30D158]/30';
+      if (f.status.includes('Decolou') || f.status.includes('Em Rota')) {
+        statusColor = 'bg-[#0A84FF]/15 text-[#0A84FF] border-[#0A84FF]/30';
+      } else if (f.status.includes('Embarque') || f.status.includes('Portão')) {
+        statusColor = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border-[#FF9F0A]/30';
+      }
+
+      return `
+        <div class="news-row flex flex-col space-y-1.5 p-3">
+          <div class="flex items-center justify-between text-[11px]">
+            <div class="flex items-center space-x-2">
+              <span class="font-bold text-white/90">${f.flightNumber}</span>
+              <span class="text-white/40">•</span>
+              <span class="text-white/70 font-medium">${f.airline}</span>
+            </div>
+            <span class="pill-badge ${statusColor} text-[10px] font-semibold">
+              ${f.status}
+            </span>
+          </div>
+
+          <div class="flex items-center justify-between text-xs py-0.5">
+            <span class="text-white/90 font-medium">${f.origin} ✈️ ${f.destination}</span>
+            <span class="text-white/50 text-[11px]">${f.scheduledDeparture}</span>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[10px]">
+            <span class="text-white/40">${f.aircraft}</span>
+            <span class="text-[#0A84FF] font-medium flex items-center gap-1">
+              <i data-lucide="shield-check" class="w-3 h-3"></i>
+              ${f.healthStatus}
+            </span>
+          </div>
+        </div>
+      `;
+    }).join('');
+    lucide.createIcons();
+  }
+}
+
 // Carregar Dados das APIs
 async function loadData(forceRefresh = false) {
   const refreshIcon = document.getElementById('refreshIcon');
   if (refreshIcon) refreshIcon.classList.add('animate-spin');
 
   try {
-    const [newsRes, socialRes, incidentRes, briefingRes] = await Promise.all([
+    const [newsRes, socialRes, incidentRes, briefingRes, flightsRes] = await Promise.all([
       fetch(`/api/news${forceRefresh ? '?refresh=true' : ''}`),
       fetch('/api/social'),
       fetch('/api/incident'),
-      fetch('/api/briefing')
+      fetch('/api/briefing'),
+      fetch('/api/flights')
     ]);
 
     const newsData = await newsRes.json();
     const socialData = await socialRes.json();
     const incidentData = await incidentRes.json();
     const briefingData = await briefingRes.json();
+    const flightsData = await flightsRes.json();
 
     if (newsData.success) {
       if (state.news.length > 0 && newsData.data.length > 0) {
@@ -565,8 +621,13 @@ async function loadData(forceRefresh = false) {
       state.briefing = briefingData;
     }
 
+    if (flightsData && flightsData.success) {
+      state.flights = flightsData;
+    }
+
     updateMetrics();
     renderBriefing();
+    renderFlights();
     renderTicker();
     renderNewsFeed();
     renderSocialModule();

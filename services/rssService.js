@@ -27,7 +27,7 @@ const FEEDS = [
   },
   {
     name: "Reddit OSINT WorldNews",
-    url: 'https://www.reddit.com/r/worldnews/search.rss?q=Irkutsk+OR+plague+OR+"Russia+virus"&sort=new',
+    url: 'https://www.reddit.com/r/worldnews/search.rss?q=Irkutsk+OR+plague+OR+"Russia+virus"&restrict_sr=1&sort=new',
     category: "Comunidade OSINT / Reddit",
     priority: "medium"
   },
@@ -49,6 +49,15 @@ const FEEDS = [
     category: "Ciência & Epidemiologia",
     priority: "science"
   }
+];
+
+const RELEVANT_KEYWORDS = [
+  'irkutsk', 'plague', 'peste', 'yersinia', 'shipilova', 'rospotrebnadzor',
+  'shelekhov', 'siberia', 'sibéria', 'quarantine', 'quarentena', 'surto',
+  'outbreak', 'pneumonic', 'pneumônica', 'biolab', 'bactéria', 'bacteria',
+  'epidemic', 'epidemia', 'contágio', 'contagion', 'infection', 'infecção',
+  'pathogen', 'patógeno', 'disease', 'doença', 'sanitary', 'sanitária',
+  'bno news', 'health', 'saúde', 'who', 'oms'
 ];
 
 // Cache em memória
@@ -114,6 +123,12 @@ async function fetchAllFeeds() {
           seenTitles.add(normalizedTitle);
 
           const summary = cleanHtml(item.contentSnippet || item.content || item.summary || "");
+          const combined = (title + " " + summary).toLowerCase();
+          const isEpidemicRelated = RELEVANT_KEYWORDS.some(kw => combined.includes(kw));
+          if (!isEpidemicRelated) {
+            continue;
+          }
+
           const severity = determineSeverity(title, summary);
           const locationTags = extractLocationTags(title, summary);
           const pubDate = item.pubDate || item.isoDate || new Date().toISOString();
