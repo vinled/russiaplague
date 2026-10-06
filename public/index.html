@@ -363,32 +363,34 @@
     </section>
 
     <!-- COLUNA DA DIREITA: MAPA, TIKTOK, DOSSIÊ & FRONTEIRAS (5 colunas) -->
+    <section class="lg:col-span-5 flex flex-col space-y-3">
+      
       <!-- macOS Segmented Control Tabs -->
-      <div class="segmented-control w-full flex flex-wrap gap-1">
-        <button class="segmented-btn active flex-1 flex items-center justify-center gap-1.5" data-tab="tabMap">
+      <div class="segmented-control w-full grid grid-cols-5 gap-1 p-1">
+        <button class="segmented-btn active flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabMap">
           <i data-lucide="map" class="w-3.5 h-3.5"></i>
-          Mapa
+          <span>Mapa</span>
         </button>
-        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabFlights">
+        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabFlights">
           <i data-lucide="plane" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-          Voos (IKT)
+          <span>Voos</span>
         </button>
-        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabSocial">
+        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabSocial">
           <i data-lucide="smartphone" class="w-3.5 h-3.5 text-[#BF5AF2]"></i>
-          TikTok
+          <span>TikTok</span>
         </button>
-        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabDossier">
+        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabDossier">
           <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-          Dossiê
+          <span>Dossiê</span>
         </button>
-        <button class="segmented-btn flex-1 flex items-center justify-center gap-1.5" data-tab="tabSpread">
+        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabSpread">
           <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-          Fronteiras
+          <span>Fronteiras</span>
         </button>
       </div>
 
       <!-- ABA 1: MAPA GEOGRÁFICO INTERATIVO -->
-      <div id="tabMap" class="tab-content block apple-card p-3 flex flex-col">
+      <div id="tabMap" class="tab-content apple-card p-3 flex flex-col">
         <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.06]">
           <div class="flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>

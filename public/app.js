@@ -744,13 +744,11 @@ function setupEventListeners() {
       const targetTab = btn.getAttribute('data-tab');
       document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.add('hidden');
-        content.classList.remove('block');
       });
 
       const activeContent = document.getElementById(targetTab);
       if (activeContent) {
         activeContent.classList.remove('hidden');
-        activeContent.classList.add('block');
       }
 
       if (targetTab === 'tabMap' && state.map) {

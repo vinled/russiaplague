@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "audit": "powershell -ExecutionPolicy Bypass -File scripts/run_audit.ps1"
   },
   "keywords": [],
   "author": "",
