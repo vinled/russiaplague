@@ -1,24 +1,37 @@
 /* ==========================================================================
-   CUPERTINO / macOS & iOS MINIMALIST DASHBOARD DESIGN SYSTEM (v4.0.0)
+   OUTBREAK INTELLIGENCE · SITUATION ROOM DESIGN SYSTEM
+   Professional Global Epidemiological Intelligence / CTI Interface
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --apple-bg: #090a0f;
-  --apple-surface: rgba(22, 24, 34, 0.7);
-  --apple-surface-hover: rgba(30, 33, 48, 0.85);
-  --apple-border: rgba(255, 255, 255, 0.08);
-  --apple-border-focus: rgba(10, 132, 255, 0.5);
+  --oi-bg: #080B10;
+  --oi-bg-alt: #0B0E14;
+  --oi-surface: #0E1219;
+  --oi-surface-elevated: #131822;
+  --oi-surface-hover: #181E2B;
+  --oi-border: rgba(255, 255, 255, 0.07);
+  --oi-border-strong: rgba(255, 255, 255, 0.14);
+  --oi-border-active: rgba(56, 139, 253, 0.5);
+
+  /* Functional Accents */
+  --oi-text: #E6EDF3;
+  --oi-text-secondary: #8B949E;
+  --oi-text-muted: #6E7681;
   
-  /* Apple System Colors (Dark Mode) */
-  --system-blue: #0A84FF;
-  --system-red: #FF453A;
-  --system-orange: #FF9F0A;
-  --system-green: #30D158;
-  --system-purple: #BF5AF2;
-  --system-gray: #8E8E93;
-  --system-gray-dark: #1C1C1E;
+  --oi-blue: #388BFD;
+  --oi-blue-subtle: rgba(56, 139, 253, 0.12);
+  --oi-green: #2EA043;
+  --oi-green-subtle: rgba(46, 160, 67, 0.12);
+  --oi-amber: #D29922;
+  --oi-amber-subtle: rgba(210, 153, 34, 0.12);
+  --oi-red: #F85149;
+  --oi-red-subtle: rgba(248, 81, 73, 0.14);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
 }
 
 * {
@@ -26,185 +39,367 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
-  background-color: var(--apple-bg);
-  background-image: radial-gradient(ellipse at 50% -20%, rgba(10, 132, 255, 0.07), transparent 60%);
-  background-attachment: fixed;
-  color: #F5F5F7;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--oi-bg);
+  color: var(--oi-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
 }
 
 /* ==========================================================================
-   FROSTED GLASS / CUPERTINO SQUIRCLE CARDS
+   MINIMALIST PANELS & CONTAINERS (Reduced boxiness)
    ========================================================================== */
-.apple-card {
-  background: var(--apple-surface);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--apple-border);
-  border-radius: 18px;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+.intel-panel {
+  background: var(--oi-surface);
+  border: 1px solid var(--oi-border);
+  border-radius: var(--radius-lg);
+  transition: border-color 0.18s ease;
 }
 
-.apple-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+.intel-panel:hover {
+  border-color: var(--oi-border-strong);
 }
 
-/* Apple Pill Badges */
-.pill-badge {
+.intel-panel-elevated {
+  background: var(--oi-surface-elevated);
+  border: 1px solid var(--oi-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ==========================================================================
+   TOP NAVIGATION
+   ========================================================================== */
+.nav-tab-btn {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 14px;
+  color: var(--oi-text-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  background: transparent;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.2rem 0.65rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  gap: 6px;
 }
 
-/* macOS Segmented Control */
-.segmented-control {
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+.nav-tab-btn:hover {
+  color: var(--oi-text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-tab-btn.active {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   THREAT SCALE (HORIZONTAL INTELLIGENCE BAR)
+   ========================================================================== */
+.threat-scale-track {
+  display: flex;
+  width: 100%;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.3);
   padding: 3px;
-  display: inline-flex;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--oi-border);
 }
 
-.segmented-btn {
-  padding: 0.35rem 0.85rem;
-  border-radius: 9px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #8E8E93;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+.threat-step {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 6px 4px;
+  border-radius: var(--radius-sm);
+  color: var(--oi-text-muted);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.threat-step.active-guarded {
+  background: var(--oi-amber-subtle);
+  color: var(--oi-amber);
+  border-color: rgba(210, 153, 34, 0.4);
+  box-shadow: 0 0 12px rgba(210, 153, 34, 0.2);
+}
+
+.threat-step.active-low {
+  background: var(--oi-green-subtle);
+  color: var(--oi-green);
+  border-color: rgba(46, 160, 67, 0.4);
+}
+
+.threat-step.active-elevated {
+  background: rgba(240, 136, 62, 0.15);
+  color: #F0883E;
+  border-color: rgba(240, 136, 62, 0.4);
+}
+
+.threat-step.active-high {
+  background: rgba(248, 81, 73, 0.18);
+  color: #F85149;
+  border-color: rgba(248, 81, 73, 0.4);
+}
+
+.threat-step.active-critical {
+  background: #F85149;
+  color: #FFFFFF;
+  border-color: #F85149;
+  box-shadow: 0 0 16px rgba(248, 81, 73, 0.5);
+  animation: pulse-critical 2s infinite;
+}
+
+@keyframes pulse-critical {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ==========================================================================
+   KPI STRIP NUMBERS & LABELS
+   ========================================================================== */
+.kpi-cell {
+  padding: 12px 14px;
+  border-right: 1px solid var(--oi-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.kpi-cell:last-child {
+  border-right: none;
+}
+
+.kpi-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #FFFFFF;
+}
+
+.kpi-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--oi-text-secondary);
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   DISCRETE TAGS & BADGES (Clean, Monochromatic, Non-Rainbow)
+   ========================================================================== */
+.tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   border: 1px solid transparent;
 }
 
-.segmented-btn:hover {
-  color: #F5F5F7;
+.tag-confirmed {
+  background: var(--oi-green-subtle);
+  color: var(--oi-green);
+  border-color: rgba(46, 160, 67, 0.3);
 }
 
-.segmented-btn.active {
-  background: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  border-color: rgba(255, 255, 255, 0.1);
+.tag-official {
+  background: var(--oi-blue-subtle);
+  color: var(--oi-blue);
+  border-color: rgba(56, 139, 253, 0.3);
 }
 
-/* Filter Pills */
-.filter-pill {
-  padding: 0.35rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #8E8E93;
+.tag-reported {
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.18s ease;
+  color: var(--oi-text-secondary);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.filter-pill:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: #F5F5F7;
+.tag-unverified {
+  background: var(--oi-amber-subtle);
+  color: var(--oi-amber);
+  border-color: rgba(210, 153, 34, 0.3);
 }
 
-.filter-pill.active {
-  background: var(--system-blue);
+.tag-critical, .tag-disputed {
+  background: var(--oi-red-subtle);
+  color: var(--oi-red);
+  border-color: rgba(248, 81, 73, 0.35);
+}
+
+/* Trust Tiers */
+.tier-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--oi-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tier-pill.tier-1 {
+  color: var(--oi-blue);
+  border-color: rgba(56, 139, 253, 0.35);
+  background: rgba(56, 139, 253, 0.08);
+}
+
+.tier-pill.tier-2 {
+  color: #79C0FF;
+  border-color: rgba(121, 192, 255, 0.25);
+}
+
+.tier-pill.tier-3 {
+  color: var(--oi-text-secondary);
+}
+
+.tier-pill.tier-4 {
+  color: var(--oi-amber);
+  border-color: rgba(210, 153, 34, 0.25);
+}
+
+/* ==========================================================================
+   FILTER PILLS (SOURCES WIRE)
+   ========================================================================== */
+.intel-filter-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--oi-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--oi-border);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.intel-filter-pill:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--oi-text);
+}
+
+.intel-filter-pill.active {
+  background: var(--oi-blue);
   color: #FFFFFF;
-  border-color: var(--system-blue);
-  box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+  border-color: var(--oi-blue);
+  box-shadow: 0 1px 6px rgba(56, 139, 253, 0.3);
 }
 
-/* News Cards */
-.news-row {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 14px;
-  padding: 0.85rem 1rem;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+/* ==========================================================================
+   INTEL ROWS & FEED ITEMS
+   ========================================================================== */
+.intel-row {
+  border-bottom: 1px solid var(--oi-border);
+  padding: 10px 12px;
+  transition: background 0.12s ease;
 }
 
-.news-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-1px);
+.intel-row:last-child {
+  border-bottom: none;
 }
 
-/* Custom Minimal Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 9999px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+.intel-row:hover {
+  background: var(--oi-surface-hover);
 }
 
-/* Marquee News Bar */
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-100% - var(--gap, 2rem))); }
-}
-
-.animate-marquee {
-  animation: marquee var(--duration, 45s) linear infinite;
-}
-
-/* Minimal Pulse Markers */
-.pulse-indicator {
-  position: relative;
-  display: inline-flex;
-  width: 8px;
-  height: 8px;
-}
-
-.pulse-indicator::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
+/* ==========================================================================
+   DOT INDICATORS
+   ========================================================================== */
+.status-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: inherit;
-  opacity: 0.4;
-  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  display: inline-block;
 }
 
-@keyframes ping {
-  75%, 100% {
-    transform: scale(2.2);
-    opacity: 0;
-  }
+.status-dot-green {
+  background: var(--oi-green);
+  box-shadow: 0 0 6px rgba(46, 160, 67, 0.6);
 }
 
-/* Leaflet Map Cupertino Style */
+.status-dot-amber {
+  background: var(--oi-amber);
+  box-shadow: 0 0 6px rgba(210, 153, 34, 0.6);
+}
+
+.status-dot-red {
+  background: var(--oi-red);
+  box-shadow: 0 0 6px rgba(248, 81, 73, 0.8);
+}
+
+.status-dot-blue {
+  background: var(--oi-blue);
+}
+
+/* ==========================================================================
+   SCROLLBAR & UTILITIES
+   ========================================================================== */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+  background: #080B10 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
 .leaflet-popup-content-wrapper {
-  background: rgba(20, 22, 32, 0.9) !important;
-  backdrop-filter: blur(20px) !important;
-  color: #F5F5F7 !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 14px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  background: #0E1219 !important;
+  color: #E6EDF3 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7) !important;
+  padding: 4px !important;
 }
 
 .leaflet-popup-tip {
-  background: rgba(20, 22, 32, 0.9) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #0E1219 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-/* Traffic lights for macOS window feel */
-.window-dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
+.leaflet-control-zoom a {
+  background: #121721 !important;
+  color: #E6EDF3 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
-.window-dot-red { background: #FF5F56; }
-.window-dot-yellow { background: #FFBD2E; }
-.window-dot-green { background: #27C93F; }
+
+.leaflet-control-zoom a:hover {
+  background: #181E2B !important;
+}

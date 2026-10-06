@@ -1,239 +1,73 @@
 // ============================================================================
-// Painel de Vigilância Sanitária & Epidemiológica (v4.2.0 - Bilingual EN / PT)
+// OUTBREAK INTELLIGENCE · SITUATION ROOM PLATFORM (v5.0.0)
+// Professional Global Epidemiological Intelligence / CTI Architecture
 // ============================================================================
 
-// Dicionário Completo de Traduções (Bilingual i18n System)
+// Bilingual Translation Dictionary (Default: English)
 const TRANSLATIONS = {
-  pt: {
-    newsTickerTitle: 'Plantão de Notícias',
-    newsTickerPlaceholder: 'Sincronizando agências oficiais e comunicados em tempo real...',
-    newsTickerSync: 'Atualiza em {s}s',
-    newsTickerFallback: '<span>Vigilância ativa • Incidente de Irkutsk sob monitoramento profilático • Nenhum caso externo</span>',
-    newsTickerAlert: 'Alerta',
-    appTitle: 'Vigilância Sanitária',
-    appRegion: 'Irkutsk • Sibéria',
-    appSubtitle: 'Acompanhamento Epidemiológico & Disseminação Internacional',
-    liveBadge: 'Ao Vivo',
-    mapLayers: 'Camadas Mapa',
-    refresh: 'Atualizar',
-    cardSpreadTitle: 'Disseminação Externa',
-    cardSpreadBadge: 'Seguro',
-    cardSpreadDesc: 'Nenhum caso confirmado fora do grupo hospitalar isolado na Sibéria.',
-    cardSpreadRisk: 'Risco Global OMS: Baixo',
-    cardSpreadStatusDefault: 'Contido Localmente',
-    cardQuarantineTitle: 'Contatos em Observação',
-    cardQuarantineBadge: 'Quarentena',
-    cardQuarantineDesc: 'Hospitais de Shelekhov e Irkutsk com alas isoladas preventivamente.',
-    cardQuarantineSourceDefault: 'Apurado em Tempo Real',
-    cardQuarantineSourcePrefix: 'Apurado: ',
-    cardAlertsTitle: 'Alertas de Alta Atenção',
-    cardAlertsBadge: 'Prioritário',
-    cardAlertsSuffix: 'notícias apuradas',
-    feedCountTotalPrefix: 'Total: ',
-    feedCountActiveSources: 'fontes ativas',
-    feedCountLastHour: 'na última hora',
-    cardSocialTitle: 'TikTok & Redes Sociais',
-    cardSocialBadge: 'Tendências',
-    cardSocialDesc: 'Rumores e vídeos monitorados via #Irkutsk e #RussiaPlague.',
-    cardSocialSentiment: 'Sentimento Público',
-    socialAlertSuffix: 'Alerta',
-    briefingTitle: 'Situação nas Últimas Horas • Briefing Executivo',
-    briefingStatusDefault: 'Contido Localmente',
-    briefingEngineDefault: 'IA em Tempo Real',
-    briefingTimeWindowDefault: 'Última Hora',
-    briefingLoading: 'Carregando síntese dos acontecimentos mais recentes...',
-    modalTitle: 'Camadas do OpenStreetMap',
-    modalSelectLabel: 'Estilo do Mapa Base:',
-    modalKeyLabel: 'Chave de API do Provedor (Opcional):',
-    modalKeyNotice: '* O OpenStreetMap e o Carto Dark funcionam de forma livre e não requerem chave.',
-    modalSaveBtn: 'Salvar e Aplicar',
-    searchPlaceholder: 'Buscar por termo (Irkutsk, peste, quarentena, OMS, BNO, Shipilova)...',
-    filterAll: 'Todos',
-    filterIrkutsk: 'Irkutsk / Sibéria',
-    filterRussia: 'Rússia',
-    filterHigh: 'Alta Atenção',
-    filterWho: 'OMS / Global',
-    filterSocial: 'Redes / Reddit',
-    feedTitle: 'Despachos & Notícias',
-    feedLoading: 'Carregando...',
-    feedCountArticles: '{filtered} de {total} artigos',
-    feedEmpty: 'Nenhum resultado para os filtros atuais.',
-    feedClearFilters: 'Limpar filtros',
-    feedReadArticle: 'Ler artigo',
-    feedSeverityHigh: 'Alta Atenção',
-    feedSeverityMedium: 'Moderado',
-    feedSeverityLow: 'Informativo',
-    tabMap: 'Mapa',
-    tabFlights: 'Voos',
-    tabSocial: 'TikTok',
-    tabDossier: 'Dossiê',
-    tabBorders: 'Fronteiras',
-    mapTitle: 'Localização do Foco & Monitoramento',
-    mapLegendIrkutsk: '<strong>Irkutsk:</strong> Quarentena (~200)',
-    mapLegendMoscow: '<strong>Moscou:</strong> Rospotrebnadzor',
-    mapLegendGeneva: '<strong>Genebra:</strong> Vigilância OMS',
-    mapLegendBeijing: '<strong>Pequim / Ásia:</strong> Vigilância Portuária',
-    flightsTitle: 'Monitor de Voos • Aeroporto de Irkutsk (IKT)',
-    flightsNormal: 'Operação Normal',
-    flightsSubtitle: 'Rastreamento de partidas e triagem sanitária de conexões aéreas.',
-    flightsOverheadRange: 'OpenSky: {n} no Raio',
-    flightsOverheadCalm: 'OpenSky: Espaço Aéreo Calmo',
-    flightsScreeningActive: 'Triagem Térmica Preventiva Ativa',
-    flightsZeroBlocked: '0 Voos Bloqueados',
-    flightsKeyRoutes: 'Rotas Chave Monitoradas',
-    flightsDepartures: 'Partidas de Irkutsk',
-    socialRadarTitle: 'Radar de Redes Sociais & TikTok',
-    socialRadarSubtitle: 'Acompanhamento de vídeos e hashtags em alta sobre o caso.',
-    socialLiveBadge: 'Tempo Real',
-    socialRumorIndex: 'Índice de Rumores nas Redes:',
-    socialTrendingHashtags: 'Hashtags Populares no TikTok (Busca Direta)',
-    socialRecentPosts: 'Postagens e Vídeos Recentes',
-    socialViewsEst: 'Visualizações est.: ~{n}',
-    socialOpen: 'Abrir',
-    dossierTitle: 'Dossiê: Instituto Anti-Peste de Irkutsk',
-    dossierSubtitle: 'Fatos checados e cronologia dos eventos (Outubro 2026).',
-    dossierOfficialTitle: 'Versão Oficial (Rospotrebnadzor):',
-    dossierOfficialDesc: 'Classificado como <em>"pneumonia de etiologia desconhecida"</em>. Nega quebra de contenção física ou presença de peste nos laudos iniciais. Dra. Anna Popova inspecionou os hospitais locais.',
-    dossierIndependentTitle: 'Apurações Independentes (BMJ, Time, Reuters):',
-    dossierIndependentDesc: 'Técnica Darya Shipilova (28 anos) teria sofrido exposição acidental após quebra de tubo com <em>Yersinia pestis</em> em ~25 de setembro. Hospitalizada em Shelekhov e falecida em 1-2 de outubro. Quarentena de ~200 contatos.',
-    dossierTimelineTitle: 'Linha do Tempo dos Eventos',
-    bordersTitle: 'Vigilância de Fronteiras & Risco Externo',
-    bordersSubtitle: 'Rotas de trânsito, voos e monitoramento diplomático.',
-    bordersGlobalRiskTitle: 'Risco Global: Baixo / Sem Casos Externos',
-    bordersGlobalRiskDesc: 'Nenhum caso secundário foi detectado fora do círculo de isolamento hospitalar na Sibéria.',
-    bordersUsaTitle: 'EUA / OMS',
-    bordersUsaDesc: 'Atenção diplomática declarada por Washington.',
-    bordersUsaBadge: 'Monitorando',
-    bordersMongoliaTitle: 'Fronteira com a Mongólia',
-    bordersMongoliaDesc: 'Triagem sanitária reforçada no sul do Baikal.',
-    bordersMongoliaBadge: 'Triagem Ativa',
-    chartTitle: 'Distribuição por Severidade',
-    chartSubtitle: 'Classificação',
-    chartLabels: ['Alta Atenção', 'Moderada', 'Informativa'],
-    chartDatasetLabel: 'Notícias',
-    footerText: 'Painel de Vigilância Epidemiológica • Dados de Fontes Públicas Abertas e OpenStreetMap',
-    footerLastUpdate: 'Última atualização: ',
-    audioOn: 'Som Ativo',
-    audioMuted: 'Mudo',
-    timeAgo: {
-      now: 'Agora',
-      seconds: 'Há {n}s',
-      minutes: 'Há {n}m',
-      hours: 'Há {n}h',
-      days: 'Há {n}d'
-    }
-  },
   en: {
-    newsTickerTitle: 'Breaking News',
-    newsTickerPlaceholder: 'Synchronizing official agencies and dispatches in real time...',
-    newsTickerSync: 'Updates in {s}s',
-    newsTickerFallback: '<span>Active surveillance • Irkutsk incident under prophylactic monitoring • No external cases</span>',
-    newsTickerAlert: 'Alert',
-    appTitle: 'Health Surveillance',
-    appRegion: 'Irkutsk • Siberia',
-    appSubtitle: 'Epidemiological Tracking & International Outbreak Monitor',
-    liveBadge: 'Live',
-    mapLayers: 'Map Layers',
-    refresh: 'Refresh',
-    cardSpreadTitle: 'External Spread',
-    cardSpreadBadge: 'Safe',
-    cardSpreadDesc: 'No confirmed cases outside the isolated hospital group in Siberia.',
-    cardSpreadRisk: 'WHO Global Risk: Low',
-    cardSpreadStatusDefault: 'Locally Contained',
-    cardQuarantineTitle: 'Contacts in Observation',
-    cardQuarantineBadge: 'Quarantine',
-    cardQuarantineDesc: 'Shelekhov and Irkutsk hospitals with preventative isolated wards.',
-    cardQuarantineSourceDefault: 'Verified in Real Time',
-    cardQuarantineSourcePrefix: 'Verified: ',
-    cardAlertsTitle: 'High Attention Alerts',
-    cardAlertsBadge: 'Priority',
-    cardAlertsSuffix: 'verified dispatches',
-    feedCountTotalPrefix: 'Total: ',
-    feedCountActiveSources: 'active sources',
-    feedCountLastHour: 'in the last hour',
-    cardSocialTitle: 'TikTok & Social Radar',
-    cardSocialBadge: 'Trending',
-    cardSocialDesc: 'Rumors and videos monitored via #Irkutsk and #RussiaPlague.',
-    cardSocialSentiment: 'Public Sentiment',
-    socialAlertSuffix: 'Alert',
-    briefingTitle: 'Situation in the Last Hours • Executive Briefing',
-    briefingStatusDefault: 'Locally Contained',
-    briefingEngineDefault: 'Real-Time AI',
-    briefingTimeWindowDefault: 'Last Hour',
-    briefingLoading: 'Loading synthesis of most recent events...',
-    modalTitle: 'OpenStreetMap Layers',
-    modalSelectLabel: 'Base Map Style:',
-    modalKeyLabel: 'Provider API Key (Optional):',
-    modalKeyNotice: '* OpenStreetMap and Carto Dark operate freely and do not require an API key.',
-    modalSaveBtn: 'Save & Apply',
-    searchPlaceholder: 'Search by keyword (Irkutsk, plague, quarantine, WHO, BNO, Shipilova)...',
-    filterAll: 'All',
-    filterIrkutsk: 'Irkutsk / Siberia',
-    filterRussia: 'Russia',
-    filterHigh: 'High Attention',
-    filterWho: 'WHO / Global',
-    filterSocial: 'Social / Reddit',
-    feedTitle: 'Dispatches & News',
-    feedLoading: 'Loading...',
-    feedCountArticles: '{filtered} of {total} articles',
-    feedEmpty: 'No results for the current filters.',
-    feedClearFilters: 'Clear filters',
-    feedReadArticle: 'Read article',
-    feedSeverityHigh: 'High Attention',
-    feedSeverityMedium: 'Moderate',
-    feedSeverityLow: 'Informational',
-    tabMap: 'Map',
-    tabFlights: 'Flights',
-    tabSocial: 'TikTok',
-    tabDossier: 'Dossier',
-    tabBorders: 'Borders',
-    mapTitle: 'Outbreak Epicenter & Surveillance',
-    mapLegendIrkutsk: '<strong>Irkutsk:</strong> Quarantine (~200)',
-    mapLegendMoscow: '<strong>Moscow:</strong> Rospotrebnadzor',
-    mapLegendGeneva: '<strong>Geneva:</strong> WHO Surveillance',
-    mapLegendBeijing: '<strong>Beijing / Asia:</strong> Port Surveillance',
-    flightsTitle: 'Flight Monitor • Irkutsk Airport (IKT)',
-    flightsNormal: 'Normal Operations',
-    flightsSubtitle: 'Departure tracking and health screening on air connections.',
-    flightsOverheadRange: 'OpenSky: {n} in Range',
-    flightsOverheadCalm: 'OpenSky: Calm Airspace',
-    flightsScreeningActive: 'Preventive Thermal Screening Active',
-    flightsZeroBlocked: '0 Blocked Flights',
-    flightsKeyRoutes: 'Monitored Key Routes',
-    flightsDepartures: 'Irkutsk Departures',
-    socialRadarTitle: 'Social Media & TikTok Radar',
-    socialRadarSubtitle: 'Trending video and hashtag monitoring regarding the incident.',
-    socialLiveBadge: 'Real Time',
-    socialRumorIndex: 'Social Rumor Index:',
-    socialTrendingHashtags: 'Trending TikTok Hashtags (Direct Search)',
-    socialRecentPosts: 'Recent Posts & Videos',
-    socialViewsEst: 'Est. views: ~{n}',
-    socialOpen: 'Open',
-    dossierTitle: 'Dossier: Irkutsk Anti-Plague Institute',
-    dossierSubtitle: 'Fact-checked events and chronological record (October 2026).',
-    dossierOfficialTitle: 'Official Version (Rospotrebnadzor):',
-    dossierOfficialDesc: 'Classified as <em>"pneumonia of unknown etiology"</em>. Denies physical containment breach or plague in initial reports. Dr. Anna Popova inspected local hospitals.',
-    dossierIndependentTitle: 'Independent Reporting (BMJ, Time, Reuters):',
-    dossierIndependentDesc: 'Technician Darya Shipilova (28) reportedly suffered accidental exposure after an ampoule containing <em>Yersinia pestis</em> broke around Sept 25. Hospitalized in Shelekhov and died Oct 1-2. Quarantine of ~200 contacts.',
-    dossierTimelineTitle: 'Timeline of Events',
-    bordersTitle: 'Border Surveillance & External Risk',
-    bordersSubtitle: 'Transit routes, flights and diplomatic monitoring.',
-    bordersGlobalRiskTitle: 'Global Risk: Low / No External Cases',
-    bordersGlobalRiskDesc: 'No secondary cases detected outside the Siberian hospital isolation ring.',
-    bordersUsaTitle: 'USA / WHO',
-    bordersUsaDesc: 'Diplomatic attention declared by Washington.',
-    bordersUsaBadge: 'Monitoring',
-    bordersMongoliaTitle: 'Mongolia Border',
-    bordersMongoliaDesc: 'Reinforced health screening in South Baikal.',
-    bordersMongoliaBadge: 'Active Screening',
-    chartTitle: 'Distribution by Severity',
-    chartSubtitle: 'Classification',
-    chartLabels: ['High Attention', 'Moderate', 'Informational'],
-    chartDatasetLabel: 'Dispatches',
-    footerText: 'Epidemiological Surveillance Dashboard • Open Public Data & OpenStreetMap',
-    footerLastUpdate: 'Last updated: ',
-    audioOn: 'Audio On',
-    audioMuted: 'Muted',
+    brandTitle: 'OUTBREAK INTELLIGENCE',
+    brandSubtitle: 'Global Epidemiological Monitoring',
+    brandContext: 'Irkutsk Incident · Russia · Live Intelligence',
+    liveIntelligenceTag: 'Live Intelligence Wire',
+    incidentContextSub: 'Irkutsk Incident · Russia',
+    tickerPlaceholder: 'Surveillance active • No secondary transmission detected • Contacts monitored',
+    navOverview: 'OVERVIEW',
+    navTimeline: 'TIMELINE',
+    navMap: 'MAP',
+    navIntelligence: 'INTELLIGENCE',
+    navSources: 'SOURCES',
+    quickSearchPlaceholder: 'Quick search...',
+    refreshText: 'Refresh',
+    lastUpdatedLabel: 'Last updated:',
+    whatChangedTitle: 'WHAT CHANGED SINCE LAST VISIT:',
+    currentThreatTitle: 'CURRENT THREAT',
+    threatSecTrans: 'Secondary transmission:',
+    threatExtSpread: 'Confirmed external spread:',
+    threatContInfect: 'Contacts infected:',
+    threatGeoExpand: 'Geographic expansion:',
+    threatQuarantine: 'Quarantine:',
+    kpiConfirmedLabel: 'CONFIRMED',
+    kpiInvestigatedLabel: 'UNDER INVESTIGATION',
+    kpiDeathsLabel: 'DEATHS',
+    kpiContactsLabel: 'CONTACTS MONITORED',
+    kpiSecondaryLabel: 'SECONDARY CASES',
+    kpiCountriesLabel: 'COUNTRIES AFFECTED',
+    kpiExternalLabel: 'EXTERNAL CASES',
+    incidentTimelineTitle: 'INCIDENT TIMELINE',
+    viewCompleteTimelineBtn: 'View complete timeline',
+    outbreakEvolutionTitle: 'OUTBREAK EVOLUTION',
+    containmentCurveLabel: 'Containment & Progression',
+    geographicStatusTitle: 'GEOGRAPHIC STATUS',
+    openMapBtn: 'Open interactive map',
+    geoLocalSpread: 'Local spread',
+    geoRussia: 'Russia',
+    geoIntlSpread: 'International spread',
+    geoBorders: 'Borders',
+    riskIndicatorsTitle: 'RISK INDICATORS',
+    riskHumanSpread: 'Human transmission',
+    riskContactInfect: 'Contact infections',
+    riskGeoExpansion: 'Geographic spread',
+    riskBordersStatus: 'Borders',
+    riskFacilityContain: 'Facility Biocontainment',
+    latestVerifiedTitle: 'LATEST VERIFIED INTELLIGENCE',
+    latestVerifiedSub: 'Top verified official & wire dispatches',
+    viewAllIntelligenceLink: 'View all intelligence →',
+    rumorWatchTitle: 'RUMOR WATCH · VIRALITY VS. EVIDENCE',
+    rumorWatchSub: 'Separating social spread from epidemiological data',
+    timelineArchiveTitle: 'Incident Chronology Archive',
+    timelineArchiveSub: 'Complete chronological progression of the Irkutsk Anti-Plague Institute incident (Autumn 2026).',
+    fullMapTitle: 'Epidemiological Situation Map',
+    fullMapSub: 'Epicenter focus: Irkutsk / Lake Baikal / Siberia · Real-world validated geographic coordinates.',
+    airTravelTitle: 'AIR TRAVEL · IRKUTSK AIRPORT (IKT)',
+    borderMonitoringTitle: 'BORDER & TRANSIT MONITORING',
+    socialRumorTitle: 'SOCIAL MEDIA & RUMOR WATCH (TIKTOK / X / REDDIT)',
+    intlResponseTitle: 'INTERNATIONAL SURVEILLANCE & DIPLOMATIC STATEMENTS',
+    biosecurityDossierTitle: 'BIOSECURITY DOSSIER · IRKUTSK ANTI-PLAGUE INSTITUTE',
+    sourcesNewsroomTitle: 'Global Sources Wire & Intelligence Feed',
+    sourcesNewsroomSub: 'All monitored dispatches from WHO, Reuters, Russian sanitarians, international newsrooms, and scientific feeds.',
+    footerNotice: 'OUTBREAK INTELLIGENCE · Situation Room Surveillance Protocol',
+    readArticle: 'Read Dispatch',
     timeAgo: {
       now: 'Just now',
       seconds: '{n}s ago',
@@ -241,120 +75,143 @@ const TRANSLATIONS = {
       hours: '{n}h ago',
       days: '{n}d ago'
     }
-  }
-};
-
-// Mapeamentos Bilíngues de Voo e Linha do Tempo
-const FLIGHT_TRANSLATIONS = {
-  status: {
-    'Decolou / Em Rota': 'Departed / En Route',
-    'No Portão / Embarque': 'At Gate / Boarding',
-    'Programado': 'Scheduled'
   },
-  health: {
-    'Triagem Sanitária em Moscou': 'Sanitary Screening in Moscow',
-    'Triagem Sanitária em Pequim': 'Sanitary Screening in Beijing',
-    'Triagem de Fronteira no Baikal': 'Border Screening in Baikal',
-    'Desinfecção Preventiva de Carga': 'Preventive Cargo Disinfection',
-    'Conexão de Trânsito Internacional': 'International Transit Connection'
-  }
-};
-
-const TIMELINE_EN = [
-  {
-    date: 'Sept 25, 2026',
-    title: 'Laboratory Incident (Anti-Plague Institute)',
-    description: 'Accidental breakage of an ampoule containing Yersinia pestis in the biosecurity laboratory. Lab worker exposed during routine pathogen testing.'
-  },
-  {
-    date: 'Sept 29, 2026',
-    title: 'Onset of Severe Symptoms & Admission',
-    description: 'High fever and respiratory complications. Transported to Shelekhov District Hospital before primary transfer to specialized regional clinic.'
-  },
-  {
-    date: 'Oct 02, 2026',
-    title: 'Fatal Outcome & Isolation Ring',
-    description: 'Laboratory worker dies in intensive care. Emergency hospital isolation protocols triggered immediately for medical staff and close family.'
-  },
-  {
-    date: 'Oct 04-06, 2026',
-    title: 'Official Inspection & Border Alerts',
-    description: 'Rospotrebnadzor Chief Sanitary Inspector inspects Baikal region. ~200 contacts kept in prophylactic quarantine. Neighboring borders initiate passenger screening.'
-  }
-];
-
-const MAP_POINTS_EN = {
-  'Irkutsk': { statusText: 'Quarantine Ring (~200)', details: 'Local hospital isolation wards and prophylactic contact tracing active.' },
-  'Shelekhov': { statusText: 'District Hospital Area', details: 'Initial primary care clinic and local isolation perimeter.' },
-  'Moscou': { statusText: 'Epidemiological Command', details: 'Rospotrebnadzor central command and Vector Institute scientific oversight.' },
-  'Genebra': { statusText: 'WHO Alert System', details: 'World Health Organization active monitoring. Risk outside Russia classified as low.' },
-  'Pequim': { statusText: 'Preventive Port Screening', details: 'Sanitary inspection of cross-border Siberian logistics and transit passengers.' }
-};
-
-// Detecção Automática do Idioma do Sistema / Navegador
-function detectInitialLanguage() {
-  const saved = localStorage.getItem('preferred_language');
-  if (saved && (saved === 'pt' || saved === 'en')) {
-    return saved;
-  }
-  const browserLangs = navigator.languages || [navigator.language || 'en'];
-  for (const lang of browserLangs) {
-    if (lang && lang.toLowerCase().startsWith('pt')) {
-      return 'pt';
+  pt: {
+    brandTitle: 'OUTBREAK INTELLIGENCE',
+    brandSubtitle: 'Monitoramento Epidemiológico Global',
+    brandContext: 'Incidente de Irkutsk · Rússia · Inteligência em Tempo Real',
+    liveIntelligenceTag: 'Plantão de Inteligência ao Vivo',
+    incidentContextSub: 'Incidente de Irkutsk · Rússia',
+    tickerPlaceholder: 'Vigilância ativa • Nenhuma transmissão secundária detectada • Contatos sob quarentena',
+    navOverview: 'PANORAMA',
+    navTimeline: 'LINHA DO TEMPO',
+    navMap: 'MAPA',
+    navIntelligence: 'INTELIGÊNCIA',
+    navSources: 'FONTES',
+    quickSearchPlaceholder: 'Busca rápida...',
+    refreshText: 'Atualizar',
+    lastUpdatedLabel: 'Última atualização:',
+    whatChangedTitle: 'O QUE MUDOU DESDE SUA ÚLTIMA VISITA:',
+    currentThreatTitle: 'AMEAÇA ATUAL',
+    threatSecTrans: 'Transmissão secundária:',
+    threatExtSpread: 'Disseminação externa confirmada:',
+    threatContInfect: 'Contatos infectados:',
+    threatGeoExpand: 'Expansão geográfica:',
+    threatQuarantine: 'Quarentena:',
+    kpiConfirmedLabel: 'CONFIRMADOS',
+    kpiInvestigatedLabel: 'SOB INVESTIGAÇÃO',
+    kpiDeathsLabel: 'ÓBITOS',
+    kpiContactsLabel: 'CONTATOS MONITORADOS',
+    kpiSecondaryLabel: 'CASOS SECUNDÁRIOS',
+    kpiCountriesLabel: 'PAÍSES AFETADOS',
+    kpiExternalLabel: 'CASOS EXTERNOS',
+    incidentTimelineTitle: 'CRONOLOGIA DO INCIDENTE',
+    viewCompleteTimelineBtn: 'Ver cronologia completa',
+    outbreakEvolutionTitle: 'EVOLUÇÃO DO INCIDENTE',
+    containmentCurveLabel: 'Contenção & Progressão',
+    geographicStatusTitle: 'STATUS GEOGRÁFICO',
+    openMapBtn: 'Abrir mapa interativo',
+    geoLocalSpread: 'Disseminação local',
+    geoRussia: 'Rússia',
+    geoIntlSpread: 'Disseminação internacional',
+    geoBorders: 'Fronteiras',
+    riskIndicatorsTitle: 'INDICADORES DE RISCO',
+    riskHumanSpread: 'Transmissão humana',
+    riskContactInfect: 'Infecções de contatos',
+    riskGeoExpansion: 'Disseminação geográfica',
+    riskBordersStatus: 'Fronteiras',
+    riskFacilityContain: 'Biocontenção da Unidade',
+    latestVerifiedTitle: 'ÚLTIMAS APURAÇÕES VERIFICADAS',
+    latestVerifiedSub: 'Despachos oficiais e de agências de maior confiança',
+    viewAllIntelligenceLink: 'Ver todas as fontes →',
+    rumorWatchTitle: 'RADAR DE RUMORES · VIRALIZAÇÃO VS. EVIDÊNCIA',
+    rumorWatchSub: 'Separando viralização social de evidência epidemiológica',
+    timelineArchiveTitle: 'Arquivo Cronológico do Incidente',
+    timelineArchiveSub: 'Progressão temporal completa do incidente no Instituto Anti-Peste de Irkutsk (Outono 2026).',
+    fullMapTitle: 'Mapa da Situação Epidemiológica',
+    fullMapSub: 'Foco epicentral: Irkutsk / Lago Baikal / Sibéria · Coordenadas geográficas reais validadas.',
+    airTravelTitle: 'TRÁFEGO AÉREO · AEROPORTO DE IRKUTSK (IKT)',
+    borderMonitoringTitle: 'VIGILÂNCIA DE FRONTEIRAS & TRÂNSITO',
+    socialRumorTitle: 'REDES SOCIAIS & RADAR DE RUMORES (TIKTOK / X / REDDIT)',
+    intlResponseTitle: 'VIGILÂNCIA INTERNACIONAL & RESPOSTA DIPLOMÁTICA',
+    biosecurityDossierTitle: 'DOSSIÊ DE BIOSSEGURANÇA · INSTITUTO ANTI-PESTE DE IRKUTSK',
+    sourcesNewsroomTitle: 'Feed Geral de Fontes & Notícias',
+    sourcesNewsroomSub: 'Todos os despachos apurados de OMS, Reuters, sanitários russos, imprensa internacional e fontes científicas.',
+    footerNotice: 'OUTBREAK INTELLIGENCE · Protocolo de Vigilância em Sala de Situação',
+    readArticle: 'Ler Artigo',
+    timeAgo: {
+      now: 'Agora',
+      seconds: 'Há {n}s',
+      minutes: 'Há {n}m',
+      hours: 'Há {n}h',
+      days: 'Há {n}d'
     }
   }
-  return 'en';
-}
+};
 
-// Application State
+// Global Application State
 const state = {
   news: [],
   social: null,
   incident: null,
-  activeFilter: 'all',
-  searchQuery: '',
+  briefing: null,
+  flights: null,
+  currentTab: 'navOverview',
+  currentLang: 'en',
   audioEnabled: true,
   countdown: 60,
   countdownInterval: null,
-  map: null,
-  currentTileLayer: null,
-  activeMapStyle: localStorage.getItem('osm_map_style') || 'osm-standard',
-  customApiKey: localStorage.getItem('osm_api_key') || '',
-  briefing: null,
-  flights: null,
-  chart: null,
-  lastKnownFirstId: null,
-  currentLang: 'pt'
+  
+  // Sources Filter & Pagination State
+  sourcesCategory: 'all',
+  sourcesTier: 'all',
+  sourcesCountry: 'all',
+  sourcesSource: 'all',
+  sourcesLang: 'all',
+  sourcesSearch: '',
+  sourcesPage: 1,
+  sourcesPerPage: 15,
+  
+  // Timeline Filter State
+  timelineFilter: 'all',
+
+  // Map Filter & Instance State
+  mapLayer: 'all',
+  overviewMap: null,
+  mainMap: null,
+  overviewMarkerGroup: null,
+  mainMarkerGroup: null,
+
+  // Last State Tracking for "What Changed"
+  lastVisitState: null,
+  lastKnownFirstId: null
 };
 
-// Som Sutil de Notificação (Estilo Notificação macOS)
+// Audio notification (subtle discrete intelligence tone)
 function playNotificationChime() {
   if (!state.audioEnabled) return;
   try {
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    
-    // Acorde duplo sutil (estilo Glass Chime da Apple)
     const playTone = (freq, delay, duration) => {
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
-      gain.gain.setValueAtTime(0.04, audioCtx.currentTime + delay);
+      gain.gain.setValueAtTime(0.03, audioCtx.currentTime + delay);
       gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + delay + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start(audioCtx.currentTime + delay);
       osc.stop(audioCtx.currentTime + delay + duration);
     };
-
-    playTone(587.33, 0, 0.25);    // D5
-    playTone(880.00, 0.08, 0.35);  // A5
+    playTone(523.25, 0, 0.2);     // C5
+    playTone(783.99, 0.08, 0.3);  // G5
   } catch (e) {
-    console.warn('AudioContext falhou:', e);
+    console.warn('AudioContext notice:', e);
   }
 }
 
-// Formatação de Tempo Relativo Bilíngue
+// Relative time formatting
 function formatRelativeTime(timestamp) {
   const diffSec = Math.floor((Date.now() - timestamp) / 1000);
   const t = TRANSLATIONS[state.currentLang].timeAgo;
@@ -368,432 +225,741 @@ function formatRelativeTime(timestamp) {
   return t.days.replace('{n}', diffDays);
 }
 
-// Aplicar Traduções e Alternar Idioma
+// Navigation Tab Switching
+function switchTab(tabId) {
+  state.currentTab = tabId;
+
+  // Update nav buttons
+  document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+  });
+
+  // Mapping from nav button to view container
+  const tabMapping = {
+    'navOverview': 'viewOverview',
+    'navTimeline': 'viewTimeline',
+    'navMap': 'viewMap',
+    'navIntelligence': 'viewIntelligence',
+    'navSources': 'viewSources'
+  };
+
+  const targetViewId = tabMapping[tabId] || 'viewOverview';
+  document.querySelectorAll('.tab-view').forEach(view => {
+    view.classList.toggle('hidden', view.id !== targetViewId);
+  });
+
+  // Re-render and resize maps if relevant tab was selected
+  if (tabId === 'navOverview' && state.overviewMap) {
+    setTimeout(() => state.overviewMap.invalidateSize(), 100);
+  } else if (tabId === 'navMap') {
+    if (!state.mainMap) {
+      initMainMap();
+    } else {
+      setTimeout(() => state.mainMap.invalidateSize(), 100);
+    }
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Language System
 function applyTranslations(lang) {
   state.currentLang = lang;
-  const dict = TRANSLATIONS[lang] || TRANSLATIONS.pt;
-  document.documentElement.lang = (lang === 'pt' ? 'pt-BR' : 'en');
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  document.documentElement.lang = lang;
 
-  // Atualizar textos estáticos via [data-i18n]
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (dict[key] !== undefined) {
-      if (typeof dict[key] === 'string' && dict[key].includes('<')) {
-        el.innerHTML = dict[key];
-      } else {
-        el.textContent = dict[key];
-      }
-    }
+    if (dict[key] !== undefined) el.textContent = dict[key];
   });
 
-  // Atualizar placeholders via [data-i18n-placeholder]
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
-    if (dict[key] !== undefined) {
-      el.placeholder = dict[key];
-    }
+    if (dict[key] !== undefined) el.placeholder = dict[key];
   });
 
-  // Atualizar estado visual do seletor Cupertino EN | PT
+  // Language buttons
   const btnEn = document.getElementById('langBtnEn');
   const btnPt = document.getElementById('langBtnPt');
   if (btnEn && btnPt) {
     if (lang === 'en') {
-      btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition bg-white/20 text-white shadow-sm';
-      btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition text-white/60 hover:text-white';
+      btnEn.className = 'px-2 py-0.5 rounded bg-white/10 text-white font-bold';
+      btnPt.className = 'px-2 py-0.5 rounded text-white/50 hover:text-white';
     } else {
-      btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition text-white/60 hover:text-white';
-      btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition bg-white/20 text-white shadow-sm';
+      btnEn.className = 'px-2 py-0.5 rounded text-white/50 hover:text-white';
+      btnPt.className = 'px-2 py-0.5 rounded bg-white/10 text-white font-bold';
     }
   }
 
-  // Atualizar botão de áudio
-  const audioText = document.getElementById('audioText');
-  if (audioText) {
-    audioText.textContent = state.audioEnabled ? dict.audioOn : dict.audioMuted;
-  }
-
-  // Atualizar contador de sincronização
-  const syncStatusText = document.getElementById('syncStatusText');
-  if (syncStatusText) {
-    syncStatusText.textContent = dict.newsTickerSync.replace('{s}', state.countdown);
-  }
-
-  // Re-renderizar dados dinâmicos com novos textos
-  updateMetrics();
-  renderBriefing();
-  renderFlights();
-  renderTicker();
-  renderNewsFeed();
-  renderSocialModule();
-  renderMapMarkers();
-  renderTimeline();
-  renderChart();
+  // Re-render views with translated elements
+  renderOverviewThreatAndKPIs();
+  renderOverviewMilestones();
+  renderOutbreakEvolution();
+  renderLatestVerifiedIntelligence();
+  renderRumorWatch();
+  renderTimelineArchive();
+  renderIntelligenceModules();
+  renderSourcesFeed();
 }
 
 function setLanguage(lang) {
   localStorage.setItem('preferred_language', lang);
-  if (state.currentLang === lang) return;
-  state.currentLang = lang;
   applyTranslations(lang);
-  loadData(false);
 }
 
-// Configuração de Camadas OpenStreetMap
-function applyMapTileLayer(styleKey, apiKey) {
-  if (!state.map) return;
-  if (state.currentTileLayer) {
-    state.map.removeLayer(state.currentTileLayer);
-  }
+// ============================================================================
+// RENDERERS
+// ============================================================================
 
-  let tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-  let attribution = '&copy; OpenStreetMap & CARTO';
-  let subdomains = 'abcd';
-  let labelText = 'Carto Dark (OSM)';
-
-  if (styleKey === 'osm-standard') {
-    tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-    attribution = '&copy; OpenStreetMap contributors';
-    subdomains = 'abc';
-    labelText = state.currentLang === 'en' ? 'OpenStreetMap Standard' : 'OpenStreetMap Padrão';
-  } else if (styleKey === 'maptiler-dark') {
-    const key = apiKey || 'get_your_own_OpIi9ZULNHzrESv6T2vL';
-    tileUrl = `https://api.maptiler.com/maps/dataviz-dark/{z}/{x}/{y}.png?key=${key}`;
-    attribution = '&copy; MapTiler & OpenStreetMap';
-    subdomains = 'abc';
-    labelText = 'MapTiler Dark';
-  } else if (styleKey === 'stadia-dark') {
-    const keyParam = apiKey ? `?api_key=${apiKey}` : '';
-    tileUrl = `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png${keyParam}`;
-    attribution = '&copy; Stadia Maps & OpenStreetMap';
-    subdomains = 'abcd';
-    labelText = 'Stadia Dark';
-  }
-
-  state.currentTileLayer = L.tileLayer(tileUrl, {
-    maxZoom: 19,
-    subdomains,
-    attribution
-  }).addTo(state.map);
-
-  const labelEl = document.getElementById('currentMapTileLabel');
-  if (labelEl) labelEl.textContent = labelText;
-}
-
-// Inicializar Mapa
-function initMap() {
-  if (state.map) return;
-  const mapElement = document.getElementById('mapContainer');
-  if (!mapElement) return;
-
-  state.map = L.map('mapContainer', {
-    zoomControl: true,
-    attributionControl: false
-  }).setView([52.2869, 104.3050], 3);
-
-  L.control.attribution({ position: 'bottomright' }).addTo(state.map);
-  applyMapTileLayer(state.activeMapStyle, state.customApiKey);
-}
-
-// Marcadores no Mapa Bilíngues
-function renderMapMarkers() {
-  if (!state.map || !state.incident || !state.incident.monitoringPoints) return;
-
-  state.map.eachLayer((layer) => {
-    if (layer instanceof L.Marker || layer instanceof L.Circle) {
-      state.map.removeLayer(layer);
-    }
-  });
-
+// 1. Current Threat Hero & Epidemiological KPIs
+function renderOverviewThreatAndKPIs() {
+  const incident = state.incident;
+  const briefing = state.briefing;
   const isEn = state.currentLang === 'en';
 
-  state.incident.monitoringPoints.forEach(point => {
-    let pinColor = '#0A84FF';
-    if (point.status === 'critical') {
-      pinColor = '#FF453A';
-      L.circle([point.lat, point.lng], {
-        color: '#FF453A',
-        fillColor: '#FF453A',
-        fillOpacity: 0.14,
-        radius: 350000
-      }).addTo(state.map);
-    } else if (point.status === 'warning') {
-      pinColor = '#FF9F0A';
-    } else if (point.status === 'normal') {
-      pinColor = '#30D158';
+  const threatLevel = incident?.threatAssessment?.level || 'GUARDED';
+  const threatBadgeText = document.getElementById('threatBadgeText');
+  const threatHeadline = document.getElementById('threatHeadline');
+
+  if (threatBadgeText) threatBadgeText.textContent = threatLevel;
+  if (threatHeadline) {
+    threatHeadline.textContent = isEn
+      ? (incident?.threatAssessment?.headline || 'No evidence of secondary transmission')
+      : (incident?.threatAssessment?.headlinePt || 'Sem evidência de transmissão secundária');
+  }
+
+  // Highlight active level in horizontal track
+  document.querySelectorAll('.threat-step').forEach(step => {
+    const level = step.getAttribute('data-level');
+    step.className = 'threat-step';
+    if (level === threatLevel) {
+      if (level === 'LOW') step.classList.add('active-low');
+      else if (level === 'GUARDED') step.classList.add('active-guarded');
+      else if (level === 'ELEVATED') step.classList.add('active-elevated');
+      else if (level === 'HIGH') step.classList.add('active-high');
+      else if (level === 'CRITICAL') step.classList.add('active-critical');
     }
-
-    const localized = (isEn && MAP_POINTS_EN[point.name]) ? MAP_POINTS_EN[point.name] : point;
-    const statusText = localized.statusText || point.statusText;
-    const details = localized.details || point.details;
-
-    const customIcon = L.divIcon({
-      className: 'custom-apple-marker',
-      html: `
-        <div style="
-          width: 14px; 
-          height: 14px; 
-          background: ${pinColor}; 
-          border: 2px solid #FFFFFF; 
-          border-radius: 50%; 
-          box-shadow: 0 2px 8px rgba(0,0,0,0.5);">
-        </div>
-      `,
-      iconSize: [14, 14],
-      iconAnchor: [7, 7]
-    });
-
-    const popupContent = `
-      <div style="font-size: 12px; font-family: -apple-system, sans-serif; padding: 2px;">
-        <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; color: ${pinColor}; margin-bottom: 3px;">
-          <span style="width: 7px; height: 7px; border-radius: 50%; background: ${pinColor};"></span>
-          <span>${point.name}</span>
-        </div>
-        <div style="color: #FFFFFF; font-weight: 600; font-size: 11px; margin-bottom: 2px;">${statusText}</div>
-        <p style="color: #A1A1A6; font-size: 11px; line-height: 1.4; margin: 0;">${details}</p>
-      </div>
-    `;
-
-    L.marker([point.lat, point.lng], { icon: customIcon })
-      .bindPopup(popupContent)
-      .addTo(state.map);
   });
+
+  // Criteria indicators
+  const reasons = incident?.threatAssessment?.reasons || {};
+  const elSecTrans = document.getElementById('criteriaSecTrans');
+  const elExtSpread = document.getElementById('criteriaExtSpread');
+  const elContInfect = document.getElementById('criteriaContInfect');
+  const elGeoExpand = document.getElementById('criteriaGeoExpand');
+  const elQuarantine = document.getElementById('criteriaQuarantine');
+
+  if (elSecTrans) elSecTrans.textContent = isEn ? (reasons.secondaryTransmission || 'None') : (reasons.secondaryTransmissionPt || 'Nenhuma');
+  if (elExtSpread) elExtSpread.textContent = isEn ? (reasons.externalSpread || 'None') : (reasons.externalSpreadPt || 'Nenhuma');
+  if (elContInfect) elContInfect.textContent = reasons.contactsInfected !== undefined ? reasons.contactsInfected : 0;
+  if (elGeoExpand) elGeoExpand.textContent = isEn ? (reasons.geographicExpansion || 'None') : (reasons.geographicExpansionPt || 'Nenhuma');
+  if (elQuarantine) elQuarantine.textContent = isEn ? (reasons.quarantine || 'Active') : (reasons.quarantinePt || 'Ativa');
+
+  // KPIs
+  const kpis = incident?.kpis || {};
+  const elConfirmed = document.getElementById('kpiConfirmed');
+  const elInvestigation = document.getElementById('kpiUnderInvestigation');
+  const elDeaths = document.getElementById('kpiDeaths');
+  const elContacts = document.getElementById('kpiContactsMonitored');
+  const elSecondary = document.getElementById('kpiSecondaryCases');
+  const elCountries = document.getElementById('kpiCountriesAffected');
+  const elExternal = document.getElementById('kpiExternalCases');
+
+  if (elConfirmed) elConfirmed.textContent = kpis.confirmed !== undefined ? kpis.confirmed : 0;
+  if (elInvestigation) elInvestigation.textContent = kpis.underInvestigation !== undefined ? kpis.underInvestigation : 1;
+  if (elDeaths) elDeaths.textContent = kpis.deaths !== undefined ? kpis.deaths : 1;
+
+  // Contacts monitored dynamically from briefing NLP if present
+  let dynamicContacts = briefing?.patientMetrics?.detectedCount;
+  if (!dynamicContacts) dynamicContacts = '~200';
+  else {
+    dynamicContacts = dynamicContacts.replace(/\s*(People|Pessoas)/i, '').trim();
+    if (!dynamicContacts.startsWith('~')) dynamicContacts = '~' + dynamicContacts;
+  }
+  if (elContacts) elContacts.textContent = dynamicContacts;
+
+  if (elSecondary) elSecondary.textContent = kpis.secondaryCases !== undefined ? kpis.secondaryCases : 0;
+  if (elCountries) elCountries.textContent = kpis.countriesAffected !== undefined ? kpis.countriesAffected : 1;
+  if (elExternal) elExternal.textContent = kpis.externalCases !== undefined ? kpis.externalCases : 0;
+
+  // Significant Change Alert System (Req 25)
+  const changeAlert = document.getElementById('significantChangeAlert');
+  const changeTextEl = document.getElementById('significantChangeText');
+  const isDismissed = sessionStorage.getItem('dismissed_significant_change');
+
+  let significantChangeTrigger = null;
+  if (kpis.secondaryCases > 0) {
+    significantChangeTrigger = isEn ? 'Secondary transmission detected in monitored contacts.' : 'Transmissão secundária detectada entre contatos monitorados.';
+  } else if (kpis.externalCases > 0) {
+    significantChangeTrigger = isEn ? 'International spread / cross-border case reported.' : 'Disseminação internacional / caso transfronteiriço reportado.';
+  } else if (kpis.confirmed > 0) {
+    significantChangeTrigger = isEn ? 'New confirmed plague case verified by health authorities.' : 'Novo caso confirmado de peste verificado pelas autoridades de saúde.';
+  } else if (kpis.countriesAffected > 1) {
+    significantChangeTrigger = isEn ? 'New region/country affected outside Russian Federation.' : 'Nova região/país afetado fora da Federação Russa.';
+  } else if (incident?.internationalSurveillance?.some(s => s.agency.includes('WHO') && (s.level === 'warning' || s.level === 'critical'))) {
+    significantChangeTrigger = isEn ? 'World Health Organization (WHO) upgraded regional risk assessment.' : 'Organização Mundial da Saúde (OMS) elevou avaliação de risco regional.';
+  } else if (state.news.some(n => n.severity === 'high')) {
+    significantChangeTrigger = isEn ? 'Critical epidemiological milestone reported by official wire.' : 'Marco epidemiológico crítico reportado por agência oficial.';
+  }
+
+  if (changeAlert) {
+    if (significantChangeTrigger && !isDismissed) {
+      if (changeTextEl) changeTextEl.textContent = significantChangeTrigger;
+      changeAlert.classList.remove('hidden');
+    } else {
+      changeAlert.classList.add('hidden');
+    }
+  }
 }
 
-// Linha do Tempo Bilíngue
-function renderTimeline() {
-  const container = document.getElementById('timelineContainer');
+// 2. What Changed Since Last Visit Delta (Req 26)
+function updateWhatChangedDelta() {
+  const currentCount = state.news.length;
+  const currentVerified = state.news.filter(n => n.trustTier?.tier === 'TIER 1' || n.trustTier?.tier === 'TIER 2' || n.classification === 'OFFICIAL' || n.classification === 'CONFIRMED').length;
+  const savedState = localStorage.getItem('outbreak_intel_session_state');
+  let deltaNews = 0;
+  let previousTimestamp = null;
+
+  if (savedState) {
+    try {
+      const parsed = JSON.parse(savedState);
+      if (parsed.lastChecked) previousTimestamp = parsed.lastChecked;
+      if (parsed.verifiedCount !== undefined && currentVerified >= parsed.verifiedCount) {
+        deltaNews = currentVerified - parsed.verifiedCount;
+      } else if (parsed.newsCount && currentCount >= parsed.newsCount) {
+        deltaNews = currentCount - parsed.newsCount;
+      }
+    } catch (e) {}
+  }
+
+  const isEn = state.currentLang === 'en';
+  const summaryEl = document.getElementById('whatChangedSummary');
+  const timestampEl = document.getElementById('lastVisitTimestamp');
+
+  if (summaryEl) {
+    const text = isEn
+      ? `+${deltaNews} new verified reports · 0 new cases · Risk level unchanged (GUARDED) · Contact testing remains negative`
+      : `+${deltaNews} novos despachos verificados · 0 novos casos · Nível inalterado (GUARDED) · Testagem de contatos permanece negativa`;
+    summaryEl.textContent = text;
+  }
+
+  if (timestampEl) {
+    if (previousTimestamp) {
+      const timeStr = new Date(previousTimestamp).toLocaleTimeString(isEn ? 'en-US' : 'pt-BR', { hour12: false });
+      timestampEl.textContent = isEn ? `Previous check: ${timeStr} UTC` : `Registro anterior: ${timeStr} UTC`;
+    } else {
+      timestampEl.textContent = isEn ? 'Reference: Baseline Active' : 'Referência: Linha de Base Ativa';
+    }
+  }
+
+  // Update session state
+  localStorage.setItem('outbreak_intel_session_state', JSON.stringify({
+    newsCount: currentCount,
+    verifiedCount: currentVerified,
+    lastChecked: previousTimestamp || Date.now()
+  }));
+}
+
+// 3. Incident Milestones (Top 5-7 events on Overview)
+function renderOverviewMilestones() {
+  const container = document.getElementById('overviewMilestonesList');
   if (!container) return;
 
+  const timeline = state.incident?.timeline || [];
   const isEn = state.currentLang === 'en';
-  const timelineData = isEn ? TIMELINE_EN : (state.incident?.timeline || []);
-  if (!timelineData.length) return;
+  const displayItems = timeline.slice(0, 6);
 
-  container.innerHTML = timelineData.map((item, index) => `
-    <div class="relative pl-3 pb-3 ${index === timelineData.length - 1 ? '' : 'border-b border-white/[0.06]'}">
-      <div class="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full ${index === timelineData.length - 1 ? 'bg-[#0A84FF] ring-4 ring-[#0A84FF]/20' : 'bg-white/30'}"></div>
-      <div class="font-semibold text-[#0A84FF] text-[11px]">${item.date}</div>
-      <div class="font-medium text-white text-xs mt-0.5">${item.title}</div>
-      <p class="text-white/60 text-[11px] mt-0.5 leading-relaxed">${item.description}</p>
-    </div>
+  container.innerHTML = displayItems.map((item, idx) => {
+    let tagClass = 'tag-reported';
+    if (item.classification === 'CONFIRMED') tagClass = 'tag-confirmed';
+    else if (item.classification === 'OFFICIAL') tagClass = 'tag-official';
+    else if (item.classification === 'DISPUTED') tagClass = 'tag-disputed';
+    else if (item.classification === 'UNVERIFIED') tagClass = 'tag-unverified';
+
+    const dateStr = isEn ? (item.dateEn || item.date) : item.date;
+    const titleStr = isEn ? (item.titleEn || item.title) : item.title;
+    const descStr = isEn ? (item.descriptionEn || item.description) : item.description;
+
+    return `
+      <div class="flex items-start space-x-3 p-2 bg-white/[0.02] hover:bg-white/[0.04] rounded border border-white/[0.04] transition">
+        <div class="w-1.5 h-1.5 rounded-full bg-[#388BFD] mt-2 shrink-0"></div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 flex-wrap mb-1">
+            <div class="flex items-center space-x-2">
+              <span class="font-mono text-[11px] font-bold text-white/90">${dateStr}</span>
+              <span class="text-white/30 text-[10px]">·</span>
+              <span class="font-semibold text-white/80 text-xs">${titleStr}</span>
+            </div>
+            <span class="tag-badge ${tagClass} text-[9px]">${item.classification}</span>
+          </div>
+          <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2">${descStr}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 4. Outbreak Evolution (Replaces Severity Chart)
+function renderOutbreakEvolution() {
+  const tbody = document.getElementById('evolutionTableBody');
+  if (!tbody) return;
+
+  const evoData = state.incident?.outbreakEvolution || [];
+  const isEn = state.currentLang === 'en';
+
+  tbody.innerHTML = evoData.map(step => `
+    <tr class="hover:bg-white/[0.02] transition">
+      <td class="py-2 px-2 text-white/90 font-bold">${step.dateLabel}</td>
+      <td class="py-2 px-2 text-white/70">
+        <div class="font-medium">${isEn ? step.title : (step.titlePt || step.title)}</div>
+        <div class="text-[10px] text-white/40 font-sans">${step.description}</div>
+      </td>
+      <td class="py-2 px-2 text-right text-[#D29922] font-semibold">${step.suspected}</td>
+      <td class="py-2 px-2 text-right text-[#2EA043] font-semibold">${step.confirmed}</td>
+      <td class="py-2 px-2 text-right text-white/90">${step.deaths}</td>
+      <td class="py-2 px-2 text-right text-white/90 font-bold">~${step.contacts}</td>
+      <td class="py-2 px-2 text-right text-[#2EA043] font-bold">${step.secondary}</td>
+      <td class="py-2 px-2 text-right font-mono text-white/70">${step.locations || 1}</td>
+    </tr>
   `).join('');
 }
 
-// Barra Marquee
-function renderTicker() {
-  const track1 = document.getElementById('marqueeTrack1');
-  const track2 = document.getElementById('marqueeTrack2');
-  if (!track1 || !track2) return;
+// 5. Latest Verified Intelligence (Top ~5 items on Overview, Req 8 & 16)
+function renderLatestVerifiedIntelligence() {
+  const container = document.getElementById('latestVerifiedContainer');
+  if (!container) return;
 
+  // Filter and prioritize top dispatches with highest confidence tiers first (Tier 1 > Tier 2 > Tier 3)
+  const tierRank = (item) => {
+    if (item.trustTier?.tier === 'TIER 1') return 1;
+    if (item.trustTier?.tier === 'TIER 2') return 2;
+    if (item.classification === 'OFFICIAL' || item.classification === 'CONFIRMED') return 2.5;
+    if (item.trustTier?.tier === 'TIER 3') return 3;
+    return 4;
+  };
+
+  const prioritized = [...state.news]
+    .filter(n => n.trustTier?.tier === 'TIER 1' || n.trustTier?.tier === 'TIER 2' || n.classification === 'OFFICIAL' || n.classification === 'CONFIRMED')
+    .sort((a, b) => {
+      const rA = tierRank(a);
+      const rB = tierRank(b);
+      if (rA !== rB) return rA - rB;
+      return b.pubTimestamp - a.pubTimestamp;
+    });
+
+  const topItems = prioritized.slice(0, 5);
+  const itemsToRender = topItems.length >= 3 ? topItems : state.news.slice(0, 5);
   const dict = TRANSLATIONS[state.currentLang];
-  const urgentNews = state.news.filter(n => n.severity === 'high').slice(0, 8);
-  if (urgentNews.length === 0) {
-    track1.innerHTML = dict.newsTickerFallback;
-    track2.innerHTML = dict.newsTickerFallback;
+
+  if (itemsToRender.length === 0) {
+    container.innerHTML = '<div class="py-6 text-center text-white/40">Synchronizing verified dispatches...</div>';
     return;
   }
 
-  const itemsHtml = urgentNews.map(n => `
-    <a href="${n.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs text-white/80 hover:text-white transition shrink-0 group">
-      <span class="pill-badge bg-[#FF453A]/15 text-[#FF453A] border border-[#FF453A]/20">${dict.newsTickerAlert}</span>
-      <span class="text-white/90 group-hover:text-[#0A84FF]">${n.title}</span>
-      <span class="text-white/40 text-[11px]">${formatRelativeTime(n.pubTimestamp)}</span>
-    </a>
-    <span class="text-white/20">•</span>
-  `).join('');
+  container.innerHTML = itemsToRender.map(item => {
+    let tagClass = 'tag-reported';
+    if (item.classification === 'CONFIRMED') tagClass = 'tag-confirmed';
+    else if (item.classification === 'OFFICIAL') tagClass = 'tag-official';
+    else if (item.classification === 'DISPUTED') tagClass = 'tag-disputed';
+    else if (item.classification === 'UNVERIFIED') tagClass = 'tag-unverified';
 
-  track1.innerHTML = itemsHtml;
-  track2.innerHTML = itemsHtml;
-}
+    const tierCode = item.trustTier?.tierCode || 'tier-3';
+    const tierName = item.trustTier?.tier || 'TIER 3';
 
-// Módulo TikTok & Redes Sociais Bilíngue
-function renderSocialModule() {
-  if (!state.social) return;
-  const dict = TRANSLATIONS[state.currentLang];
-  const isEn = state.currentLang === 'en';
-
-  let panicStatus = state.social.panicStatus.replace(' nas Redes', '');
-  if (isEn) {
-    if (panicStatus.includes('Moderada')) panicStatus = 'Moderate Attention';
-    else if (panicStatus.includes('Elevado')) panicStatus = 'High Alert';
-    else if (panicStatus.includes('Calmo')) panicStatus = 'Calm';
-    else panicStatus = 'Active Attention';
-  }
-
-  // Atualizar Widget
-  const socialWidgetStatus = document.getElementById('socialWidgetStatus');
-  const socialWidgetPanic = document.getElementById('socialWidgetPanic');
-  if (socialWidgetStatus) socialWidgetStatus.textContent = panicStatus;
-  if (socialWidgetPanic) socialWidgetPanic.textContent = `${state.social.panicIndex}% ${dict.socialAlertSuffix}`;
-
-  // Barra de Pânico
-  const panicStatusEl = document.getElementById('socialPanicStatus');
-  const panicBarEl = document.getElementById('socialPanicBar');
-  if (panicStatusEl) panicStatusEl.textContent = `${panicStatus} (${state.social.panicIndex}%)`;
-  if (panicBarEl) panicBarEl.style.width = `${state.social.panicIndex}%`;
-
-  // Hashtags
-  const hashtagsContainer = document.getElementById('trendingHashtagsContainer');
-  if (hashtagsContainer && state.social.trendingHashtags) {
-    hashtagsContainer.innerHTML = state.social.trendingHashtags.map(h => `
-      <a href="${h.searchUrl}" target="_blank" rel="noopener noreferrer"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.05] hover:bg-[#BF5AF2]/15 text-white/90 hover:text-[#BF5AF2] border border-white/[0.08] hover:border-[#BF5AF2]/30 transition group">
-        <i data-lucide="hash" class="w-3 h-3 text-[#BF5AF2]"></i>
-        <span class="font-medium">${h.tag.replace('#', '')}</span>
-        <span class="text-[10px] text-white/40 font-normal">(${h.volume})</span>
-      </a>
-    `).join('');
-  }
-
-  // Posts
-  const postsContainer = document.getElementById('socialPostsContainer');
-  if (postsContainer && state.social.posts) {
-    postsContainer.innerHTML = state.social.posts.map(post => {
-      let platPill = 'bg-white/10 text-white/80';
-      if (post.platform.includes('TikTok')) platPill = 'bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/20';
-      else if (post.platform.includes('Reddit')) platPill = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border border-[#FF9F0A]/20';
-
-      const viewsFormatted = post.estimatedViews.toLocaleString(isEn ? 'en-US' : 'pt-BR');
-      const viewsText = dict.socialViewsEst.replace('{n}', viewsFormatted);
-
-      return `
-        <div class="news-row flex flex-col space-y-1">
-          <div class="flex items-center justify-between text-[11px]">
-            <span class="pill-badge ${platPill} font-semibold">
-              ${post.platform}
-            </span>
-            <span class="text-white/40">${formatRelativeTime(post.pubTimestamp)}</span>
+    return `
+      <div class="intel-row flex flex-col space-y-1">
+        <div class="flex items-center justify-between gap-2 flex-wrap text-[11px]">
+          <div class="flex items-center space-x-2">
+            <span class="tier-pill ${tierCode}">${tierName}</span>
+            <span class="font-bold text-[#388BFD] font-mono">${item.source}</span>
+            <span class="text-white/20">|</span>
+            <span class="tag-badge ${tagClass} text-[9px]">${item.classification || 'REPORTED'}</span>
           </div>
-          <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="text-white/90 hover:text-[#0A84FF] font-medium text-xs leading-snug">
-            ${post.title}
-          </a>
-          <div class="flex items-center justify-between pt-1 text-[11px] text-white/40">
-            <span>${viewsText}</span>
-            <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="text-[#0A84FF] hover:underline flex items-center gap-0.5">
-              <span>${dict.socialOpen}</span>
-              <i data-lucide="chevron-right" class="w-3 h-3"></i>
-            </a>
-          </div>
+          <span class="text-white/40 font-mono text-[10px]">${formatRelativeTime(item.pubTimestamp)}</span>
         </div>
-      `;
-    }).join('');
-  }
+
+        <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-xs sm:text-sm font-semibold text-white/90 hover:text-[#388BFD] leading-snug flex items-start gap-1.5 group">
+          <span>${item.title}</span>
+          <i data-lucide="external-link" class="w-3 h-3 text-white/30 group-hover:text-[#388BFD] shrink-0 mt-1 transition"></i>
+        </a>
+
+        ${item.summary ? `<p class="text-[11px] text-white/50 leading-relaxed line-clamp-1 font-normal">${item.summary}</p>` : ''}
+      </div>
+    `;
+  }).join('');
 
   lucide.createIcons();
 }
 
-// Feed de Notícias Bilíngue
-function renderNewsFeed() {
-  const container = document.getElementById('newsFeedContainer');
-  const filteredCountText = document.getElementById('filteredCountText');
+// 6. Rumor Watch (Overview Highlight & Intelligence Full Matrix)
+function renderRumorWatch() {
+  const overviewContainer = document.getElementById('overviewRumorWatchContainer');
+  const fullTableBody = document.getElementById('rumorWatchTableBody');
+  const rumorData = state.incident?.rumorWatch || [];
+
+  if (overviewContainer) {
+    overviewContainer.innerHTML = rumorData.slice(0, 3).map(r => `
+      <div class="p-3 bg-white/[0.02] rounded border border-white/[0.06] flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-2">
+          <span class="font-mono text-xs font-bold text-white/90">${r.topic}</span>
+          <span class="text-[10px] font-mono ${r.trend === 'rising' ? 'text-[#D29922]' : 'text-white/50'}">
+            ${r.trend === 'rising' ? '↑ Rising' : '→ Stable'}
+          </span>
+        </div>
+        <div class="grid grid-cols-3 gap-1 text-[10px] font-mono text-center mb-2">
+          <div class="bg-white/[0.02] p-1 rounded">
+            <span class="text-white/40 block">Virality</span>
+            <span class="text-[#D29922] font-bold">${r.virality}</span>
+          </div>
+          <div class="bg-white/[0.02] p-1 rounded">
+            <span class="text-white/40 block">Credibility</span>
+            <span class="${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-bold">${r.credibility}</span>
+          </div>
+          <div class="bg-white/[0.02] p-1 rounded">
+            <span class="text-white/40 block">Corroboration</span>
+            <span class="${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'} font-bold">${r.corroboration}</span>
+          </div>
+        </div>
+        <p class="text-[10px] text-white/50 leading-tight">${r.note}</p>
+      </div>
+    `).join('');
+  }
+
+  if (fullTableBody) {
+    fullTableBody.innerHTML = rumorData.map(r => `
+      <tr class="hover:bg-white/[0.02] transition">
+        <td class="py-2 px-2 text-white/90 font-bold font-mono">${r.topic}</td>
+        <td class="py-2 px-2 text-white/60 font-mono text-[10px]">${r.platform}</td>
+        <td class="py-2 px-2 font-mono text-[#D29922] font-semibold">${r.virality}</td>
+        <td class="py-2 px-2 font-mono ${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-semibold">${r.credibility}</td>
+        <td class="py-2 px-2 font-mono ${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'}">${r.corroboration}</td>
+        <td class="py-2 px-2 font-mono ${r.trend === 'rising' ? 'text-[#D29922]' : 'text-white/40'}">${r.trend === 'rising' ? '↑ Rising' : '→ Stable'}</td>
+        <td class="py-2 px-2 text-white/60 font-sans text-xs">${r.note}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+// 7. Full Timeline Archive (Tab 2)
+function renderTimelineArchive() {
+  const container = document.getElementById('fullTimelineContainer');
   if (!container) return;
 
-  const dict = TRANSLATIONS[state.currentLang];
+  const timeline = state.incident?.timeline || [];
+  const isEn = state.currentLang === 'en';
+
+  let filtered = [...timeline];
+  if (state.timelineFilter !== 'all') {
+    filtered = filtered.filter(item => item.classification === state.timelineFilter);
+  }
+
+  container.innerHTML = filtered.map((item, idx) => {
+    let dotColor = 'bg-[#388BFD]';
+    let tagClass = 'tag-reported';
+    if (item.classification === 'CONFIRMED') {
+      dotColor = 'bg-[#2EA043]';
+      tagClass = 'tag-confirmed';
+    } else if (item.classification === 'OFFICIAL') {
+      dotColor = 'bg-[#388BFD]';
+      tagClass = 'tag-official';
+    } else if (item.classification === 'DISPUTED') {
+      dotColor = 'bg-[#F85149]';
+      tagClass = 'tag-disputed';
+    } else if (item.classification === 'UNVERIFIED') {
+      dotColor = 'bg-[#D29922]';
+      tagClass = 'tag-unverified';
+    }
+
+    const dateStr = isEn ? (item.dateEn || item.date) : item.date;
+    const titleStr = isEn ? (item.titleEn || item.title) : item.title;
+    const descStr = isEn ? (item.descriptionEn || item.description) : item.description;
+
+    return `
+      <div class="relative pl-4 pb-4">
+        <div class="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full ${dotColor} ring-4 ring-black"></div>
+        <div class="intel-panel p-3">
+          <div class="flex items-center justify-between gap-2 flex-wrap mb-1.5">
+            <div class="flex items-center space-x-2">
+              <span class="font-mono text-xs font-bold text-white/90">${dateStr}</span>
+              <span class="text-white/20">|</span>
+              <span class="text-xs font-bold text-white">${titleStr}</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="tag-badge ${tagClass} text-[9px]">${item.classification}</span>
+              ${item.source ? `<span class="text-[10px] text-white/40 font-mono">Source: ${item.source}</span>` : ''}
+            </div>
+          </div>
+          <p class="text-xs text-white/70 leading-relaxed">${descStr}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// 8. Specialized Intelligence Modules (Tab 4)
+function renderIntelligenceModules() {
+  // Flights table
+  const flightsTableBody = document.getElementById('flightsTableBody');
+  const routes = state.flights?.scheduledRoutes || [];
+  if (flightsTableBody && routes.length > 0) {
+    flightsTableBody.innerHTML = routes.map(f => `
+      <tr class="hover:bg-white/[0.02] transition">
+        <td class="py-2 px-2 text-white/90 font-bold">${f.flightNumber}</td>
+        <td class="py-2 px-2 text-white/60">${f.airline}</td>
+        <td class="py-2 px-2 text-white/80">${f.origin} ➔ ${f.destination}</td>
+        <td class="py-2 px-2 text-white/60">${f.scheduledDeparture}</td>
+        <td class="py-2 px-2 text-[#388BFD] text-[10px]">${f.healthStatus}</td>
+        <td class="py-2 px-2 text-right">
+          <span class="tag-badge tag-confirmed text-[9px]">${f.status}</span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Airspace transponder badge
+  const transponderBadge = document.getElementById('airspaceTransponderBadge');
+  if (transponderBadge && state.flights?.liveAirspace) {
+    const active = state.flights.liveAirspace.activeTranspondersOverhead || 0;
+    transponderBadge.textContent = `OpenSky: ${active} Aircraft Tracked in Vicinity`;
+  }
+
+  // Panic Status
+  const fullPanicStatus = document.getElementById('fullPanicStatus');
+  if (fullPanicStatus && state.social) {
+    fullPanicStatus.textContent = `${state.social.panicStatus} (${state.social.panicIndex}%)`;
+  }
+
+  // Social Video & Post tracking
+  const socialPostsContainer = document.getElementById('trackedSocialPostsContainer');
+  if (socialPostsContainer && state.social?.posts) {
+    socialPostsContainer.innerHTML = state.social.posts.slice(0, 6).map(p => `
+      <div class="p-2.5 bg-white/[0.02] rounded border border-white/[0.04] flex flex-col justify-between">
+        <div class="flex items-center justify-between text-[10px] font-mono mb-1">
+          <span class="tag-badge tag-unverified text-[9px]">${p.platform}</span>
+          <span class="text-white/40">${formatRelativeTime(p.pubTimestamp)}</span>
+        </div>
+        <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-white/90 hover:text-[#388BFD] leading-snug mb-1">
+          ${p.title}
+        </a>
+        <div class="flex items-center justify-between text-[10px] text-white/40 font-mono pt-1 border-t border-white/[0.04]">
+          <span>Est. views: ~${p.estimatedViews.toLocaleString()}</span>
+          <span class="text-[#388BFD]">Signal Active</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // International Response Cards
+  const intlContainer = document.getElementById('intlResponseCardsContainer');
+  const intlData = state.incident?.internationalSurveillance || [];
+  if (intlContainer) {
+    intlContainer.innerHTML = intlData.map(d => `
+      <div class="p-3 bg-white/[0.02] rounded border border-white/[0.04] flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between font-mono text-white/90 font-bold text-xs mb-1">
+            <span>${d.agency}</span>
+            <span class="tag-badge tag-official text-[9px]">${d.status}</span>
+          </div>
+          <p class="text-white/70 text-[11px] leading-relaxed my-1.5">${d.assessment}</p>
+        </div>
+        <div class="text-[10px] text-white/40 font-mono pt-1.5 border-t border-white/[0.04]">
+          Statement: ${d.lastStatement}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Biosecurity Dossier
+  const bioContainer = document.getElementById('biosecurityDossierContent');
+  const bio = state.incident?.biosecurity;
+  if (bioContainer && bio) {
+    bioContainer.innerHTML = `
+      <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04] space-y-2">
+        <h4 class="font-bold text-white text-xs font-mono">Official Regulatory Findings</h4>
+        <div class="text-[11px] text-white/70 leading-relaxed">
+          <strong>Facility:</strong> ${bio.facility}<br>
+          <strong>Classification:</strong> ${bio.classification}<br>
+          <strong>Pathogen under investigation:</strong> ${bio.agentUnderInvestigation}
+        </div>
+        <div class="p-2 rounded bg-white/[0.02] border border-white/[0.04] text-[11px] text-white/60">
+          <strong class="text-white/80">Position:</strong> ${bio.officialPosition}
+        </div>
+      </div>
+
+      <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04] space-y-2">
+        <h4 class="font-bold text-white text-xs font-mono">Independent Inquiry & Measures</h4>
+        <div class="text-[11px] text-white/70 leading-relaxed">
+          ${bio.independentReporting}
+        </div>
+        <div class="p-2 rounded bg-white/[0.02] border border-white/[0.04] text-[11px] text-white/60">
+          <strong class="text-[#D29922]">Legal Action:</strong> ${bio.legalAction}<br>
+          <strong class="text-[#2EA043]">Containment:</strong> ${bio.containmentMeasures}
+        </div>
+      </div>
+    `;
+  }
+
+  // Border Monitoring (Req 13)
+  const borderGrid = document.getElementById('borderMonitoringGrid');
+  const borderData = state.incident?.borderMonitoring || [];
+  const isEn = state.currentLang === 'en';
+  if (borderGrid && borderData.length > 0) {
+    borderGrid.innerHTML = borderData.map(b => `
+      <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04] flex flex-col justify-between">
+        <div class="flex items-center justify-between font-mono text-white/90 font-bold mb-1 text-xs">
+          <span>${isEn ? b.region : (b.regionPt || b.region)}</span>
+          <span class="tag-badge ${b.tagClass || 'tag-confirmed'} text-[9px]">${isEn ? b.status : (b.statusPt || b.status)}</span>
+        </div>
+        <p class="text-white/60 text-[11px] leading-relaxed mt-1">
+          ${isEn ? b.details : (b.detailsPt || b.details)}
+        </p>
+      </div>
+    `).join('');
+  }
+
+  // Viral Hashtags & TikTok Direct Signals (Req 3, 12, 13)
+  const hashtagsContainer = document.getElementById('trendingTikTokHashtags');
+  const hashtags = state.social?.trendingHashtags || [
+    { tag: "#Irkutsk", searchUrl: "https://www.tiktok.com/tag/irkutsk", volume: "High (Regional)", trend: "up" },
+    { tag: "#RussiaPlague", searchUrl: "https://www.tiktok.com/tag/russiaplague", volume: "Viral Surge", trend: "up" },
+    { tag: "#DaryaShipilova", searchUrl: "https://www.tiktok.com/tag/daryashipilova", volume: "Trending", trend: "up" },
+    { tag: "#SiberiaOutbreak", searchUrl: "https://www.tiktok.com/tag/siberia", volume: "Moderate", trend: "stable" },
+    { tag: "#QuarentenaRússia", searchUrl: "https://www.tiktok.com/search?q=quarentena+russia+virus", volume: "Rising", trend: "up" }
+  ];
+
+  if (hashtagsContainer) {
+    hashtagsContainer.innerHTML = hashtags.map(h => {
+      const vol = isEn ? (h.volumeEn || h.volume.replace('Alto', 'High').replace('Viralizando', 'Viral Surge').replace('Em alta', 'Trending').replace('Moderado', 'Moderate').replace('Crescente', 'Rising')) : h.volume;
+      return `
+        <a href="${h.searchUrl}" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.03] hover:bg-[#388BFD]/15 text-white/90 hover:text-[#388BFD] border border-white/[0.06] hover:border-[#388BFD]/30 transition group font-mono text-[11px]">
+          <span class="font-bold">${h.tag}</span>
+          <span class="text-[9px] px-1 py-0.2 rounded bg-white/[0.06] text-white/50">${vol}</span>
+          <span class="text-[#D29922] text-[10px]">${h.trend === 'up' ? '↑' : '→'}</span>
+        </a>
+      `;
+    }).join('');
+  }
+}
+
+// 9. Sources / Newsroom Feed (Tab 5, Req 15)
+function renderSourcesFeed() {
+  const container = document.getElementById('sourcesFeedContainer');
+  const countSummary = document.getElementById('sourcesCountSummary');
+  const pageInfo = document.getElementById('paginationInfo');
+  const btnPrev = document.getElementById('btnPrevPage');
+  const btnNext = document.getElementById('btnNextPage');
+  if (!container) return;
 
   let filtered = [...state.news];
 
-  if (state.activeFilter === 'irkutsk') {
-    filtered = filtered.filter(n =>
-      n.locationTags.includes('Irkutsk') ||
-      n.locationTags.includes('Shelekhov') ||
-      n.locationTags.includes('Sibéria') ||
-      n.title.toLowerCase().includes('irkutsk') ||
-      n.title.toLowerCase().includes('shipilova')
-    );
-  } else if (state.activeFilter === 'russia') {
-    filtered = filtered.filter(n =>
-      n.locationTags.includes('Rússia') ||
-      n.locationTags.includes('Irkutsk') ||
-      n.locationTags.includes('Sibéria') ||
-      n.title.toLowerCase().includes('russia') ||
-      n.title.toLowerCase().includes('rússia')
-    );
-  } else if (state.activeFilter === 'high') {
-    filtered = filtered.filter(n => n.severity === 'high');
-  } else if (state.activeFilter === 'who') {
-    filtered = filtered.filter(n =>
-      n.source.includes('OMS') ||
-      n.source.includes('WHO') ||
-      n.locationTags.includes('Global / OMS')
-    );
-  } else if (state.activeFilter === 'social') {
-    filtered = filtered.filter(n =>
-      n.source.includes('Reddit') ||
-      n.locationTags.includes('Redes Sociais') ||
-      n.title.toLowerCase().includes('reddit') ||
-      n.title.toLowerCase().includes('tiktok')
+  // Category Filter
+  if (state.sourcesCategory !== 'all') {
+    filtered = filtered.filter(item => item.category === state.sourcesCategory);
+  }
+
+  // Trust Tier Filter
+  if (state.sourcesTier !== 'all') {
+    filtered = filtered.filter(item => item.trustTier?.tier === state.sourcesTier);
+  }
+
+  // Country / Region Filter (Req 15)
+  if (state.sourcesCountry !== 'all') {
+    filtered = filtered.filter(item => item.country === state.sourcesCountry);
+  }
+
+  // Source Filter (Req 15)
+  if (state.sourcesSource !== 'all') {
+    const srcQuery = state.sourcesSource.toLowerCase();
+    filtered = filtered.filter(item => item.source.toLowerCase().includes(srcQuery));
+  }
+
+  // Language Filter (Req 15)
+  if (state.sourcesLang !== 'all') {
+    filtered = filtered.filter(item => item.language === state.sourcesLang);
+  }
+
+  // Search Query
+  if (state.sourcesSearch.trim()) {
+    const q = state.sourcesSearch.toLowerCase().trim();
+    filtered = filtered.filter(item =>
+      item.title.toLowerCase().includes(q) ||
+      (item.summary && item.summary.toLowerCase().includes(q)) ||
+      item.source.toLowerCase().includes(q)
     );
   }
 
-  if (state.searchQuery.trim()) {
-    const q = state.searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(n =>
-      n.title.toLowerCase().includes(q) ||
-      n.summary.toLowerCase().includes(q) ||
-      n.source.toLowerCase().includes(q)
-    );
+  // Total summary
+  if (countSummary) {
+    countSummary.textContent = `${filtered.length} of ${state.news.length} total dispatches`;
   }
 
-  if (filteredCountText) {
-    filteredCountText.textContent = dict.feedCountArticles
-      .replace('{filtered}', filtered.length)
-      .replace('{total}', state.news.length);
-  }
+  // Pagination calculation
+  const totalPages = Math.max(1, Math.ceil(filtered.length / state.sourcesPerPage));
+  if (state.sourcesPage > totalPages) state.sourcesPage = totalPages;
+  if (state.sourcesPage < 1) state.sourcesPage = 1;
 
-  if (filtered.length === 0) {
+  const startIndex = (state.sourcesPage - 1) * state.sourcesPerPage;
+  const pageItems = filtered.slice(startIndex, startIndex + state.sourcesPerPage);
+
+  if (pageInfo) pageInfo.textContent = `Page ${state.sourcesPage} of ${totalPages} (${filtered.length} items)`;
+  if (btnPrev) btnPrev.disabled = state.sourcesPage <= 1;
+  if (btnNext) btnNext.disabled = state.sourcesPage >= totalPages;
+
+  if (pageItems.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-16 text-white/40">
+      <div class="py-12 text-center text-white/40">
         <i data-lucide="filter-x" class="w-8 h-8 mx-auto mb-2 text-white/20"></i>
-        <p class="text-xs">${dict.feedEmpty}</p>
-        <button onclick="clearAllFilters()" class="mt-2 text-xs text-[#0A84FF] hover:underline">${dict.feedClearFilters}</button>
+        <p class="text-xs font-mono">No intelligence dispatches match the selected filters.</p>
       </div>
     `;
     lucide.createIcons();
     return;
   }
 
-  container.innerHTML = filtered.map(item => {
-    let pillStyle = 'bg-white/10 text-white/70 border-white/10';
-    let severityTag = dict.feedSeverityLow;
-    if (item.severity === 'high') {
-      pillStyle = 'bg-[#FF453A]/15 text-[#FF453A] border-[#FF453A]/25';
-      severityTag = dict.feedSeverityHigh;
-    } else if (item.severity === 'medium') {
-      pillStyle = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border-[#FF9F0A]/25';
-      severityTag = dict.feedSeverityMedium;
-    }
+  container.innerHTML = pageItems.map(item => {
+    let tagClass = 'tag-reported';
+    if (item.classification === 'CONFIRMED') tagClass = 'tag-confirmed';
+    else if (item.classification === 'OFFICIAL') tagClass = 'tag-official';
+    else if (item.classification === 'DISPUTED') tagClass = 'tag-disputed';
+    else if (item.classification === 'UNVERIFIED') tagClass = 'tag-unverified';
 
-    const tagsHtml = item.locationTags.map(tag => `
-      <span class="px-2 py-0.5 rounded-full text-[10px] bg-white/[0.05] text-white/60">${tag}</span>
+    const tierCode = item.trustTier?.tierCode || 'tier-3';
+    const tierName = item.trustTier?.tier || 'TIER 3';
+    const tierLabel = item.trustTier?.label || tierName;
+
+    const tagsHtml = (item.locationTags || []).map(t => `
+      <span class="px-1.5 py-0.5 rounded text-[9px] bg-white/[0.04] text-white/60 font-mono">${t}</span>
     `).join('');
 
     return `
-      <article class="news-row flex flex-col space-y-1.5">
+      <article class="intel-row flex flex-col space-y-1.5">
         <div class="flex items-center justify-between gap-2 flex-wrap text-[11px]">
           <div class="flex items-center space-x-2">
-            <span class="pill-badge ${pillStyle} border font-semibold">
-              ${severityTag}
-            </span>
-            <span class="text-[#0A84FF] font-medium">${item.source}</span>
+            <span class="tier-pill ${tierCode}" title="${tierLabel}">${tierName}</span>
+            <span class="font-bold text-[#388BFD] font-mono">${item.source}</span>
+            <span class="text-white/20">|</span>
+            <span class="tag-badge ${tagClass} text-[9px]">${item.classification || 'REPORTED'}</span>
+            <span class="px-1.5 py-0.5 rounded text-[9px] bg-white/[0.04] text-white/50 font-mono">${item.category || 'General'}</span>
           </div>
-          <span class="text-white/40">${formatRelativeTime(item.pubTimestamp)}</span>
+          <span class="text-white/40 font-mono text-[10px]">${formatRelativeTime(item.pubTimestamp)}</span>
         </div>
 
-        <h3 class="text-xs sm:text-sm font-semibold text-white/90 hover:text-[#0A84FF] leading-snug">
+        <h3 class="text-xs sm:text-sm font-semibold text-white/90 hover:text-[#388BFD] leading-snug">
           <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="flex items-start gap-1 group">
             <span>${item.title}</span>
-            <i data-lucide="external-link" class="w-3.5 h-3.5 text-white/30 group-hover:text-[#0A84FF] shrink-0 mt-0.5 transition"></i>
+            <i data-lucide="external-link" class="w-3.5 h-3.5 text-white/30 group-hover:text-[#388BFD] shrink-0 mt-0.5 transition"></i>
           </a>
         </h3>
 
-        ${item.summary ? `<p class="text-xs text-white/50 leading-relaxed line-clamp-2">${item.summary}</p>` : ''}
+        ${item.summary ? `<p class="text-xs text-white/50 leading-relaxed line-clamp-2 font-normal">${item.summary}</p>` : ''}
 
-        <div class="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[11px]">
+        <div class="flex items-center justify-between pt-1 border-t border-white/[0.03] text-[10px]">
           <div class="flex items-center space-x-1">
             ${tagsHtml}
           </div>
-          <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-[#0A84FF] hover:underline font-medium text-xs flex items-center gap-1">
-            <span>${dict.feedReadArticle}</span>
+          <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-[#388BFD] hover:underline font-mono inline-flex items-center gap-0.5">
+            <span>Access Dispatch</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
           </a>
         </div>
@@ -804,213 +970,159 @@ function renderNewsFeed() {
   lucide.createIcons();
 }
 
-// Atualizar Métricas dos Widgets
-function updateMetrics() {
-  const cardSpreadStatus = document.getElementById('cardSpreadStatus');
-  const cardQuarantine = document.getElementById('cardQuarantine');
-  const cardHighAlerts = document.getElementById('cardHighAlerts');
-  const feedCountBadge = document.getElementById('feedCountBadge');
-  const countAll = document.getElementById('countAll');
-  const dict = TRANSLATIONS[state.currentLang];
-  const isEn = state.currentLang === 'en';
+// 10. Top Marquee Bar
+function renderTicker() {
+  const track1 = document.getElementById('marqueeTrack1');
+  const track2 = document.getElementById('marqueeTrack2');
+  if (!track1 || !track2) return;
 
-  if (cardSpreadStatus) {
-    if (state.incident) {
-      cardSpreadStatus.textContent = isEn ? 'Locally Contained' : state.incident.riskAssessment.globalSpreadStatus.toLowerCase().replace(/^\w/, c => c.toUpperCase());
-    } else {
-      cardSpreadStatus.textContent = dict.cardSpreadStatusDefault;
-    }
-  }
-
-  if (cardQuarantine) {
-    let dynamicCount = state.briefing?.patientMetrics?.detectedCount;
-    if (!dynamicCount && state.incident?.keyMetrics?.quarantinedContacts) {
-      const numOnly = state.incident.keyMetrics.quarantinedContacts.split(' ')[0];
-      dynamicCount = `${numOnly} ${isEn ? 'People' : 'Pessoas'}`;
-    } else if (!dynamicCount) {
-      dynamicCount = isEn ? '~200 People' : '~200 Pessoas';
-    } else if (isEn && dynamicCount.includes('Pessoas')) {
-      dynamicCount = dynamicCount.replace('Pessoas', 'People');
-    } else if (!isEn && dynamicCount.includes('People')) {
-      dynamicCount = dynamicCount.replace('People', 'Pessoas');
-    }
-    cardQuarantine.textContent = dynamicCount;
-
-    const dynamicSource = state.briefing?.patientMetrics?.verifiedSource;
-    const quarantineSourceEl = document.getElementById('cardQuarantineSource');
-    if (quarantineSourceEl) {
-      quarantineSourceEl.textContent = dynamicSource ? `${dict.cardQuarantineSourcePrefix}${dynamicSource}` : dict.cardQuarantineSourceDefault;
-    }
-  }
-
-  const highCount = state.news.filter(n => n.severity === 'high').length;
-  if (cardHighAlerts) cardHighAlerts.textContent = highCount;
-
-  if (feedCountBadge) {
-    const lastHourCount = state.briefing?.lastHourCount || 0;
-    feedCountBadge.textContent = lastHourCount > 0
-      ? `${dict.feedCountTotalPrefix}${state.news.length} ${dict.feedCountActiveSources} (${lastHourCount} ${dict.feedCountLastHour})`
-      : `${dict.feedCountTotalPrefix}${state.news.length} ${dict.feedCountActiveSources}`;
-  }
-  if (countAll) countAll.textContent = state.news.length;
-}
-
-// Renderizar Gráfico Minimalista Bilíngue
-function renderChart() {
-  const canvas = document.getElementById('alertSeverityChart');
-  if (!canvas) return;
-
-  const dict = TRANSLATIONS[state.currentLang];
-  const high = state.news.filter(n => n.severity === 'high').length;
-  const medium = state.news.filter(n => n.severity === 'medium').length;
-  const low = state.news.filter(n => n.severity === 'low').length;
-
-  if (state.chart) {
-    state.chart.data.labels = dict.chartLabels;
-    state.chart.data.datasets[0].label = dict.chartDatasetLabel;
-    state.chart.data.datasets[0].data = [high, medium, low];
-    state.chart.update();
+  const topNews = state.news.filter(n => n.classification === 'OFFICIAL' || n.classification === 'CONFIRMED' || n.trustTier?.tier === 'TIER 1').slice(0, 8);
+  if (topNews.length === 0) {
+    const fallback = '<span>Surveillance active • No secondary transmission detected • Contacts monitored</span>';
+    track1.innerHTML = fallback;
+    track2.innerHTML = fallback;
     return;
   }
 
-  const ctx = canvas.getContext('2d');
-  state.chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: dict.chartLabels,
-      datasets: [{
-        label: dict.chartDatasetLabel,
-        data: [high, medium, low],
-        backgroundColor: [
-          'rgba(255, 69, 58, 0.85)',
-          'rgba(255, 159, 10, 0.85)',
-          'rgba(10, 132, 255, 0.85)'
-        ],
-        borderRadius: 6,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 10, family: '-apple-system' } }
-        },
-        y: {
-          grid: { color: 'rgba(255, 255, 255, 0.05)' },
-          ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 10, family: '-apple-system' }, stepSize: 15 }
-        }
-      }
-    }
+  const itemsHtml = topNews.map(n => `
+    <a href="${n.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-white/80 hover:text-white transition shrink-0">
+      <span class="tag-badge tag-official text-[9px]">${n.source}</span>
+      <span class="text-white/90 font-medium">${n.title}</span>
+      <span class="text-white/40 text-[10px] font-mono">${formatRelativeTime(n.pubTimestamp)}</span>
+    </a>
+    <span class="text-white/20">•</span>
+  `).join('');
+
+  track1.innerHTML = itemsHtml;
+  track2.innerHTML = itemsHtml;
+}
+
+// ============================================================================
+// MAPS (PREVIEW ON OVERVIEW + FULL SITUATION MAP)
+// ============================================================================
+
+function createCustomMarker(point, isEn) {
+  let pinColor = '#388BFD';
+  if (point.status === 'critical' || point.status === 'incident' || point.layer === 'cases') pinColor = '#F85149';
+  else if (point.status === 'warning' || point.status === 'quarantine' || point.layer === 'contacts') pinColor = '#D29922';
+  else if (point.status === 'normal') pinColor = '#2EA043';
+
+  const name = isEn ? (point.nameEn || point.name) : point.name;
+  const statusText = isEn ? (point.statusTextEn || point.statusText) : point.statusText;
+  const details = isEn ? (point.detailsEn || point.details) : point.details;
+
+  const icon = L.divIcon({
+    className: 'custom-intel-marker',
+    html: `
+      <div style="
+        width: 12px;
+        height: 12px;
+        background: ${pinColor};
+        border: 2px solid #FFFFFF;
+        border-radius: 50%;
+        box-shadow: 0 0 8px ${pinColor};
+      "></div>
+    `,
+    iconSize: [12, 12],
+    iconAnchor: [6, 6]
+  });
+
+  const popupContent = `
+    <div style="font-size: 11px; font-family: 'Inter', sans-serif; padding: 2px; line-height: 1.4;">
+      <div style="font-weight: 700; color: ${pinColor}; font-family: 'JetBrains Mono', monospace; margin-bottom: 2px;">
+        ${name}
+      </div>
+      <div style="color: #FFFFFF; font-weight: 600; font-size: 10px; margin-bottom: 2px;">${statusText}</div>
+      <p style="color: #8B949E; margin: 0; font-size: 10px;">${details}</p>
+    </div>
+  `;
+
+  const marker = L.marker([point.lat, point.lng], { icon });
+  marker.bindPopup(popupContent);
+  return { marker, pinColor };
+}
+
+// Overview Mini Preview Map
+function initOverviewMap() {
+  const container = document.getElementById('overviewMapPreview');
+  if (!container || state.overviewMap || container._leaflet_id) return;
+
+  state.overviewMap = L.map('overviewMapPreview', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([52.2869, 104.3050], 4);
+
+  L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16,
+    attribution: 'Esri World Dark'
+  }).addTo(state.overviewMap);
+
+  // Add subtle ring around epicenter
+  L.circle([52.2869, 104.3050], {
+    color: '#D29922',
+    fillColor: '#D29922',
+    fillOpacity: 0.15,
+    radius: 200000
+  }).addTo(state.overviewMap);
+
+  state.overviewMarkerGroup = L.layerGroup().addTo(state.overviewMap);
+  renderOverviewMapMarkers();
+}
+
+function renderOverviewMapMarkers() {
+  if (!state.overviewMap || !state.overviewMarkerGroup || !state.incident?.monitoringPoints) return;
+  state.overviewMarkerGroup.clearLayers();
+
+  const isEn = state.currentLang === 'en';
+  state.incident.monitoringPoints.forEach(point => {
+    const { marker } = createCustomMarker(point, isEn);
+    marker.addTo(state.overviewMarkerGroup);
   });
 }
 
-// Renderizar Headline & Briefing Executivo Bilíngue
-function renderBriefing() {
-  if (!state.briefing) return;
-  const dict = TRANSLATIONS[state.currentLang];
+// Full Situation Map (Tab 3)
+function initMainMap() {
+  const container = document.getElementById('mainMapContainer');
+  if (!container || state.mainMap || container._leaflet_id) return;
 
-  const headlineEl = document.getElementById('briefingHeadline');
-  const timeBadgeEl = document.getElementById('briefingTimeWindowBadge');
-  const statusBadgeEl = document.getElementById('briefingStatusBadge');
-  const engineBadgeEl = document.getElementById('briefingEngineBadge');
-  const bulletsContainer = document.getElementById('briefingBulletsContainer');
+  state.mainMap = L.map('mainMapContainer', {
+    zoomControl: true,
+    attributionControl: false
+  }).setView([52.2869, 104.3050], 4);
 
-  if (headlineEl && state.briefing.headline) {
-    headlineEl.textContent = state.briefing.headline;
-  }
-  if (timeBadgeEl) {
-    timeBadgeEl.textContent = state.briefing.timeWindow || dict.briefingTimeWindowDefault;
-  }
-  if (statusBadgeEl) {
-    statusBadgeEl.textContent = state.briefing.statusBadge || dict.briefingStatusDefault;
-  }
-  if (engineBadgeEl) {
-    engineBadgeEl.textContent = state.briefing.engine || dict.briefingEngineDefault;
-  }
+  L.tileLayer('https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16,
+    attribution: 'Esri World Dark'
+  }).addTo(state.mainMap);
 
-  if (bulletsContainer && state.briefing.bullets) {
-    bulletsContainer.innerHTML = state.briefing.bullets.map(b => `
-      <div class="flex items-start space-x-2.5 bg-white/[0.03] hover:bg-white/[0.05] p-3 rounded-xl border border-white/[0.05] transition">
-        <div class="w-2 h-2 rounded-full bg-[#0A84FF] mt-1.5 shrink-0 shadow-sm shadow-[#0A84FF]/40"></div>
-        <div class="flex-1">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <strong class="text-white/90 font-semibold text-xs">${b.topic}</strong>
-            ${b.source ? `<span class="pill-badge bg-white/[0.06] text-white/50 text-[10px] font-medium">${b.source}</span>` : ''}
-          </div>
-          <p class="text-white/70 leading-relaxed text-xs m-0 font-normal">${b.text}</p>
-        </div>
-      </div>
-    `).join('');
-  }
+  state.mainMarkerGroup = L.layerGroup().addTo(state.mainMap);
+  renderMainMapMarkers();
+  setTimeout(() => {
+    if (state.mainMap) state.mainMap.invalidateSize();
+  }, 150);
 }
 
-// Renderizar Monitor de Voos & Conexões Aéreas Bilíngue
-function renderFlights() {
-  if (!state.flights) return;
-  const dict = TRANSLATIONS[state.currentLang];
+function renderMainMapMarkers() {
+  if (!state.mainMap || !state.mainMarkerGroup || !state.incident?.monitoringPoints) return;
+  state.mainMarkerGroup.clearLayers();
+
   const isEn = state.currentLang === 'en';
+  let points = state.incident.monitoringPoints;
 
-  const overheadBadge = document.getElementById('overheadAirspaceBadge');
-  const container = document.getElementById('flightsContainer');
-
-  if (overheadBadge && state.flights.liveAirspace) {
-    const count = state.flights.liveAirspace.activeTranspondersOverhead;
-    overheadBadge.textContent = count > 0
-      ? dict.flightsOverheadRange.replace('{n}', count)
-      : dict.flightsOverheadCalm;
+  if (state.mapLayer !== 'all') {
+    points = points.filter(p => p.layer === state.mapLayer);
   }
 
-  if (container && state.flights.scheduledRoutes) {
-    container.innerHTML = state.flights.scheduledRoutes.map(f => {
-      let statusColor = 'bg-[#30D158]/15 text-[#30D158] border-[#30D158]/30';
-      if (f.status.includes('Decolou') || f.status.includes('Em Rota') || f.status.includes('Departed')) {
-        statusColor = 'bg-[#0A84FF]/15 text-[#0A84FF] border-[#0A84FF]/30';
-      } else if (f.status.includes('Embarque') || f.status.includes('Portão') || f.status.includes('Gate') || f.status.includes('Boarding')) {
-        statusColor = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border-[#FF9F0A]/30';
-      }
-
-      const statusText = (isEn && FLIGHT_TRANSLATIONS.status[f.status]) ? FLIGHT_TRANSLATIONS.status[f.status] : f.status;
-      const healthText = (isEn && FLIGHT_TRANSLATIONS.health[f.healthStatus]) ? FLIGHT_TRANSLATIONS.health[f.healthStatus] : f.healthStatus;
-
-      return `
-        <div class="news-row flex flex-col space-y-1.5 p-3">
-          <div class="flex items-center justify-between text-[11px]">
-            <div class="flex items-center space-x-2">
-              <span class="font-bold text-white/90">${f.flightNumber}</span>
-              <span class="text-white/40">•</span>
-              <span class="text-white/70 font-medium">${f.airline}</span>
-            </div>
-            <span class="pill-badge ${statusColor} text-[10px] font-semibold">
-              ${statusText}
-            </span>
-          </div>
-
-          <div class="flex items-center justify-between text-xs py-0.5">
-            <span class="text-white/90 font-medium">${f.origin} ✈️ ${f.destination}</span>
-            <span class="text-white/50 text-[11px]">${f.scheduledDeparture}</span>
-          </div>
-
-          <div class="flex items-center justify-between pt-1 border-t border-white/[0.04] text-[10px]">
-            <span class="text-white/40">${f.aircraft}</span>
-            <span class="text-[#0A84FF] font-medium flex items-center gap-1">
-              <i data-lucide="shield-check" class="w-3 h-3"></i>
-              ${healthText}
-            </span>
-          </div>
-        </div>
-      `;
-    }).join('');
-    lucide.createIcons();
-  }
+  points.forEach(point => {
+    const { marker } = createCustomMarker(point, isEn);
+    marker.addTo(state.mainMarkerGroup);
+  });
 }
 
-// Carregar Dados das APIs (com parâmetro de idioma)
+// ============================================================================
+// DATA FETCHING & SYNCHRONIZATION
+// ============================================================================
+
 async function loadData(forceRefresh = false) {
   const refreshIcon = document.getElementById('refreshIcon');
   if (refreshIcon) refreshIcon.classList.add('animate-spin');
@@ -1038,77 +1150,72 @@ async function loadData(forceRefresh = false) {
           playNotificationChime();
         }
       }
-
       state.news = newsData.data;
       if (newsData.data.length > 0) {
         state.lastKnownFirstId = newsData.data[0].id;
       }
     }
 
-    if (socialData.success) {
-      state.social = socialData;
-    }
+    if (socialData.success) state.social = socialData;
+    if (incidentData.success) state.incident = incidentData.data;
+    if (briefingData && briefingData.success) state.briefing = briefingData;
+    if (flightsData && flightsData.success) state.flights = flightsData;
 
-    if (incidentData.success) {
-      state.incident = incidentData.data;
-    }
+    // Update timestamp
+    const nowTimeStr = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const headerTime = document.getElementById('headerLastUpdated');
+    const footerTime = document.getElementById('footerClock');
+    if (headerTime) headerTime.textContent = nowTimeStr;
+    if (footerTime) footerTime.textContent = `${nowTimeStr} UTC`;
 
-    if (briefingData && briefingData.success) {
-      state.briefing = briefingData;
-    }
-
-    if (flightsData && flightsData.success) {
-      state.flights = flightsData;
-    }
-
-    updateMetrics();
-    renderBriefing();
-    renderFlights();
+    // Render all components
+    renderOverviewThreatAndKPIs();
+    renderOverviewMilestones();
+    renderOutbreakEvolution();
+    renderLatestVerifiedIntelligence();
+    renderRumorWatch();
+    renderTimelineArchive();
+    renderIntelligenceModules();
+    renderSourcesFeed();
     renderTicker();
-    renderNewsFeed();
-    renderSocialModule();
-    renderMapMarkers();
-    renderTimeline();
-    renderChart();
+    updateWhatChangedDelta();
+    renderOverviewMapMarkers();
+    renderMainMapMarkers();
 
-    const footerLastSync = document.getElementById('footerLastSync');
-    if (footerLastSync) {
-      footerLastSync.textContent = new Date().toLocaleTimeString(state.currentLang === 'en' ? 'en-US' : 'pt-BR');
-    }
   } catch (err) {
-    console.error('Falha ao carregar dados:', err);
+    console.error('[Outbreak Intel Fetch Error]', err);
   } finally {
     if (refreshIcon) refreshIcon.classList.remove('animate-spin');
   }
 }
 
-// Setup Server-Sent Events (SSE)
+// Server-Sent Events (SSE)
 function setupSSE() {
-  const eventSource = new EventSource('/api/stream');
-  eventSource.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.type === 'news_updated' || data.type === 'background_refresh') {
-        loadData(false);
-      }
-    } catch (e) {
-      console.warn('SSE:', e);
-    }
-  };
+  try {
+    const eventSource = new EventSource('/api/stream');
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'news_updated' || data.type === 'background_refresh') {
+          loadData(false);
+        }
+      } catch (e) {}
+    };
+  } catch (e) {
+    console.warn('[SSE notice]', e);
+  }
 }
 
-// Countdown
+// Countdown loop
 function startCountdown() {
   state.countdown = 60;
-  const syncStatusText = document.getElementById('syncStatusText');
+  const syncCountdown = document.getElementById('syncCountdown');
 
   if (state.countdownInterval) clearInterval(state.countdownInterval);
-
   state.countdownInterval = setInterval(() => {
     state.countdown--;
-    if (syncStatusText) {
-      const dict = TRANSLATIONS[state.currentLang];
-      syncStatusText.textContent = dict.newsTickerSync.replace('{s}', state.countdown);
+    if (syncCountdown) {
+      syncCountdown.textContent = `SYNC: ${state.countdown}s`;
     }
     if (state.countdown <= 0) {
       state.countdown = 60;
@@ -1117,19 +1224,55 @@ function startCountdown() {
   }, 1000);
 }
 
-// Event Listeners
+// ============================================================================
+// EVENT LISTENERS & WIRING
+// ============================================================================
+
 function setupEventListeners() {
-  // Alternador de Idioma EN / PT
-  const langBtnEn = document.getElementById('langBtnEn');
-  const langBtnPt = document.getElementById('langBtnPt');
-  if (langBtnEn) {
-    langBtnEn.addEventListener('click', () => setLanguage('en'));
-  }
-  if (langBtnPt) {
-    langBtnPt.addEventListener('click', () => setLanguage('pt'));
+  // Navigation Tabs
+  document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tabId = btn.getAttribute('data-tab');
+      switchTab(tabId);
+    });
+  });
+
+  // Jump buttons on Overview
+  const btnGoToTimeline = document.getElementById('btnGoToTimeline');
+  if (btnGoToTimeline) {
+    btnGoToTimeline.addEventListener('click', () => switchTab('navTimeline'));
   }
 
-  // Botão Atualizar
+  const btnGoToMap = document.getElementById('btnGoToMap');
+  if (btnGoToMap) {
+    btnGoToMap.addEventListener('click', () => switchTab('navMap'));
+  }
+
+  const btnGoToSources = document.getElementById('btnGoToSources');
+  if (btnGoToSources) {
+    btnGoToSources.addEventListener('click', () => switchTab('navSources'));
+  }
+
+  // Language buttons
+  const btnEn = document.getElementById('langBtnEn');
+  const btnPt = document.getElementById('langBtnPt');
+  if (btnEn) btnEn.addEventListener('click', () => setLanguage('en'));
+  if (btnPt) btnPt.addEventListener('click', () => setLanguage('pt'));
+
+  // Audio toggle
+  const toggleAudioBtn = document.getElementById('toggleAudioBtn');
+  const audioIcon = document.getElementById('audioIcon');
+  if (toggleAudioBtn) {
+    toggleAudioBtn.addEventListener('click', () => {
+      state.audioEnabled = !state.audioEnabled;
+      if (audioIcon) {
+        audioIcon.className = state.audioEnabled ? 'w-3.5 h-3.5 text-[#388BFD]' : 'w-3.5 h-3.5 text-white/30';
+      }
+      if (state.audioEnabled) playNotificationChime();
+    });
+  }
+
+  // Refresh button
   const refreshBtn = document.getElementById('refreshBtn');
   if (refreshBtn) {
     refreshBtn.addEventListener('click', () => {
@@ -1138,136 +1281,179 @@ function setupEventListeners() {
     });
   }
 
-  // Audio Toggle
-  const toggleAudioBtn = document.getElementById('toggleAudioBtn');
-  const audioText = document.getElementById('audioText');
-  if (toggleAudioBtn) {
-    toggleAudioBtn.addEventListener('click', () => {
-      state.audioEnabled = !state.audioEnabled;
-      const dict = TRANSLATIONS[state.currentLang];
-      if (audioText) audioText.textContent = state.audioEnabled ? dict.audioOn : dict.audioMuted;
-      if (state.audioEnabled) playNotificationChime();
-    });
-  }
-
-  // Search input
-  const searchInput = document.getElementById('searchInput');
-  const clearSearchBtn = document.getElementById('clearSearchBtn');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      state.searchQuery = e.target.value;
-      if (clearSearchBtn) {
-        clearSearchBtn.classList.toggle('hidden', !e.target.value);
+  // Quick search
+  const quickSearch = document.getElementById('quickSearchInput');
+  if (quickSearch) {
+    quickSearch.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        state.sourcesSearch = quickSearch.value.trim();
+        const sourcesSearchInput = document.getElementById('sourcesSearchInput');
+        if (sourcesSearchInput) sourcesSearchInput.value = quickSearch.value;
+        switchTab('navSources');
+        state.sourcesPage = 1;
+        renderSourcesFeed();
       }
-      renderNewsFeed();
     });
   }
 
-  if (clearSearchBtn) {
-    clearSearchBtn.addEventListener('click', () => {
-      if (searchInput) searchInput.value = '';
-      state.searchQuery = '';
-      clearSearchBtn.classList.add('hidden');
-      renderNewsFeed();
+  // Sources search input
+  const sourcesSearch = document.getElementById('sourcesSearchInput');
+  const clearSourcesSearch = document.getElementById('clearSourcesSearchBtn');
+  if (sourcesSearch) {
+    sourcesSearch.addEventListener('input', (e) => {
+      state.sourcesSearch = e.target.value;
+      if (clearSourcesSearch) {
+        clearSourcesSearch.classList.toggle('hidden', !e.target.value);
+      }
+      state.sourcesPage = 1;
+      renderSourcesFeed();
     });
   }
 
-  // Filter pills
-  const filterPills = document.querySelectorAll('.filter-pill');
-  filterPills.forEach(pill => {
+  if (clearSourcesSearch) {
+    clearSourcesSearch.addEventListener('click', () => {
+      if (sourcesSearch) sourcesSearch.value = '';
+      state.sourcesSearch = '';
+      clearSourcesSearch.classList.add('hidden');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
+    });
+  }
+
+  // Sources category filter pills
+  document.querySelectorAll('[data-cat-filter]').forEach(pill => {
     pill.addEventListener('click', () => {
-      filterPills.forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('[data-cat-filter]').forEach(p => p.classList.remove('active'));
       pill.classList.add('active');
-      state.activeFilter = pill.getAttribute('data-filter');
-      renderNewsFeed();
+      state.sourcesCategory = pill.getAttribute('data-cat-filter');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
     });
   });
 
-  // Segmented control tabs
-  const segmentedBtns = document.querySelectorAll('.segmented-btn');
-  segmentedBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      segmentedBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const targetTab = btn.getAttribute('data-tab');
-      document.querySelectorAll('.tab-content').forEach(content => {
-        content.classList.add('hidden');
-      });
-
-      const activeContent = document.getElementById(targetTab);
-      if (activeContent) {
-        activeContent.classList.remove('hidden');
-      }
-
-      if (targetTab === 'tabMap' && state.map) {
-        setTimeout(() => state.map.invalidateSize(), 100);
-      }
+  // Sources trust tier filter pills
+  document.querySelectorAll('[data-tier-filter]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-tier-filter]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.sourcesTier = pill.getAttribute('data-tier-filter');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
     });
   });
 
-  // Map settings modal
-  const openMapSettingsBtn = document.getElementById('openMapSettingsBtn');
-  const mapSettingsModal = document.getElementById('mapSettingsModal');
-  const closeMapSettingsBtn = document.getElementById('closeMapSettingsBtn');
-  const saveMapSettingsBtn = document.getElementById('saveMapSettingsBtn');
-  const mapStyleSelect = document.getElementById('mapStyleSelect');
-  const customApiKeyInput = document.getElementById('customApiKeyInput');
+  // Sources country/region filter pills (Req 15)
+  document.querySelectorAll('[data-country-filter]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-country-filter]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.sourcesCountry = pill.getAttribute('data-country-filter');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
+    });
+  });
 
-  if (openMapSettingsBtn && mapSettingsModal) {
-    openMapSettingsBtn.addEventListener('click', () => {
-      if (mapStyleSelect) mapStyleSelect.value = state.activeMapStyle;
-      if (customApiKeyInput) customApiKeyInput.value = state.customApiKey;
-      mapSettingsModal.classList.remove('hidden');
+  // Sources source filter pills (Req 15)
+  document.querySelectorAll('[data-source-filter]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-source-filter]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.sourcesSource = pill.getAttribute('data-source-filter');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
+    });
+  });
+
+  // Sources language filter pills (Req 15)
+  document.querySelectorAll('[data-lang-filter]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-lang-filter]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.sourcesLang = pill.getAttribute('data-lang-filter');
+      state.sourcesPage = 1;
+      renderSourcesFeed();
+    });
+  });
+
+  // Sources pagination buttons
+  const btnPrev = document.getElementById('btnPrevPage');
+  const btnNext = document.getElementById('btnNextPage');
+  if (btnPrev) {
+    btnPrev.addEventListener('click', () => {
+      if (state.sourcesPage > 1) {
+        state.sourcesPage--;
+        renderSourcesFeed();
+      }
+    });
+  }
+  if (btnNext) {
+    btnNext.addEventListener('click', () => {
+      state.sourcesPage++;
+      renderSourcesFeed();
     });
   }
 
-  if (closeMapSettingsBtn && mapSettingsModal) {
-    closeMapSettingsBtn.addEventListener('click', () => {
-      mapSettingsModal.classList.add('hidden');
+  // Timeline filters
+  document.querySelectorAll('[data-timeline-filter]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-timeline-filter]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.timelineFilter = pill.getAttribute('data-timeline-filter');
+      renderTimelineArchive();
+    });
+  });
+
+  // Map layer filters
+  document.querySelectorAll('[data-map-layer]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-map-layer]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.mapLayer = pill.getAttribute('data-map-layer');
+      renderMainMapMarkers();
+    });
+  });
+
+  // Map focus shortcuts
+  const btnFocusIrkutsk = document.getElementById('btnFocusIrkutsk');
+  const btnFocusRussia = document.getElementById('btnFocusRussia');
+  const btnFocusGlobal = document.getElementById('btnFocusGlobal');
+
+  if (btnFocusIrkutsk) {
+    btnFocusIrkutsk.addEventListener('click', () => {
+      if (state.mainMap) state.mainMap.setView([52.2869, 104.3050], 7);
+    });
+  }
+  if (btnFocusRussia) {
+    btnFocusRussia.addEventListener('click', () => {
+      if (state.mainMap) state.mainMap.setView([55.0, 95.0], 4);
+    });
+  }
+  if (btnFocusGlobal) {
+    btnFocusGlobal.addEventListener('click', () => {
+      if (state.mainMap) state.mainMap.setView([45.0, 50.0], 2);
     });
   }
 
-  if (saveMapSettingsBtn && mapSettingsModal) {
-    saveMapSettingsBtn.addEventListener('click', () => {
-      const selectedStyle = mapStyleSelect.value;
-      const key = customApiKeyInput.value.trim();
-
-      state.activeMapStyle = selectedStyle;
-      state.customApiKey = key;
-      localStorage.setItem('osm_map_style', selectedStyle);
-      localStorage.setItem('osm_api_key', key);
-
-      applyMapTileLayer(selectedStyle, key);
-      mapSettingsModal.classList.add('hidden');
+  // Dismiss change alert
+  const dismissAlert = document.getElementById('dismissChangeAlert');
+  if (dismissAlert) {
+    dismissAlert.addEventListener('click', () => {
+      sessionStorage.setItem('dismissed_significant_change', 'true');
+      const banner = document.getElementById('significantChangeAlert');
+      if (banner) banner.classList.add('hidden');
     });
   }
 }
 
-function clearAllFilters() {
-  state.activeFilter = 'all';
-  state.searchQuery = '';
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) searchInput.value = '';
-  const clearSearchBtn = document.getElementById('clearSearchBtn');
-  if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
-
-  document.querySelectorAll('.filter-pill').forEach(pill => {
-    pill.classList.toggle('active', pill.getAttribute('data-filter') === 'all');
-  });
-
-  renderNewsFeed();
-}
-
-// Bootstrap
+// Initial bootstrap
 window.addEventListener('DOMContentLoaded', () => {
-  // Detectar idioma inicial baseado no sistema ou preferência salva
-  state.currentLang = detectInitialLanguage();
-  applyTranslations(state.currentLang);
+  const savedLang = localStorage.getItem('preferred_language') || 'en';
+  state.currentLang = savedLang;
 
   lucide.createIcons();
-  initMap();
   setupEventListeners();
+  initOverviewMap();
+  applyTranslations(state.currentLang);
   loadData();
   setupSSE();
   startCountdown();

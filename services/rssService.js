@@ -8,6 +8,12 @@ const parser = new Parser({
 
 const FEEDS = [
   {
+    name: "Reuters & Global Wire",
+    url: 'https://news.google.com/rss/search?q=Reuters+OR+AP+Irkutsk+OR+"plague"+Russia&hl=en-US&gl=US&ceid=US:en',
+    category: "International",
+    priority: "official"
+  },
+  {
     name: "Alerta Irkutsk & Laboratório (Google News EN)",
     url: 'https://news.google.com/rss/search?q=Irkutsk+OR+Shipilova+OR+"Anti-Plague"+OR+Rospotrebnadzor&hl=en-US&gl=US&ceid=US:en',
     category: "Foco Irkutsk / Sibéria",
@@ -27,7 +33,7 @@ const FEEDS = [
   },
   {
     name: "Reddit OSINT WorldNews",
-    url: 'https://www.reddit.com/r/worldnews/search.rss?q=Irkutsk+OR+plague+OR+"Russia+virus"&restrict_sr=1&sort=new',
+    url: 'https://news.google.com/rss/search?q=site:reddit.com+Irkutsk+OR+plague+OR+"Russia+virus"&hl=en-US&gl=US&ceid=US:en',
     category: "Comunidade OSINT / Reddit",
     priority: "medium"
   },
@@ -65,15 +71,109 @@ let cachedNews = [];
 let lastFetchTime = null;
 const CACHE_DURATION_MS = 60 * 1000; // 60 segundos de cache
 
+/**
+ * Severidade calibrada rigorosamente conforme especificação:
+ * VERMELHO (high) é reservado exclusivamente para mudanças epidemiológicas críticas.
+ */
 function determineSeverity(title, content) {
   const text = (title + " " + (content || "")).toLowerCase();
-  if (text.includes("quarantine") || text.includes("quarentena") || text.includes("death") || text.includes("morte") || text.includes("plague") || text.includes("peste") || text.includes("yersinia") || text.includes("emergency") || text.includes("investigation") || text.includes("fatal")) {
+  
+  // Reservado exclusivamente para mudanças críticas
+  if (
+    text.includes("secondary transmission confirmed") ||
+    text.includes("transmissão secundária confirmada") ||
+    text.includes("secondary infection detected") ||
+    text.includes("international spread detected") ||
+    text.includes("disseminação internacional confirmada") ||
+    text.includes("new cluster detected") ||
+    text.includes("abrupt surge in cases") ||
+    text.includes("emergency state declared") ||
+    text.includes("severe risk level upgrade")
+  ) {
     return "high";
   }
-  if (text.includes("alert") || text.includes("alerta") || text.includes("rospotrebnadzor") || text.includes("hospital") || text.includes("virus") || text.includes("pneumonia") || text.includes("outbreak") || text.includes("surto") || text.includes("contagion")) {
+
+  // Notícias de apuração, quarentena, hospitalização ou investigação oficial
+  if (
+    text.includes("quarantine") || text.includes("quarentena") ||
+    text.includes("death") || text.includes("morte") || text.includes("fatal") ||
+    text.includes("investigation") || text.includes("inquérito") ||
+    text.includes("hospital") || text.includes("rospotrebnadzor") ||
+    text.includes("plague") || text.includes("peste") || text.includes("yersinia")
+  ) {
     return "medium";
   }
+
   return "low";
+}
+
+function determineClassification(title, source, content) {
+  const text = (title + " " + (content || "")).toLowerCase();
+  const src = (source || "").toLowerCase();
+
+  if (src.includes("who") || src.includes("oms") || src.includes("rospotrebnadzor") || text.includes("official statement") || text.includes("declaração oficial")) {
+    return "OFFICIAL";
+  }
+  if (text.includes("confirmed") || text.includes("confirma") || text.includes("morre") || text.includes("died") || text.includes("óbito") || text.includes("200 contatos") || text.includes("200 contacts")) {
+    return "CONFIRMED";
+  }
+  if (text.includes("disputed") || text.includes("denies") || text.includes("nega") || text.includes("contradicts") || text.includes("dúvida")) {
+    return "DISPUTED";
+  }
+  if (src.includes("reddit") || text.includes("tiktok") || text.includes("rumor") || text.includes("unverified") || text.includes("alega")) {
+    return "UNVERIFIED";
+  }
+  return "REPORTED";
+}
+
+function determineTrustTier(source, link) {
+  const src = (source || "").toLowerCase();
+  const url = (link || "").toLowerCase();
+
+  // TIER 1: WHO, Reuters, Autoridades Sanitárias Oficiais
+  if (
+    src.includes("who") || src.includes("oms") ||
+    src.includes("reuters") || url.includes("reuters.com") ||
+    src.includes("rospotrebnadzor") || src.includes("cdc") ||
+    url.includes("who.int")
+  ) {
+    return { tier: "TIER 1", tierCode: "tier-1", label: "Tier 1 · Official / Wire" };
+  }
+
+  // TIER 2: Grandes veículos internacionais
+  if (
+    src.includes("bbc") || src.includes("cnn") || src.includes("bno") ||
+    src.includes("moscow times") || src.includes("the guardian") ||
+    src.includes("time") || src.includes("medical xpress") ||
+    url.includes("bbc.") || url.includes("cnn.")
+  ) {
+    return { tier: "TIER 2", tierCode: "tier-2", label: "Tier 2 · Major Press" };
+  }
+
+  // TIER 4: Redes sociais / Fontes não verificadas
+  if (
+    src.includes("reddit") || src.includes("tiktok") ||
+    url.includes("reddit.com") || url.includes("tiktok.com")
+  ) {
+    return { tier: "TIER 4", tierCode: "tier-4", label: "Tier 4 · Social / OSINT" };
+  }
+
+  // TIER 3: Mídia regional / Agregadores
+  return { tier: "TIER 3", tierCode: "tier-3", label: "Tier 3 · Regional / Web" };
+}
+
+function determineCategory(title, source, content) {
+  const text = (title + " " + (content || "")).toLowerCase();
+  const src = (source || "").toLowerCase();
+
+  if (src.includes("who") || src.includes("oms") || text.includes("who") || text.includes("oms")) return "WHO";
+  if (src.includes("reddit") || text.includes("tiktok") || text.includes("viral")) return "Social";
+  if (text.includes("lab") || text.includes("laborat") || text.includes("institute") || text.includes("instituto") || text.includes("bioprotection")) return "Laboratory";
+  if (src.includes("medical xpress") || text.includes("yersinia") || text.includes("pathogen") || text.includes("scientific")) return "Scientific";
+  if (src.includes("rospotrebnadzor") || text.includes("autoridades") || text.includes("inquérito") || text.includes("investigative committee")) return "Official";
+  if (text.includes("border") || text.includes("fronteira") || text.includes("mongolia") || text.includes("china") || text.includes("rubio") || text.includes("international")) return "International";
+  if (text.includes("irkutsk") || text.includes("shelekhov") || text.includes("siberia") || text.includes("russia")) return "Russia";
+  return "Epidemiology";
 }
 
 function extractLocationTags(title, content) {
@@ -89,6 +189,25 @@ function extractLocationTags(title, content) {
   if (text.includes("reddit") || text.includes("tiktok")) tags.push("Redes Sociais");
   if (tags.length === 0) tags.push("Internacional");
   return tags;
+}
+
+function determineCountry(title, source, content) {
+  const text = (title + " " + (content || "")).toLowerCase();
+  const src = (source || "").toLowerCase();
+  if (text.includes("mongolia") || text.includes("mongólia")) return "Mongolia";
+  if (text.includes("china") || text.includes("pequim") || text.includes("beijing") || text.includes("harbin")) return "China";
+  if (text.includes("who") || text.includes("oms") || src.includes("who") || src.includes("oms")) return "Multilateral / WHO";
+  if (src.includes("português") || src.includes("lusófona") || text.includes("brasil") || text.includes("brazil")) return "Brazil / Lusophone";
+  if (text.includes("russia") || text.includes("rússia") || text.includes("irkutsk") || text.includes("siberia") || text.includes("sibéria") || text.includes("shelekhov") || text.includes("moscow") || text.includes("moscou") || text.includes("rospotrebnadzor")) return "Russia";
+  return "International";
+}
+
+function determineLanguage(feedName, title, content) {
+  const text = title + " " + (content || "");
+  if (feedName.includes("PT") || feedName.includes("Português") || /[áàãâéêíóôõúç]/i.test(text)) {
+    return "pt";
+  }
+  return "en";
 }
 
 function cleanHtml(html) {
@@ -130,6 +249,11 @@ async function fetchAllFeeds() {
           }
 
           const severity = determineSeverity(title, summary);
+          const classification = determineClassification(title, feedInfo.name, summary);
+          const trustTier = determineTrustTier(feedInfo.name, link);
+          const category = determineCategory(title, feedInfo.name, summary);
+          const country = determineCountry(title, feedInfo.name, summary);
+          const language = determineLanguage(feedInfo.name, title, summary);
           const locationTags = extractLocationTags(title, summary);
           const pubDate = item.pubDate || item.isoDate || new Date().toISOString();
 
@@ -138,12 +262,16 @@ async function fetchAllFeeds() {
             title,
             link,
             source: feedInfo.name,
-            category: feedInfo.category,
+            category,
+            country,
+            language,
             priority: feedInfo.priority,
             summary: summary.slice(0, 300) + (summary.length > 300 ? "..." : ""),
             pubDate,
             pubTimestamp: new Date(pubDate).getTime() || Date.now(),
             severity,
+            classification,
+            trustTier,
             locationTags
           });
         }

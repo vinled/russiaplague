@@ -76,11 +76,28 @@ app.get('/api/news', async (req, res) => {
       filtered = filtered.filter(item => item.severity === req.query.severity);
     }
 
-    if (req.query.tag && req.query.tag !== 'all') {
-      filtered = filtered.filter(item => item.locationTags.includes(req.query.tag));
+    if (req.query.category && req.query.category !== 'all') {
+      filtered = filtered.filter(item => item.category === req.query.category);
     }
 
-    const limit = parseInt(req.query.limit, 10) || 100;
+    if (req.query.tier && req.query.tier !== 'all') {
+      filtered = filtered.filter(item => item.trustTier && (item.trustTier.tier === req.query.tier || item.trustTier.tierCode === req.query.tier));
+    }
+
+    if (req.query.country && req.query.country !== 'all') {
+      filtered = filtered.filter(item => item.country === req.query.country);
+    }
+
+    if (req.query.source && req.query.source !== 'all') {
+      const srcQuery = req.query.source.toLowerCase();
+      filtered = filtered.filter(item => item.source.toLowerCase().includes(srcQuery));
+    }
+
+    if (req.query.lang && req.query.lang !== 'all') {
+      filtered = filtered.filter(item => item.language === req.query.lang);
+    }
+
+    const limit = parseInt(req.query.limit, 10) || 200;
     const paginated = filtered.slice(0, limit);
 
     res.json({
@@ -183,12 +200,20 @@ setInterval(async () => {
   }
 }, 90 * 1000);
 
+process.on('uncaughtException', (err) => {
+  console.error('[Uncaught Exception]', err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Unhandled Rejection]', reason);
+});
+
 if (require.main === module || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`=======================================================`);
-    console.log(`🏥 DASHBOARD DE VIGILÂNCIA EPIDEMIOLÓGICA v4.0 (macOS) `);
+    console.log(`🎯 OUTBREAK INTELLIGENCE v5.0 · SITUATION ROOM PLATFORM `);
     console.log(`📡 Servidor ativo em: http://localhost:${PORT}`);
-    console.log(`📱 Módulo TikTok & Redes Sociais: ATIVO`);
+    console.log(`🛡️ Global Epidemiological Monitoring: ATIVO`);
     console.log(`=======================================================`);
   });
 }

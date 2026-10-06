@@ -39,7 +39,7 @@ async function fetchSocialFeed() {
     {
       name: "Reddit OSINT WorldNews",
       platform: "Reddit",
-      url: 'https://www.reddit.com/r/worldnews/search.rss?q=Irkutsk+OR+plague+OR+"Russia+virus"&sort=new'
+      url: 'https://news.google.com/rss/search?q=site:reddit.com+Irkutsk+OR+plague+OR+"Russia+virus"&hl=en-US&gl=US&ceid=US:en'
     },
     {
       name: "Reações Lusófonas (Vídeos / Redes)",

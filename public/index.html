@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vigilância em Saúde | Monitor de Alertas & Surtos</title>
+  <title>OUTBREAK INTELLIGENCE · Global Epidemiological Monitoring</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,13 +13,14 @@
       theme: {
         extend: {
           colors: {
-            apple: {
-              blue: '#0A84FF',
-              red: '#FF453A',
-              orange: '#FF9F0A',
-              green: '#30D158',
-              purple: '#BF5AF2',
-              gray: '#8E8E93'
+            intel: {
+              bg: '#080B10',
+              surface: '#0E1219',
+              elevated: '#131822',
+              blue: '#388BFD',
+              green: '#2EA043',
+              amber: '#D29922',
+              red: '#F85149'
             }
           }
         }
@@ -37,600 +38,878 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Estilo Minimalista Cupertino (macOS / iOS v4.0.0) -->
-  <link rel="stylesheet" href="style.css?v=4.0.0">
+  <!-- Professional Situation Room Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=5.0.0">
 </head>
-<body class="min-h-screen flex flex-col font-sans selection:bg-[#0A84FF]/30 selection:text-white">
+<body class="min-h-screen flex flex-col font-sans selection:bg-[#388BFD]/30 selection:text-white">
 
   <!-- ========================================================================= -->
-  <!-- 1. BARRA SUPERIOR MINIMALISTA DE NOTÍCIAS (ESTILO APPLE STOCKS / NEWS)    -->
+  <!-- 1. LIVE INTELLIGENCE STATUS STRIP                                         -->
   <!-- ========================================================================= -->
-  <div class="w-full bg-[#0d0e14]/90 border-b border-white/[0.06] py-1.5 px-4 backdrop-blur-xl z-50">
-    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
+  <div class="w-full bg-[#06080C] border-b border-white/[0.06] py-1.5 px-4 text-xs select-none z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-2 shrink-0 pr-4">
-        <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>
-        <span class="font-semibold text-white/90 tracking-tight" data-i18n="newsTickerTitle">Plantão de Notícias</span>
+        <span class="status-dot status-dot-green animate-pulse"></span>
+        <span class="font-bold text-white tracking-wider text-[11px] uppercase" data-i18n="liveIntelligenceTag">Live Intelligence Wire</span>
+        <span class="text-white/30 text-[10px]">|</span>
+        <span class="text-white/60 text-[11px] hidden sm:inline" data-i18n="incidentContextSub">Irkutsk Incident · Russia</span>
       </div>
 
       <div class="overflow-hidden w-full relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#0d0e14] to-transparent z-10"></div>
-        <div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#0d0e14] to-transparent z-10"></div>
+        <div class="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#06080C] to-transparent z-10"></div>
+        <div class="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#06080C] to-transparent z-10"></div>
 
         <div class="flex overflow-hidden [--gap:2rem] [gap:var(--gap)]">
-          <div id="marqueeTrack1" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70">
-            <span data-i18n="newsTickerPlaceholder">Sincronizando agências oficiais e comunicados em tempo real...</span>
+          <div id="marqueeTrack1" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70 text-[11px]">
+            <span data-i18n="tickerPlaceholder">Surveillance active • No secondary transmission detected • Contacts monitored</span>
           </div>
-          <div id="marqueeTrack2" aria-hidden="true" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70">
-            <span data-i18n="newsTickerPlaceholder">Sincronizando agências oficiais e comunicados em tempo real...</span>
+          <div id="marqueeTrack2" aria-hidden="true" class="flex shrink-0 items-center justify-around [gap:var(--gap)] animate-marquee hover:[animation-play-state:paused] text-white/70 text-[11px]">
+            <span data-i18n="tickerPlaceholder">Surveillance active • No secondary transmission detected • Contacts monitored</span>
           </div>
         </div>
       </div>
 
-      <div class="hidden sm:flex items-center space-x-3 shrink-0 pl-4 text-white/50 text-[11px]">
-        <span id="syncStatusText" data-i18n="newsTickerSync">Atualiza em 60s</span>
+      <div class="hidden md:flex items-center space-x-3 shrink-0 pl-4 text-white/40 text-[10px] font-mono">
+        <span id="syncCountdown">SYNC: 60s</span>
       </div>
     </div>
   </div>
 
   <!-- ========================================================================= -->
-  <!-- 2. HEADER DA APLICAÇÃO (ESTILO macOS APP / NAVIGATION BAR)                -->
+  <!-- 2. COMPACT HEADER & PRIMARY NAVIGATION                                    -->
   <!-- ========================================================================= -->
-  <header class="bg-[#12141c]/80 border-b border-white/[0.08] sticky top-0 z-40 backdrop-blur-2xl">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+  <header class="bg-[#080B10]/95 border-b border-white/[0.08] sticky top-0 z-40 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
       
-      <!-- Identificação & Window Dots macOS -->
-      <div class="flex items-center space-x-3.5">
-        <!-- macOS Window Dots -->
-        <div class="hidden md:flex items-center space-x-1.5 pr-2 border-r border-white/10">
-          <div class="window-dot window-dot-red"></div>
-          <div class="window-dot window-dot-yellow"></div>
-          <div class="window-dot window-dot-green"></div>
-        </div>
-
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0A84FF] to-[#0051C6] flex items-center justify-center text-white shadow-md shadow-[#0A84FF]/20">
-          <i data-lucide="shield" class="w-5 h-5"></i>
+      <!-- Brand & Product Identity -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded bg-white/[0.06] border border-white/10 flex items-center justify-center text-[#388BFD]">
+          <i data-lucide="crosshair" class="w-4 h-4"></i>
         </div>
 
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="text-base sm:text-lg font-bold text-white tracking-tight" data-i18n="appTitle">
-              Vigilância Sanitária
+            <h1 class="text-sm font-bold text-white tracking-wider uppercase font-mono" data-i18n="brandTitle">
+              OUTBREAK INTELLIGENCE
             </h1>
-            <span class="pill-badge bg-white/10 text-white/80 border border-white/10" data-i18n="appRegion">
-              Irkutsk • Sibéria
-            </span>
+            <span class="tag-badge tag-confirmed text-[9px] py-0.5">● LIVE</span>
           </div>
-          <p class="text-xs text-white/50 flex items-center gap-1.5">
-            <span data-i18n="appSubtitle">Acompanhamento Epidemiológico & Disseminação Internacional</span>
-            <span>•</span>
-            <span class="text-[#30D158] font-medium flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-[#30D158]"></span>
-              <span data-i18n="liveBadge">Ao Vivo</span>
-            </span>
+          <p class="text-[10px] text-white/50 leading-tight">
+            <span data-i18n="brandSubtitle">Global Epidemiological Monitoring</span>
+            <span class="text-white/20">·</span>
+            <span class="text-white/40" data-i18n="brandContext">Irkutsk Incident · Russia · Live Intelligence</span>
           </p>
         </div>
       </div>
 
-      <!-- Ações Rápidas & Controles Cupertino -->
-      <div class="flex items-center space-x-2">
-        <!-- Seletor de Idioma EN / PT -->
-        <div class="flex items-center bg-white/[0.06] p-0.5 rounded-xl border border-white/[0.08]" id="langSelector" title="Selecionar Idioma / Select Language">
-          <button id="langBtnEn" type="button" class="px-2.5 py-1 text-xs font-semibold rounded-lg transition text-white/60 hover:text-white" data-lang="en">EN</button>
-          <button id="langBtnPt" type="button" class="px-2.5 py-1 text-xs font-semibold rounded-lg transition bg-white/20 text-white shadow-sm" data-lang="pt">PT</button>
+      <!-- Primary 5 Navigation Tabs -->
+      <nav class="flex items-center space-x-1 bg-white/[0.03] p-1 rounded-md border border-white/[0.06]" id="mainNav">
+        <button class="nav-tab-btn active" data-tab="navOverview" id="btnNavOverview">
+          <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+          <span data-i18n="navOverview">OVERVIEW</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="navTimeline" id="btnNavTimeline">
+          <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+          <span data-i18n="navTimeline">TIMELINE</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="navMap" id="btnNavMap">
+          <i data-lucide="map" class="w-3.5 h-3.5"></i>
+          <span data-i18n="navMap">MAP</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="navIntelligence" id="btnNavIntelligence">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+          <span data-i18n="navIntelligence">INTELLIGENCE</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="navSources" id="btnNavSources">
+          <i data-lucide="newspaper" class="w-3.5 h-3.5"></i>
+          <span data-i18n="navSources">SOURCES</span>
+        </button>
+      </nav>
+
+      <!-- Right Header Actions (Compact) -->
+      <div class="flex items-center space-x-2.5 text-xs">
+        <!-- Quick Search Icon/Input -->
+        <div class="relative hidden sm:block">
+          <input type="text" id="quickSearchInput" placeholder="Quick search..."
+            data-i18n-placeholder="quickSearchPlaceholder"
+            class="w-36 lg:w-44 bg-white/[0.04] border border-white/[0.08] rounded px-2.5 py-1 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#388BFD] transition text-[11px]">
         </div>
 
-        <!-- Toggle Som -->
-        <button id="toggleAudioBtn" title="Ativar/desativar alertas sonoros"
-          class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] hover:bg-white/[0.1] text-white/80 border border-white/[0.08] transition">
-          <i data-lucide="volume-2" class="w-4 h-4 text-[#0A84FF]" id="audioIcon"></i>
-          <span class="hidden sm:inline" id="audioText">Som Ativo</span>
+        <!-- Language Switcher EN / PT -->
+        <div class="flex items-center bg-white/[0.04] rounded border border-white/[0.08] p-0.5 text-[10px] font-mono">
+          <button id="langBtnEn" class="px-2 py-0.5 rounded bg-white/10 text-white font-bold" data-lang="en">EN</button>
+          <button id="langBtnPt" class="px-2 py-0.5 rounded text-white/50 hover:text-white" data-lang="pt">PT</button>
+        </div>
+
+        <!-- Audio Alert Toggle -->
+        <button id="toggleAudioBtn" title="Toggle audio alert"
+          class="p-1.5 rounded bg-white/[0.04] hover:bg-white/[0.08] text-white/60 hover:text-white border border-white/[0.08] transition">
+          <i data-lucide="volume-2" class="w-3.5 h-3.5 text-[#388BFD]" id="audioIcon"></i>
         </button>
 
-        <!-- Configuração de Camadas OSM -->
-        <button id="openMapSettingsBtn" title="Configurar camadas do OpenStreetMap"
-          class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/[0.06] hover:bg-white/[0.1] text-white/80 border border-white/[0.08] transition">
-          <i data-lucide="map" class="w-4 h-4 text-white/70"></i>
-          <span class="hidden md:inline" data-i18n="mapLayers">Camadas Mapa</span>
+        <!-- Refresh Button -->
+        <button id="refreshBtn" title="Force Refresh"
+          class="flex items-center space-x-1 px-2.5 py-1 rounded bg-white/[0.04] hover:bg-white/[0.08] text-white/70 hover:text-white border border-white/[0.08] transition text-[11px] font-mono">
+          <i data-lucide="refresh-cw" class="w-3 h-3" id="refreshIcon"></i>
+          <span class="hidden xl:inline" data-i18n="refreshText">Refresh</span>
         </button>
 
-        <!-- Botão Atualizar -->
-        <button id="refreshBtn"
-          class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-[#0A84FF] hover:bg-[#0071E3] text-white shadow-sm shadow-[#0A84FF]/30 transition active:scale-95">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5" id="refreshIcon"></i>
-          <span data-i18n="refresh">Atualizar</span>
-        </button>
+        <!-- Dynamic Time -->
+        <div class="hidden lg:flex items-center space-x-1.5 text-white/40 text-[11px] font-mono pl-1">
+          <span data-i18n="lastUpdatedLabel">Last updated:</span>
+          <span id="headerLastUpdated" class="text-white/80 font-semibold">--:--:--</span>
+        </div>
       </div>
 
     </div>
   </header>
 
   <!-- ========================================================================= -->
-  <!-- 3. WIDGETS DE MÉTRICAS (ESTILO APPLE HEALTH & WEATHER BENTO)              -->
+  <!-- 3. MAIN DASHBOARD CONTENT AREA                                            -->
   <!-- ========================================================================= -->
-  <section class="max-w-7xl mx-auto px-4 pt-4 pb-2 w-full">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-      
-      <!-- Widget 1: Disseminação Externa -->
-      <div class="apple-card p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white/60" data-i18n="cardSpreadTitle">Disseminação Externa</span>
-          <span class="pill-badge bg-[#30D158]/15 text-[#30D158] border border-[#30D158]/30">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#30D158]"></span>
-            <span data-i18n="cardSpreadBadge">Seguro</span>
-          </span>
+  <main class="max-w-7xl mx-auto px-4 py-4 w-full flex-1">
+
+    <!-- ===================================================================== -->
+    <!-- TAB 1: OVERVIEW (SITUATION ROOM)                                      -->
+    <!-- ===================================================================== -->
+    <div id="viewOverview" class="tab-view space-y-4">
+
+      <!-- Significant Change Alert (Conditional) -->
+      <div id="significantChangeAlert" class="hidden intel-panel p-3 border-[#F85149]/40 bg-[#F85149]/10 text-xs flex items-center justify-between">
+        <div class="flex items-center space-x-2.5 text-[#F85149] font-bold">
+          <span class="status-dot status-dot-red animate-ping"></span>
+          <span class="uppercase tracking-wider font-mono">SIGNIFICANT CHANGE DETECTED:</span>
+          <span class="text-white font-medium" id="significantChangeText">Secondary transmission or critical expansion reported.</span>
         </div>
-        <div class="my-2">
-          <div class="text-xl font-bold text-white tracking-tight" id="cardSpreadStatus">
-            Contido Localmente
-          </div>
-          <p class="text-xs text-white/50 mt-0.5 leading-relaxed" data-i18n="cardSpreadDesc">
-            Nenhum caso confirmado fora do grupo hospitalar isolado na Sibéria.
-          </p>
-        </div>
-        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]" data-i18n="cardSpreadRisk">
-          Risco Global OMS: Baixo
-        </div>
+        <button id="dismissChangeAlert" class="text-white/60 hover:text-white text-[11px] underline">Acknowledge</button>
       </div>
 
-      <!-- Widget 2: Quarentena e Isolamento -->
-      <div class="apple-card p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white/60" data-i18n="cardQuarantineTitle">Contatos em Observação</span>
-          <span class="pill-badge bg-[#FF9F0A]/15 text-[#FF9F0A] border border-[#FF9F0A]/30" data-i18n="cardQuarantineBadge">
-            Quarentena
-          </span>
-        </div>
-        <div class="my-2">
-          <div class="text-2xl font-bold text-[#FF9F0A] tracking-tight" id="cardQuarantine">
-            ~200 Pessoas
-          </div>
-          <p class="text-xs text-white/50 mt-0.5 leading-relaxed" data-i18n="cardQuarantineDesc">
-            Hospitais de Shelekhov e Irkutsk com alas isoladas preventivamente.
-          </p>
-        </div>
-        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]" id="cardQuarantineSource" data-i18n="cardQuarantineSourceDefault">
-          Apurado em Tempo Real
-        </div>
-      </div>
-
-      <!-- Widget 3: Despachos Prioritários -->
-      <div class="apple-card p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white/60" data-i18n="cardAlertsTitle">Alertas de Alta Atenção</span>
-          <span class="pill-badge bg-[#FF453A]/15 text-[#FF453A] border border-[#FF453A]/30" data-i18n="cardAlertsBadge">
-            Prioritário
-          </span>
-        </div>
-        <div class="my-2 flex items-baseline gap-2">
-          <div class="text-3xl font-bold text-[#FF453A] tracking-tight" id="cardHighAlerts">
-            --
-          </div>
-          <span class="text-xs text-white/50" data-i18n="cardAlertsSuffix">notícias apuradas</span>
-        </div>
-        <div class="text-[11px] text-white/40 pt-1 border-t border-white/[0.06]" id="feedCountBadge">
-          Total: -- fontes ativas
-        </div>
-      </div>
-
-      <!-- Widget 4: Redes Sociais & TikTok Pulse -->
-      <div class="apple-card p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold text-white/60" data-i18n="cardSocialTitle">TikTok & Redes Sociais</span>
-          <span class="pill-badge bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/30" data-i18n="cardSocialBadge">
-            Tendências
-          </span>
-        </div>
-        <div class="my-2">
-          <div class="text-lg font-bold text-white tracking-tight" id="socialWidgetStatus">
-            Atenção Moderada
-          </div>
-          <p class="text-xs text-white/50 mt-0.5 leading-relaxed" data-i18n="cardSocialDesc">
-            Rumores e vídeos monitorados via #Irkutsk e #RussiaPlague.
-          </p>
-        </div>
-        <div class="text-[11px] text-[#0A84FF] pt-1 border-t border-white/[0.06] flex items-center justify-between">
-          <span data-i18n="cardSocialSentiment">Sentimento Público</span>
-          <span id="socialWidgetPanic">65% Alerta</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ========================================================================= -->
-  <!-- 4. HEADLINE & BRIEFING EXECUTIVO DA ÚLTIMA HORA                           -->
-  <!-- ========================================================================= -->
-  <section class="max-w-7xl mx-auto px-4 pt-1 pb-2 w-full">
-    <div class="apple-card p-4 sm:p-5 border border-[#0A84FF]/25 bg-gradient-to-br from-[#0A84FF]/[0.08] via-white/[0.02] to-transparent relative overflow-hidden">
-      <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#0A84FF]/10 rounded-full blur-2xl pointer-events-none"></div>
-
-      <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-white/[0.08]">
+      <!-- WHAT CHANGED SINCE YOUR LAST VISIT -->
+      <div class="intel-panel py-2 px-3.5 flex flex-wrap items-center justify-between gap-2 text-xs text-white/70 bg-white/[0.02]">
         <div class="flex items-center space-x-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#0A84FF] animate-pulse"></span>
-          <h2 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-            <span data-i18n="briefingTitle">Situação nas Últimas Horas • Briefing Executivo</span>
-          </h2>
-        </div>
-        <div class="flex items-center space-x-2">
-          <span class="pill-badge bg-[#30D158]/15 text-[#30D158] border border-[#30D158]/30 text-[11px]" id="briefingStatusBadge" data-i18n="briefingStatusDefault">
-            Contido Localmente
+          <span class="font-bold text-white tracking-wider text-[10px] uppercase font-mono text-[#388BFD]" data-i18n="whatChangedTitle">
+            WHAT CHANGED SINCE LAST VISIT:
           </span>
-          <span class="pill-badge bg-[#0A84FF]/15 text-[#0A84FF] border border-[#0A84FF]/30 text-[11px]" id="briefingEngineBadge" data-i18n="briefingEngineDefault">
-            IA em Tempo Real
-          </span>
-          <span class="pill-badge bg-white/[0.06] text-white/60 border border-white/10 text-[11px]" id="briefingTimeWindowBadge" data-i18n="briefingTimeWindowDefault">
-            Última Hora
+          <span id="whatChangedSummary" class="text-white/80 text-[11px]">
+            +0 new verified reports · 0 new cases · Risk level unchanged (GUARDED) · Contact testing remains negative
           </span>
         </div>
-      </div>
-
-      <div class="my-1.5">
-        <h3 class="text-sm sm:text-base md:text-lg font-bold text-white leading-snug tracking-tight" id="briefingHeadline">
-          Carregando síntese dos acontecimentos mais recentes...
-        </h3>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-3 pt-3 border-t border-white/[0.06] text-xs" id="briefingBulletsContainer">
-        <!-- Bullets dinâmicos injetados via app.js -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================= -->
-  <!-- 4. MODAL MINIMALISTA DE CAMADAS OPENSTREETMAP                             -->
-  <!-- ========================================================================= -->
-  <div id="mapSettingsModal" class="fixed inset-0 bg-black/60 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
-    <div class="apple-card max-w-md w-full p-6 shadow-2xl relative bg-[#181a24]">
-      <div class="flex items-center justify-between pb-3 border-b border-white/10">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="layers" class="w-4 h-4 text-[#0A84FF]"></i>
-          <span data-i18n="modalTitle">Camadas do OpenStreetMap</span>
-        </h3>
-        <button id="closeMapSettingsBtn" class="text-white/50 hover:text-white p-1">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
-
-      <div class="mt-4 space-y-3.5 text-xs">
-        <div>
-          <label class="block font-medium text-white/80 mb-1" data-i18n="modalSelectLabel">Estilo do Mapa Base:</label>
-          <select id="mapStyleSelect" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-[#0A84FF] text-xs">
-            <option value="osm-standard" selected>🌍 OpenStreetMap Padrão (Oficial)</option>
-            <option value="carto-dark">🌙 Carto Dark Matter (Contraste Noturno)</option>
-            <option value="maptiler-dark">🗺️ MapTiler Dark (Requer Chave API)</option>
-            <option value="stadia-dark">🛰️ Stadia Alidade Dark (Requer Chave API)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block font-medium text-white/80 mb-1" data-i18n="modalKeyLabel">Chave de API do Provedor (Opcional):</label>
-          <input type="text" id="customApiKeyInput" placeholder="Ex: sua_chave_api_maptiler"
-            class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-3 py-2 text-white placeholder-white/30 text-xs focus:outline-none focus:border-[#0A84FF]">
-          <p class="text-[11px] text-white/40 mt-1" data-i18n="modalKeyNotice">
-            * O OpenStreetMap e o Carto Dark funcionam de forma livre e não requerem chave.
-          </p>
-        </div>
-
-        <div class="pt-3 border-t border-white/10 flex justify-end">
-          <button id="saveMapSettingsBtn" class="px-4 py-2 rounded-xl bg-[#0A84FF] hover:bg-[#0071E3] text-white font-medium text-xs shadow transition" data-i18n="modalSaveBtn">
-            Salvar e Aplicar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================================= -->
-  <!-- 5. GRID PRINCIPAL: FEED (ESQ) & VISUALIZADORES / TABS (DIR)               -->
-  <!-- ========================================================================= -->
-  <main class="max-w-7xl mx-auto px-4 py-3 w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5">
-
-    <!-- COLUNA DA ESQUERDA: FEED DE NOTÍCIAS & APURAÇÕES (7 colunas) -->
-    <section class="lg:col-span-7 flex flex-col space-y-3">
-      
-      <!-- Barra de Busca & Filtros Cupertino -->
-      <div class="apple-card p-3 space-y-2.5">
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-white/40 absolute left-3.5 top-3"></i>
-          <input type="text" id="searchInput" placeholder="Buscar por termo (Irkutsk, peste, quarentena, OMS, BNO, Shipilova)..."
-            data-i18n-placeholder="searchPlaceholder"
-            class="w-full bg-white/[0.05] border border-white/[0.08] rounded-xl pl-10 pr-8 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#0A84FF] transition">
-          <button id="clearSearchBtn" class="hidden absolute right-3 top-2.5 text-white/40 hover:text-white">
-            <i data-lucide="x" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Filtros em Pílulas -->
-        <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
-          <button class="filter-pill active" data-filter="all"><span data-i18n="filterAll">Todos</span> (<span id="countAll">0</span>)</button>
-          <button class="filter-pill" data-filter="irkutsk" data-i18n="filterIrkutsk">Irkutsk / Sibéria</button>
-          <button class="filter-pill" data-filter="russia" data-i18n="filterRussia">Rússia</button>
-          <button class="filter-pill" data-filter="high" data-i18n="filterHigh">Alta Atenção</button>
-          <button class="filter-pill" data-filter="who" data-i18n="filterWho">OMS / Global</button>
-          <button class="filter-pill" data-filter="social" data-i18n="filterSocial">Redes / Reddit</button>
+        <div class="text-[10px] text-white/40 font-mono" id="lastVisitTimestamp">
+          Reference: Active Session
         </div>
       </div>
 
-      <!-- Lista de Notícias em Cards Limpos -->
-      <div class="apple-card p-3.5 flex-1 flex flex-col min-h-[500px]">
-        <div class="flex items-center justify-between pb-2 border-b border-white/[0.06] mb-2 px-1">
-          <h2 class="text-xs font-semibold text-white/70 uppercase tracking-wider flex items-center gap-1.5">
-            <i data-lucide="newspaper" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-            <span data-i18n="feedTitle">Despachos & Notícias</span>
-          </h2>
-          <span class="text-[11px] text-white/40" id="filteredCountText" data-i18n="feedLoading">Carregando...</span>
-        </div>
-
-        <div id="newsFeedContainer" class="space-y-2 overflow-y-auto max-h-[750px] pr-1 custom-scrollbar">
-          <!-- Carregamento via app.js -->
-        </div>
-      </div>
-
-    </section>
-
-    <!-- COLUNA DA DIREITA: MAPA, TIKTOK, DOSSIÊ & FRONTEIRAS (5 colunas) -->
-    <section class="lg:col-span-5 flex flex-col space-y-3">
-      
-      <!-- macOS Segmented Control Tabs -->
-      <div class="segmented-control w-full grid grid-cols-5 gap-1 p-1">
-        <button class="segmented-btn active flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabMap">
-          <i data-lucide="map" class="w-3.5 h-3.5"></i>
-          <span data-i18n="tabMap">Mapa</span>
-        </button>
-        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabFlights">
-          <i data-lucide="plane" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-          <span data-i18n="tabFlights">Voos</span>
-        </button>
-        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabSocial">
-          <i data-lucide="smartphone" class="w-3.5 h-3.5 text-[#BF5AF2]"></i>
-          <span data-i18n="tabSocial">TikTok</span>
-        </button>
-        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabDossier">
-          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-          <span data-i18n="tabDossier">Dossiê</span>
-        </button>
-        <button class="segmented-btn flex items-center justify-center gap-1 text-[11px] py-1.5 px-1" data-tab="tabSpread">
-          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
-          <span data-i18n="tabBorders">Fronteiras</span>
-        </button>
-      </div>
-
-      <!-- ABA 1: MAPA GEOGRÁFICO INTERATIVO -->
-      <div id="tabMap" class="tab-content apple-card p-3 flex flex-col">
-        <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/[0.06]">
+      <!-- CURRENT THREAT (HERO PANEL) -->
+      <section class="intel-panel p-4 lg:p-5 relative overflow-hidden" id="currentThreatSection">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-white/[0.06]">
           <div class="flex items-center space-x-2">
-            <span class="w-2 h-2 rounded-full bg-[#FF453A] animate-pulse"></span>
-            <h3 class="text-xs font-semibold text-white/80" data-i18n="mapTitle">Localização do Foco & Monitoramento</h3>
+            <span class="status-dot status-dot-amber"></span>
+            <h2 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="currentThreatTitle">
+              CURRENT THREAT
+            </h2>
+            <span class="text-white/30 text-xs">·</span>
+            <span class="text-xs font-bold text-[#D29922] font-mono tracking-wide" id="threatBadgeText">GUARDED</span>
           </div>
-          <span class="text-[11px] text-white/40" id="currentMapTileLabel">OpenStreetMap Padrão</span>
+
+          <!-- Dynamic Threat Phrase -->
+          <div class="text-xs sm:text-sm font-semibold text-white/90 font-mono tracking-tight" id="threatHeadline">
+            No evidence of secondary transmission
+          </div>
         </div>
 
-        <div id="mapContainer" class="w-full h-[360px] rounded-xl border border-white/10 overflow-hidden relative z-10"></div>
+        <!-- Horizontal Threat Scale -->
+        <div class="threat-scale-track my-2.5">
+          <div class="threat-step" data-level="LOW">LOW</div>
+          <div class="threat-step active-guarded" data-level="GUARDED">GUARDED</div>
+          <div class="threat-step" data-level="ELEVATED">ELEVATED</div>
+          <div class="threat-step" data-level="HIGH">HIGH</div>
+          <div class="threat-step" data-level="CRITICAL">CRITICAL</div>
+        </div>
 
-        <div class="grid grid-cols-2 gap-2 mt-2.5 text-[11px] text-white/60 bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.06]">
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#FF453A] shrink-0"></span>
-            <span data-i18n="mapLegendIrkutsk"><strong>Irkutsk:</strong> Quarentena (~200)</span>
+        <!-- Justification Indicators (Horizontal derived from data) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 pt-2.5 mt-2.5 border-t border-white/[0.06] text-xs">
+          <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
+            <span class="text-white/50 text-[11px]" data-i18n="threatSecTrans">Secondary transmission:</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaSecTrans">None</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#FF9F0A] shrink-0"></span>
-            <span data-i18n="mapLegendMoscow"><strong>Moscou:</strong> Rospotrebnadzor</span>
+          <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
+            <span class="text-white/50 text-[11px]" data-i18n="threatExtSpread">Confirmed external spread:</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaExtSpread">None</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#0A84FF] shrink-0"></span>
-            <span data-i18n="mapLegendGeneva"><strong>Genebra:</strong> Vigilância OMS</span>
+          <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
+            <span class="text-white/50 text-[11px]" data-i18n="threatContInfect">Contacts infected:</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaContInfect">0</span>
           </div>
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#30D158] shrink-0"></span>
-            <span data-i18n="mapLegendBeijing"><strong>Pequim / Ásia:</strong> Vigilância Portuária</span>
+          <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
+            <span class="text-white/50 text-[11px]" data-i18n="threatGeoExpand">Geographic expansion:</span>
+            <span class="font-bold text-[#2EA043] font-mono text-[11px]" id="criteriaGeoExpand">None</span>
+          </div>
+          <div class="flex items-center justify-between bg-white/[0.02] px-2.5 py-1.5 rounded border border-white/[0.04]">
+            <span class="text-white/50 text-[11px]" data-i18n="threatQuarantine">Quarantine:</span>
+            <span class="font-bold text-[#D29922] font-mono text-[11px]" id="criteriaQuarantine">Active</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- ABA 2: MONITOR DE VOOS & ROTAS AÉREAS (IKT HUB) -->
-      <div id="tabFlights" class="tab-content hidden apple-card p-4 space-y-3.5">
-        <div class="border-b border-white/[0.06] pb-2.5 flex items-center justify-between">
-          <div>
-            <div class="flex items-center space-x-2">
-              <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-                <i data-lucide="plane" class="w-4 h-4 text-[#0A84FF]"></i>
-                <span data-i18n="flightsTitle">Monitor de Voos • Aeroporto de Irkutsk (IKT)</span>
-              </h3>
-              <span class="pill-badge bg-[#30D158]/15 text-[#30D158] border border-[#30D158]/30 text-[10px]" data-i18n="flightsNormal">
-                Operação Normal
-              </span>
+      <!-- HORIZONTAL EPIDEMIOLOGICAL KPIs STRIP -->
+      <section class="intel-panel overflow-x-auto custom-scrollbar" id="kpiStrip">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-y sm:divide-y-0 sm:divide-x divide-white/[0.06] text-center">
+          
+          <div class="kpi-cell">
+            <div class="kpi-num text-[#2EA043]" id="kpiConfirmed">0</div>
+            <div class="kpi-label" data-i18n="kpiConfirmedLabel">CONFIRMED</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-[#D29922]" id="kpiUnderInvestigation">1</div>
+            <div class="kpi-label" data-i18n="kpiInvestigatedLabel">UNDER INVESTIGATION</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-white/90" id="kpiDeaths">1</div>
+            <div class="kpi-label" data-i18n="kpiDeathsLabel">DEATHS</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-[#D29922]" id="kpiContactsMonitored">~200</div>
+            <div class="kpi-label" data-i18n="kpiContactsLabel">CONTACTS MONITORED</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-[#2EA043]" id="kpiSecondaryCases">0</div>
+            <div class="kpi-label" data-i18n="kpiSecondaryLabel">SECONDARY CASES</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-white/90" id="kpiCountriesAffected">1</div>
+            <div class="kpi-label" data-i18n="kpiCountriesLabel">COUNTRIES AFFECTED</div>
+          </div>
+
+          <div class="kpi-cell">
+            <div class="kpi-num text-[#2EA043]" id="kpiExternalCases">0</div>
+            <div class="kpi-label" data-i18n="kpiExternalLabel">EXTERNAL CASES</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- MAIN SPLIT: 60% LEFT (Timeline & Evolution) / 40% RIGHT (Geography & Risk) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+
+        <!-- LEFT COLUMN (~60%) -->
+        <div class="lg:col-span-7 space-y-4">
+
+          <!-- Incident Timeline (Top 5-7 Events) -->
+          <div class="intel-panel p-4">
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="clock" class="w-4 h-4 text-[#388BFD]"></i>
+                <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="incidentTimelineTitle">
+                  INCIDENT TIMELINE
+                </h3>
+              </div>
+              <button class="text-xs text-[#388BFD] hover:underline font-mono inline-flex items-center gap-1" id="btnGoToTimeline">
+                <span data-i18n="viewCompleteTimelineBtn">View complete timeline</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
             </div>
-            <p class="text-[11px] text-white/50 mt-0.5" data-i18n="flightsSubtitle">Rastreamento de partidas e triagem sanitária de conexões aéreas.</p>
+
+            <!-- Milestone list -->
+            <div class="space-y-2.5 text-xs" id="overviewMilestonesList">
+              <!-- Rendered dynamically via app.js -->
+            </div>
           </div>
-          <span class="pill-badge bg-white/[0.06] text-white/60 text-[10px] hidden sm:inline-flex" id="overheadAirspaceBadge">
-            OpenSky: Ativo
-          </span>
+
+          <!-- Outbreak Evolution (Replaces Severity Chart) -->
+          <div class="intel-panel p-4">
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-[#2EA043]"></i>
+                <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="outbreakEvolutionTitle">
+                  OUTBREAK EVOLUTION
+                </h3>
+              </div>
+              <span class="text-[10px] text-white/40 font-mono" data-i18n="containmentCurveLabel">Containment & Progression</span>
+            </div>
+
+            <!-- Evolution Table / Progression strip -->
+            <div class="overflow-x-auto custom-scrollbar">
+              <table class="w-full text-xs text-left text-white/80">
+                <thead class="text-[10px] text-white/40 uppercase font-mono border-b border-white/[0.06]">
+                  <tr>
+                    <th class="py-1.5 px-2">Date</th>
+                    <th class="py-1.5 px-2">Phase</th>
+                    <th class="py-1.5 px-2 text-right">Suspected</th>
+                    <th class="py-1.5 px-2 text-right">Confirmed</th>
+                    <th class="py-1.5 px-2 text-right">Deaths</th>
+                    <th class="py-1.5 px-2 text-right">Contacts</th>
+                    <th class="py-1.5 px-2 text-right">Secondary</th>
+                    <th class="py-1.5 px-2 text-right">Locations</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-white/[0.04] font-mono text-[11px]" id="evolutionTableBody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
-        <div class="bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06] flex items-center justify-between text-xs">
-          <div class="flex items-center space-x-2">
-            <span class="w-2 h-2 rounded-full bg-[#30D158]"></span>
-            <span class="text-white/80 font-medium" data-i18n="flightsScreeningActive">Triagem Térmica Preventiva Ativa</span>
+        <!-- RIGHT COLUMN (~40%) -->
+        <div class="lg:col-span-5 space-y-4">
+
+          <!-- Geographic Status -->
+          <div class="intel-panel p-4">
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="map-pin" class="w-4 h-4 text-[#388BFD]"></i>
+                <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="geographicStatusTitle">
+                  GEOGRAPHIC STATUS
+                </h3>
+              </div>
+              <button class="text-xs text-[#388BFD] hover:underline font-mono inline-flex items-center gap-1" id="btnGoToMap">
+                <span data-i18n="openMapBtn">Open interactive map</span>
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+
+            <!-- Mini Map Preview Centered on Irkutsk/Baikal -->
+            <div id="overviewMapPreview" class="w-full h-48 rounded border border-white/10 overflow-hidden relative mb-3"></div>
+
+            <!-- Small Status Indicators -->
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
+                <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoLocalSpread">Local spread</div>
+                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusLocal">Contained</div>
+              </div>
+              <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
+                <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoRussia">Russia</div>
+                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusRussia">Monitoring</div>
+              </div>
+              <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
+                <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoIntlSpread">International spread</div>
+                <div class="font-bold text-[#2EA043] font-mono mt-0.5" id="geoStatusIntl">None detected</div>
+              </div>
+              <div class="p-2 bg-white/[0.02] border border-white/[0.06] rounded">
+                <div class="text-[10px] text-white/40 uppercase font-mono" data-i18n="geoBorders">Borders</div>
+                <div class="font-bold text-[#D29922] font-mono mt-0.5" id="geoStatusBorders">Screening / Monitoring</div>
+              </div>
+            </div>
           </div>
-          <span class="text-white/40 text-[11px]" data-i18n="flightsZeroBlocked">0 Voos Bloqueados</span>
+
+          <!-- Risk Indicators Matrix -->
+          <div class="intel-panel p-4">
+            <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-[#388BFD]"></i>
+                <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="riskIndicatorsTitle">
+                  RISK INDICATORS
+                </h3>
+              </div>
+              <span class="text-[10px] text-white/40 font-mono">Epidemiological Matrix</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+              <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
+                <span class="text-white/60" data-i18n="riskHumanSpread">Human transmission</span>
+                <span class="font-bold text-[#2EA043] font-mono" id="riskHumanSpreadVal">None</span>
+              </div>
+              <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
+                <span class="text-white/60" data-i18n="riskContactInfect">Contact infections</span>
+                <span class="font-bold text-[#2EA043] font-mono" id="riskContactInfectVal">0</span>
+              </div>
+              <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
+                <span class="text-white/60" data-i18n="riskGeoExpansion">Geographic spread</span>
+                <span class="font-bold text-[#2EA043] font-mono" id="riskGeoExpansionVal">None</span>
+              </div>
+              <div class="flex items-center justify-between py-1 border-b border-white/[0.04]">
+                <span class="text-white/60" data-i18n="riskBordersStatus">Borders</span>
+                <span class="font-bold text-[#D29922] font-mono" id="riskBordersVal">Monitoring</span>
+              </div>
+              <div class="flex items-center justify-between py-1">
+                <span class="text-white/60" data-i18n="riskFacilityContain">Facility Biocontainment</span>
+                <span class="font-bold text-[#388BFD] font-mono" id="riskFacilityVal">BSL-3 Inspected</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <div>
-          <div class="flex items-center justify-between text-xs font-semibold text-white/70 mb-2">
-            <span data-i18n="flightsKeyRoutes">Rotas Chave Monitoradas</span>
-            <span class="text-[11px] text-white/40" data-i18n="flightsDepartures">Partidas de Irkutsk</span>
-          </div>
-          <div id="flightsContainer" class="space-y-2 max-h-[380px] overflow-y-auto custom-scrollbar text-xs">
-            <!-- Injetado dinamicamente via app.js -->
-          </div>
-        </div>
       </div>
 
-      <!-- ABA 3: TIKTOK & RADAR SOCIAL -->
-      <div id="tabSocial" class="tab-content hidden apple-card p-4 space-y-3.5">
-        <div class="border-b border-white/[0.06] pb-2 flex items-center justify-between">
-          <div>
-            <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
-              <i data-lucide="smartphone" class="w-4 h-4 text-[#BF5AF2]"></i>
-              <span data-i18n="socialRadarTitle">Radar de Redes Sociais & TikTok</span>
+      <!-- LATEST VERIFIED INTELLIGENCE (Top ~5 items) -->
+      <section class="intel-panel p-4">
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#388BFD]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="latestVerifiedTitle">
+              LATEST VERIFIED INTELLIGENCE
             </h3>
-            <p class="text-[11px] text-white/50 mt-0.5" data-i18n="socialRadarSubtitle">Acompanhamento de vídeos e hashtags em alta sobre o caso.</p>
+            <span class="text-white/30 text-xs">·</span>
+            <span class="text-[10px] text-white/40" data-i18n="latestVerifiedSub">Top verified official & wire dispatches</span>
           </div>
-          <span class="pill-badge bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/30" data-i18n="socialLiveBadge">
-            Tempo Real
-          </span>
+          <button class="text-xs text-[#388BFD] hover:underline font-mono inline-flex items-center gap-1" id="btnGoToSources">
+            <span data-i18n="viewAllIntelligenceLink">View all intelligence →</span>
+          </button>
         </div>
 
-        <!-- Termômetro de Sentimento Social -->
-        <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06] space-y-1.5">
-          <div class="flex items-center justify-between text-xs">
-            <span class="text-white/70 font-medium" data-i18n="socialRumorIndex">Índice de Rumores nas Redes:</span>
-            <span class="text-[#FF9F0A] font-semibold" id="socialPanicStatus">Carregando...</span>
+        <div class="space-y-2 text-xs" id="latestVerifiedContainer">
+          <!-- Populated dynamically with top 5 items -->
+        </div>
+      </section>
+
+      <!-- RUMOR WATCH (Overview Highlight) -->
+      <section class="intel-panel p-4">
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="radio" class="w-4 h-4 text-[#D29922]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="rumorWatchTitle">
+              RUMOR WATCH · VIRALITY VS. EVIDENCE
+            </h3>
           </div>
-          <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-            <div id="socialPanicBar" class="bg-gradient-to-r from-[#0A84FF] via-[#FF9F0A] to-[#FF453A] h-full transition-all duration-500" style="width: 65%;"></div>
-          </div>
-          <div class="flex justify-between text-[10px] text-white/40">
-            <span>Calmo</span>
-            <span>Moderado</span>
-            <span>Alerta Elevado</span>
-          </div>
+          <span class="text-[10px] text-white/40 font-mono" data-i18n="rumorWatchSub">Separating social spread from epidemiological data</span>
         </div>
 
-        <!-- Hashtags no TikTok -->
-        <div>
-          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
-            <i data-lucide="hash" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-            <span data-i18n="socialTrendingHashtags">Hashtags Populares no TikTok (Busca Direta)</span>
-          </h4>
-          <div id="trendingHashtagsContainer" class="flex flex-wrap gap-1.5 text-xs">
-            <!-- Injetado dinamicamente via app.js -->
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="overviewRumorWatchContainer">
+          <!-- Populated dynamically -->
         </div>
+      </section>
 
-        <!-- Vídeos e Postagens Recentes -->
-        <div>
-          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
-            <i data-lucide="video" class="w-3.5 h-3.5 text-[#BF5AF2]"></i>
-            <span data-i18n="socialRecentPosts">Postagens e Vídeos Recentes</span>
-          </h4>
-          <div id="socialPostsContainer" class="space-y-2 max-h-56 overflow-y-auto custom-scrollbar text-xs">
-            <!-- Injetado dinamicamente via app.js -->
-          </div>
-        </div>
-      </div>
+    </div>
 
-      <!-- ABA 4: DOSSIÊ E FATOS VERIFICADOS -->
-      <div id="tabDossier" class="tab-content hidden apple-card p-4 space-y-3">
-        <div class="border-b border-white/[0.06] pb-2">
-          <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
-            <i data-lucide="file-check" class="w-4 h-4 text-[#0A84FF]"></i>
-            <span data-i18n="dossierTitle">Dossiê: Instituto Anti-Peste de Irkutsk</span>
-          </h3>
-          <p class="text-[11px] text-white/50 mt-0.5" data-i18n="dossierSubtitle">Fatos checados e cronologia dos eventos (Outubro 2026).</p>
-        </div>
-
-        <div class="space-y-2 text-xs">
-          <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06]">
-            <span class="font-semibold text-[#FF9F0A] flex items-center gap-1.5">
-              <i data-lucide="shield" class="w-3.5 h-3.5"></i> <span data-i18n="dossierOfficialTitle">Versão Oficial (Rospotrebnadzor):</span>
-            </span>
-            <p class="text-white/70 mt-1 text-[11px] leading-relaxed" data-i18n="dossierOfficialDesc">
-              Classificado como <em>"pneumonia de etiologia desconhecida"</em>. Nega quebra de contenção física ou presença de peste nos laudos iniciais. Dra. Anna Popova inspecionou os hospitais locais.
+    <!-- ===================================================================== -->
+    <!-- TAB 2: TIMELINE (CHRONOLOGICAL INCIDENT ARCHIVE)                      -->
+    <!-- ===================================================================== -->
+    <div id="viewTimeline" class="tab-view hidden space-y-4">
+      <div class="intel-panel p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-white/[0.06]">
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2" data-i18n="timelineArchiveTitle">
+              <i data-lucide="git-commit" class="w-4 h-4 text-[#388BFD]"></i>
+              Incident Chronology Archive
+            </h2>
+            <p class="text-xs text-white/50 mt-0.5" data-i18n="timelineArchiveSub">
+              Complete chronological progression of the Irkutsk Anti-Plague Institute incident (Autumn 2026).
             </p>
           </div>
 
-          <div class="bg-white/[0.03] p-3 rounded-xl border border-white/[0.06]">
-            <span class="font-semibold text-[#0A84FF] flex items-center gap-1.5">
-              <i data-lucide="radio" class="w-3.5 h-3.5"></i> <span data-i18n="dossierIndependentTitle">Apurações Independentes (BMJ, Time, Reuters):</span>
-            </span>
-            <p class="text-white/70 mt-1 text-[11px] leading-relaxed" data-i18n="dossierIndependentDesc">
-              Técnica Darya Shipilova (28 anos) teria sofrido exposição acidental após quebra de tubo com <em>Yersinia pestis</em> em ~25 de setembro. Hospitalizada em Shelekhov e falecida em 1-2 de outubro. Quarentena de ~200 contatos.
-            </p>
+          <!-- Timeline Filters -->
+          <div class="flex flex-wrap items-center gap-1.5 text-xs">
+            <button class="intel-filter-pill active" data-timeline-filter="all">All Events</button>
+            <button class="intel-filter-pill" data-timeline-filter="CONFIRMED">Confirmed</button>
+            <button class="intel-filter-pill" data-timeline-filter="OFFICIAL">Official</button>
+            <button class="intel-filter-pill" data-timeline-filter="REPORTED">Reported</button>
+            <button class="intel-filter-pill" data-timeline-filter="UNVERIFIED">Unverified</button>
+            <button class="intel-filter-pill" data-timeline-filter="DISPUTED">Disputed</button>
           </div>
         </div>
 
-        <div>
-          <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center gap-1.5">
-            <i data-lucide="clock" class="w-3.5 h-3.5 text-[#0A84FF]"></i> <span data-i18n="dossierTimelineTitle">Linha do Tempo dos Eventos</span>
+        <!-- Full timeline items -->
+        <div class="space-y-3 pl-2 border-l border-white/10 ml-2" id="fullTimelineContainer">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 3: MAP (FULL SITUATION MAP)                                       -->
+    <!-- ===================================================================== -->
+    <div id="viewMap" class="tab-view hidden space-y-4">
+      <div class="intel-panel p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-white/[0.06]">
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2" data-i18n="fullMapTitle">
+              <i data-lucide="globe" class="w-4 h-4 text-[#388BFD]"></i>
+              Epidemiological Situation Map
+            </h2>
+            <p class="text-xs text-white/50 mt-0.5" data-i18n="fullMapSub">
+              Epicenter focus: Irkutsk / Lake Baikal / Siberia · Real-world validated geographic coordinates.
+            </p>
+          </div>
+
+          <!-- Quick view reset -->
+          <div class="flex items-center space-x-1.5 text-xs">
+            <button class="intel-filter-pill" id="btnFocusIrkutsk">Focus Epicenter</button>
+            <button class="intel-filter-pill" id="btnFocusRussia">Siberia / Russia</button>
+            <button class="intel-filter-pill" id="btnFocusGlobal">Global View</button>
+          </div>
+        </div>
+
+        <!-- Layer Selector Pills -->
+        <div class="flex flex-wrap items-center gap-1.5 mb-3 text-xs" id="mapLayerFilters">
+          <button class="intel-filter-pill active" data-map-layer="all">All Layers</button>
+          <button class="intel-filter-pill" data-map-layer="incident">Incident</button>
+          <button class="intel-filter-pill" data-map-layer="cases">Cases</button>
+          <button class="intel-filter-pill" data-map-layer="contacts">Contacts</button>
+          <button class="intel-filter-pill" data-map-layer="hospitals">Hospitals</button>
+          <button class="intel-filter-pill" data-map-layer="laboratories">Laboratories</button>
+          <button class="intel-filter-pill" data-map-layer="airports">Airports</button>
+          <button class="intel-filter-pill" data-map-layer="borders">Borders</button>
+          <button class="intel-filter-pill" data-map-layer="international">International Alerts</button>
+        </div>
+
+        <!-- Full Map Container -->
+        <div id="mainMapContainer" class="w-full h-[520px] rounded border border-white/10 overflow-hidden relative"></div>
+
+        <!-- Map Points Legend -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-3 border-t border-white/[0.06] text-[11px] text-white/60 font-mono">
+          <div class="flex items-center space-x-2">
+            <span class="status-dot status-dot-red"></span>
+            <span>Incident / Quarantined Area</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="status-dot status-dot-amber"></span>
+            <span>Hospital / Border Check</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="status-dot status-dot-blue"></span>
+            <span>WHO / Regulatory Command</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="status-dot status-dot-green"></span>
+            <span>Normal Port Surveillance</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 4: INTELLIGENCE (SPECIALIZED MONITORING MODULES)                   -->
+    <!-- ===================================================================== -->
+    <div id="viewIntelligence" class="tab-view hidden space-y-4">
+
+      <!-- MODULE 1: AIR TRAVEL (FLIGHTS & AIRSPACE) -->
+      <section class="intel-panel p-4" id="moduleAirTravel">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="plane" class="w-4 h-4 text-[#388BFD]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="airTravelTitle">
+              AIR TRAVEL · IRKUTSK AIRPORT (IKT)
+            </h3>
+            <span class="tag-badge tag-confirmed text-[9px]">Normal Operations</span>
+          </div>
+          <div class="text-[11px] text-white/50 font-mono" id="airspaceTransponderBadge">
+            OpenSky: Active Monitoring
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-3 text-xs">
+          <div class="bg-white/[0.02] p-2.5 rounded border border-white/[0.04]">
+            <span class="text-white/40 uppercase text-[10px] font-mono">Sanitary Screening</span>
+            <div class="font-bold text-[#2EA043] font-mono mt-0.5">Preventive Thermal Scanners Active</div>
+          </div>
+          <div class="bg-white/[0.02] p-2.5 rounded border border-white/[0.04]">
+            <span class="text-white/40 uppercase text-[10px] font-mono">Ground Holds</span>
+            <div class="font-bold text-[#2EA043] font-mono mt-0.5">0 Flight Cancellations Issued</div>
+          </div>
+          <div class="bg-white/[0.02] p-2.5 rounded border border-white/[0.04]">
+            <span class="text-white/40 uppercase text-[10px] font-mono">Regional & International Hub</span>
+            <div class="font-bold text-white/90 font-mono mt-0.5">Departures Monitored (IKT / UIII)</div>
+          </div>
+        </div>
+
+        <!-- Flights table -->
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-xs text-left text-white/80">
+            <thead class="text-[10px] text-white/40 uppercase font-mono border-b border-white/[0.06]">
+              <tr>
+                <th class="py-1.5 px-2">Flight</th>
+                <th class="py-1.5 px-2">Airline</th>
+                <th class="py-1.5 px-2">Route</th>
+                <th class="py-1.5 px-2">Departure</th>
+                <th class="py-1.5 px-2">Health Protocol</th>
+                <th class="py-1.5 px-2 text-right">Flight Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.04] font-mono text-[11px]" id="flightsTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MODULE 2: BORDER MONITORING -->
+      <section class="intel-panel p-4" id="moduleBorderMonitoring">
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="shield" class="w-4 h-4 text-[#388BFD]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="borderMonitoringTitle">
+              BORDER & TRANSIT MONITORING
+            </h3>
+          </div>
+          <span class="tag-badge tag-confirmed text-[9px]">Zero Quarantine Breaches</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs" id="borderMonitoringGrid">
+          <!-- Populated dynamically via state.incident.borderMonitoring -->
+          <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04]">
+            <div class="flex items-center justify-between font-mono text-white/90 font-bold mb-1">
+              <span>Mongolia Border (Altanbulag)</span>
+              <span class="tag-badge tag-unverified text-[9px]">Heightened Check</span>
+            </div>
+            <p class="text-white/60 text-[11px] leading-relaxed">
+              Thermal and clinical screening at southern Baikal land crossing. Trans-Siberian freight inspection maintained.
+            </p>
+          </div>
+          <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04]">
+            <div class="flex items-center justify-between font-mono text-white/90 font-bold mb-1">
+              <span>China Border (Manzhouli / Harbin)</span>
+              <span class="tag-badge tag-official text-[9px]">Customs Surveillance</span>
+            </div>
+            <p class="text-white/60 text-[11px] leading-relaxed">
+              Customs port health controls operational. Entry declarations required; normal cross-border trade without bans.
+            </p>
+          </div>
+          <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04]">
+            <div class="flex items-center justify-between font-mono text-white/90 font-bold mb-1">
+              <span>Russian Domestic Corridors</span>
+              <span class="tag-badge tag-confirmed text-[9px]">Local Cordon Only</span>
+            </div>
+            <p class="text-white/60 text-[11px] leading-relaxed">
+              Cordon restricted strictly to Shelekhov hospital and Institute wards. Irkutsk Oblast civilian transit remains open.
+            </p>
+          </div>
+          <div class="bg-white/[0.02] p-3 rounded border border-white/[0.04]">
+            <div class="flex items-center justify-between font-mono text-white/90 font-bold mb-1">
+              <span>Neighboring Regions (Buryatia / Zabaykalsky)</span>
+              <span class="tag-badge tag-confirmed text-[9px]">Passive Alert</span>
+            </div>
+            <p class="text-white/60 text-[11px] leading-relaxed">
+              Regional healthcare networks in Ulan-Ude and Chita placed on passive pneumonia alert; zero clinical spillover.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 3: SOCIAL MEDIA & RUMOR WATCH -->
+      <section class="intel-panel p-4" id="moduleSocialRumorWatch">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="radio" class="w-4 h-4 text-[#D29922]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="socialRumorTitle">
+              SOCIAL MEDIA & RUMOR WATCH (TIKTOK / X / REDDIT)
+            </h3>
+          </div>
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="text-white/50 text-[11px]">Public Panic Gauge:</span>
+            <span class="font-bold text-[#D29922] font-mono" id="fullPanicStatus">65% Alert</span>
+          </div>
+        </div>
+
+        <!-- Full Rumor Watch breakdown -->
+        <div class="overflow-x-auto custom-scrollbar mb-3">
+          <table class="w-full text-xs text-left text-white/80">
+            <thead class="text-[10px] text-white/40 uppercase font-mono border-b border-white/[0.06]">
+              <tr>
+                <th class="py-1.5 px-2">Topic</th>
+                <th class="py-1.5 px-2">Platform</th>
+                <th class="py-1.5 px-2">Virality</th>
+                <th class="py-1.5 px-2">Credibility</th>
+                <th class="py-1.5 px-2">Corroboration</th>
+                <th class="py-1.5 px-2">Trend</th>
+                <th class="py-1.5 px-2">Intelligence Note</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/[0.04] font-mono text-[11px]" id="rumorWatchTableBody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Viral Hashtags & TikTok Direct Signals -->
+        <div class="mb-3 pt-2.5 border-t border-white/[0.04]">
+          <h4 class="text-xs font-bold text-white/80 uppercase font-mono mb-2 flex items-center gap-1.5">
+            <i data-lucide="hash" class="w-3.5 h-3.5 text-[#388BFD]"></i>
+            Trending TikTok Hashtags & Viral Signals (Direct Search)
           </h4>
-          <div id="timelineContainer" class="space-y-2 text-xs border-l border-white/10 ml-2 pl-3"></div>
-        </div>
-      </div>
-
-      <!-- ABA 5: FRONTEIRAS & DISSEMINAÇÃO EXTERNA -->
-      <div id="tabSpread" class="tab-content hidden apple-card p-4 space-y-3">
-        <div class="border-b border-white/[0.06] pb-2">
-          <h3 class="text-xs font-semibold text-white flex items-center gap-1.5">
-            <i data-lucide="plane" class="w-4 h-4 text-[#30D158]"></i>
-            <span data-i18n="bordersTitle">Vigilância de Fronteiras & Risco Externo</span>
-          </h3>
-          <p class="text-[11px] text-white/50 mt-0.5" data-i18n="bordersSubtitle">Rotas de trânsito, voos e monitoramento diplomático.</p>
+          <div class="flex flex-wrap gap-2 text-xs" id="trendingTikTokHashtags">
+            <!-- Populated dynamically via state.social.trendingHashtags -->
+          </div>
         </div>
 
-        <div class="space-y-2.5 text-xs">
-          <div class="p-3 bg-[#30D158]/10 border border-[#30D158]/20 rounded-xl">
-            <div class="flex items-center space-x-1.5 text-[#30D158] font-semibold">
-              <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
-              <span data-i18n="bordersGlobalRiskTitle">Risco Global: Baixo / Sem Casos Externos</span>
-            </div>
-            <p class="text-white/70 mt-1 text-[11px] leading-relaxed" data-i18n="bordersGlobalRiskDesc">
-              Nenhum caso secundário foi detectado fora do círculo de isolamento hospitalar na Sibéria.
+        <!-- Trending Social Posts / Videos -->
+        <div>
+          <h4 class="text-xs font-bold text-white/80 uppercase font-mono mb-2 flex items-center gap-1.5">
+            <i data-lucide="video" class="w-3.5 h-3.5 text-[#388BFD]"></i>
+            Tracked Social Media Posts & Video Signals
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs" id="trackedSocialPostsContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- MODULE 4: INTERNATIONAL RESPONSE -->
+      <section class="intel-panel p-4" id="moduleInternationalResponse">
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="globe-2" class="w-4 h-4 text-[#388BFD]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="intlResponseTitle">
+              INTERNATIONAL SURVEILLANCE & DIPLOMATIC STATEMENTS
+            </h3>
+          </div>
+          <span class="text-[10px] text-white/40 font-mono">Multilateral Health Agencies</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="intlResponseCardsContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- MODULE 5: BIOSECURITY & LABORATORY DOSSIER -->
+      <section class="intel-panel p-4" id="moduleBiosecurityDossier">
+        <div class="flex items-center justify-between pb-2.5 mb-2.5 border-b border-white/[0.06]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="file-text" class="w-4 h-4 text-[#388BFD]"></i>
+            <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="biosecurityDossierTitle">
+              BIOSECURITY DOSSIER · IRKUTSK ANTI-PLAGUE INSTITUTE
+            </h3>
+          </div>
+          <span class="tag-badge tag-unverified text-[9px]">Art. 236 Criminal Inquiry</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs" id="biosecurityDossierContent">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TAB 5: SOURCES / NEWSROOM (FULL NEWS WIRE & FILTERS)                   -->
+    <!-- ===================================================================== -->
+    <div id="viewSources" class="tab-view hidden space-y-4">
+      <div class="intel-panel p-4">
+        
+        <!-- Newsroom Header -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-3 mb-3 border-b border-white/[0.06]">
+          <div>
+            <h2 class="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2" data-i18n="sourcesNewsroomTitle">
+              <i data-lucide="newspaper" class="w-4 h-4 text-[#388BFD]"></i>
+              Global Sources Wire & Intelligence Feed
+            </h2>
+            <p class="text-xs text-white/50 mt-0.5" data-i18n="sourcesNewsroomSub">
+              All monitored dispatches from WHO, Reuters, Russian sanitarians, international newsrooms, and scientific feeds.
             </p>
           </div>
 
-          <div class="space-y-2">
-            <div class="bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06] flex justify-between items-center">
-              <div>
-                <strong class="text-white/90" data-i18n="bordersUsaTitle">EUA / OMS</strong>
-                <p class="text-[11px] text-white/50" data-i18n="bordersUsaDesc">Atenção diplomática declarada por Washington.</p>
-              </div>
-              <span class="pill-badge bg-[#0A84FF]/15 text-[#0A84FF]" data-i18n="bordersUsaBadge">Monitorando</span>
+          <div class="text-xs text-white/40 font-mono" id="sourcesCountSummary">
+            Loading sources...
+          </div>
+        </div>
+
+        <!-- Search & Complex Filter Controls -->
+        <div class="space-y-2.5 mb-4 bg-white/[0.02] p-3 rounded border border-white/[0.06]">
+          <!-- Search input -->
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-white/40 absolute left-3 top-2.5"></i>
+            <input type="text" id="sourcesSearchInput" placeholder="Filter dispatches by keyword, entity, or source..."
+              class="w-full bg-white/[0.04] border border-white/[0.08] rounded pl-9 pr-8 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-[#388BFD]">
+            <button id="clearSourcesSearchBtn" class="hidden absolute right-3 top-2.5 text-white/40 hover:text-white">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Category filter pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
+            <span class="text-[10px] text-white/40 uppercase font-mono mr-1">Category:</span>
+            <button class="intel-filter-pill active" data-cat-filter="all">All Categories</button>
+            <button class="intel-filter-pill" data-cat-filter="Official">Official</button>
+            <button class="intel-filter-pill" data-cat-filter="Epidemiology">Epidemiology</button>
+            <button class="intel-filter-pill" data-cat-filter="Laboratory">Laboratory</button>
+            <button class="intel-filter-pill" data-cat-filter="Russia">Russia</button>
+            <button class="intel-filter-pill" data-cat-filter="International">International</button>
+            <button class="intel-filter-pill" data-cat-filter="WHO">WHO</button>
+            <button class="intel-filter-pill" data-cat-filter="Social">Social</button>
+            <button class="intel-filter-pill" data-cat-filter="Scientific">Scientific</button>
+          </div>
+
+          <!-- Trust Tier filter pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
+            <span class="text-[10px] text-white/40 uppercase font-mono mr-1">Trust Tier:</span>
+            <button class="intel-filter-pill active" data-tier-filter="all">All Tiers</button>
+            <button class="intel-filter-pill" data-tier-filter="TIER 1">Tier 1 (WHO / Reuters / Gov)</button>
+            <button class="intel-filter-pill" data-tier-filter="TIER 2">Tier 2 (Major Press)</button>
+            <button class="intel-filter-pill" data-tier-filter="TIER 3">Tier 3 (Regional)</button>
+            <button class="intel-filter-pill" data-tier-filter="TIER 4">Tier 4 (Social / OSINT)</button>
+          </div>
+
+          <!-- Region / Country filter pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
+            <span class="text-[10px] text-white/40 uppercase font-mono mr-1">Region / Country:</span>
+            <button class="intel-filter-pill active" data-country-filter="all">All Regions</button>
+            <button class="intel-filter-pill" data-country-filter="Russia">Russia / Siberia</button>
+            <button class="intel-filter-pill" data-country-filter="Multilateral / WHO">WHO / Global</button>
+            <button class="intel-filter-pill" data-country-filter="Mongolia">Mongolia</button>
+            <button class="intel-filter-pill" data-country-filter="China">China</button>
+            <button class="intel-filter-pill" data-country-filter="Brazil / Lusophone">Brazil / Lusophone</button>
+            <button class="intel-filter-pill" data-country-filter="International">International</button>
+          </div>
+
+          <!-- Source & Language filters -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-0.5 text-xs">
+            <!-- Source Filter pills -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span class="text-[10px] text-white/40 uppercase font-mono mr-1">Source:</span>
+              <button class="intel-filter-pill active" data-source-filter="all">All Sources</button>
+              <button class="intel-filter-pill" data-source-filter="Reuters">Reuters / Wire</button>
+              <button class="intel-filter-pill" data-source-filter="WHO">WHO</button>
+              <button class="intel-filter-pill" data-source-filter="Rospotrebnadzor">Rospotrebnadzor</button>
+              <button class="intel-filter-pill" data-source-filter="BNO News">BNO News</button>
+              <button class="intel-filter-pill" data-source-filter="Medical Xpress">Medical Xpress</button>
+              <button class="intel-filter-pill" data-source-filter="Reddit">Reddit OSINT</button>
             </div>
 
-            <div class="bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.06] flex justify-between items-center">
-              <div>
-                <strong class="text-white/90" data-i18n="bordersMongoliaTitle">Fronteira com a Mongólia</strong>
-                <p class="text-[11px] text-white/50" data-i18n="bordersMongoliaDesc">Triagem sanitária reforçada no sul do Baikal.</p>
-              </div>
-              <span class="pill-badge bg-[#FF9F0A]/15 text-[#FF9F0A]" data-i18n="bordersMongoliaBadge">Triagem Ativa</span>
+            <!-- Language Filter pills -->
+            <div class="flex items-center gap-1 font-mono text-xs">
+              <span class="text-[10px] text-white/40 uppercase mr-1">Lang:</span>
+              <button class="intel-filter-pill active" data-lang-filter="all">All</button>
+              <button class="intel-filter-pill" data-lang-filter="en">EN</button>
+              <button class="intel-filter-pill" data-lang-filter="pt">PT</button>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Gráfico Minimalista de Distribuição -->
-      <div class="apple-card p-3.5">
-        <h4 class="text-xs font-semibold text-white/70 mb-2 flex items-center justify-between">
-          <span class="flex items-center gap-1.5">
-            <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-[#0A84FF]"></i> <span data-i18n="chartTitle">Distribuição por Severidade</span>
-          </span>
-          <span class="text-[11px] text-white/40" data-i18n="chartSubtitle">Classificação</span>
-        </h4>
-        <div class="h-28">
-          <canvas id="alertSeverityChart"></canvas>
+        <!-- News articles feed list -->
+        <div class="space-y-1 divide-y divide-white/[0.04]" id="sourcesFeedContainer">
+          <!-- Populated dynamically via app.js -->
         </div>
-      </div>
 
-    </section>
+        <!-- Pagination Controls -->
+        <div class="flex items-center justify-between pt-3 mt-3 border-t border-white/[0.06] text-xs font-mono">
+          <div class="text-white/40" id="paginationInfo">
+            Page 1
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <button id="btnPrevPage" class="intel-filter-pill disabled:opacity-30 disabled:pointer-events-none">Previous</button>
+            <button id="btnNextPage" class="intel-filter-pill disabled:opacity-30 disabled:pointer-events-none">Next</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
   </main>
 
-  <!-- RODAPÉ MINIMALISTA -->
-  <footer class="bg-[#0b0c10] border-t border-white/[0.06] py-3 text-xs text-white/40 mt-auto">
+  <!-- ========================================================================= -->
+  <!-- 4. FOOTER                                                                 -->
+  <!-- ========================================================================= -->
+  <footer class="bg-[#06080C] border-t border-white/[0.06] py-2.5 text-xs text-white/40 mt-auto">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center space-x-2">
-        <i data-lucide="activity" class="w-3.5 h-3.5 text-[#0A84FF]"></i>
-        <span data-i18n="footerText">Painel de Vigilância Epidemiológica • Dados de Fontes Públicas Abertas e OpenStreetMap</span>
+        <i data-lucide="shield" class="w-3.5 h-3.5 text-[#388BFD]"></i>
+        <span data-i18n="footerNotice">OUTBREAK INTELLIGENCE · Situation Room Surveillance Protocol</span>
       </div>
-      <div class="text-[11px] text-white/40 flex items-center space-x-4">
-        <span><span data-i18n="footerLastUpdate">Última atualização: </span><span id="footerLastSync" class="text-white/70">--</span></span>
+      <div class="text-[11px] text-white/40 font-mono flex items-center space-x-3">
+        <span>UTC Live Feed</span>
+        <span>•</span>
+        <span id="footerClock">--:--:--</span>
       </div>
     </div>
   </footer>
 
-  <!-- Script da Aplicação v4.2.0 -->
-  <script src="app.js?v=4.2.0"></script>
+  <!-- Core JavaScript Application v5.1.0 -->
+  <script src="app.js?v=5.1.0"></script>
 </body>
 </html>
