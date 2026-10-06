@@ -1,3 +1,311 @@
+// ============================================================================
+// Painel de Vigilância Sanitária & Epidemiológica (v4.2.0 - Bilingual EN / PT)
+// ============================================================================
+
+// Dicionário Completo de Traduções (Bilingual i18n System)
+const TRANSLATIONS = {
+  pt: {
+    newsTickerTitle: 'Plantão de Notícias',
+    newsTickerPlaceholder: 'Sincronizando agências oficiais e comunicados em tempo real...',
+    newsTickerSync: 'Atualiza em {s}s',
+    newsTickerFallback: '<span>Vigilância ativa • Incidente de Irkutsk sob monitoramento profilático • Nenhum caso externo</span>',
+    newsTickerAlert: 'Alerta',
+    appTitle: 'Vigilância Sanitária',
+    appRegion: 'Irkutsk • Sibéria',
+    appSubtitle: 'Acompanhamento Epidemiológico & Disseminação Internacional',
+    liveBadge: 'Ao Vivo',
+    mapLayers: 'Camadas Mapa',
+    refresh: 'Atualizar',
+    cardSpreadTitle: 'Disseminação Externa',
+    cardSpreadBadge: 'Seguro',
+    cardSpreadDesc: 'Nenhum caso confirmado fora do grupo hospitalar isolado na Sibéria.',
+    cardSpreadRisk: 'Risco Global OMS: Baixo',
+    cardSpreadStatusDefault: 'Contido Localmente',
+    cardQuarantineTitle: 'Contatos em Observação',
+    cardQuarantineBadge: 'Quarentena',
+    cardQuarantineDesc: 'Hospitais de Shelekhov e Irkutsk com alas isoladas preventivamente.',
+    cardQuarantineSourceDefault: 'Apurado em Tempo Real',
+    cardQuarantineSourcePrefix: 'Apurado: ',
+    cardAlertsTitle: 'Alertas de Alta Atenção',
+    cardAlertsBadge: 'Prioritário',
+    cardAlertsSuffix: 'notícias apuradas',
+    feedCountTotalPrefix: 'Total: ',
+    feedCountActiveSources: 'fontes ativas',
+    feedCountLastHour: 'na última hora',
+    cardSocialTitle: 'TikTok & Redes Sociais',
+    cardSocialBadge: 'Tendências',
+    cardSocialDesc: 'Rumores e vídeos monitorados via #Irkutsk e #RussiaPlague.',
+    cardSocialSentiment: 'Sentimento Público',
+    socialAlertSuffix: 'Alerta',
+    briefingTitle: 'Situação nas Últimas Horas • Briefing Executivo',
+    briefingStatusDefault: 'Contido Localmente',
+    briefingEngineDefault: 'IA em Tempo Real',
+    briefingTimeWindowDefault: 'Última Hora',
+    briefingLoading: 'Carregando síntese dos acontecimentos mais recentes...',
+    modalTitle: 'Camadas do OpenStreetMap',
+    modalSelectLabel: 'Estilo do Mapa Base:',
+    modalKeyLabel: 'Chave de API do Provedor (Opcional):',
+    modalKeyNotice: '* O OpenStreetMap e o Carto Dark funcionam de forma livre e não requerem chave.',
+    modalSaveBtn: 'Salvar e Aplicar',
+    searchPlaceholder: 'Buscar por termo (Irkutsk, peste, quarentena, OMS, BNO, Shipilova)...',
+    filterAll: 'Todos',
+    filterIrkutsk: 'Irkutsk / Sibéria',
+    filterRussia: 'Rússia',
+    filterHigh: 'Alta Atenção',
+    filterWho: 'OMS / Global',
+    filterSocial: 'Redes / Reddit',
+    feedTitle: 'Despachos & Notícias',
+    feedLoading: 'Carregando...',
+    feedCountArticles: '{filtered} de {total} artigos',
+    feedEmpty: 'Nenhum resultado para os filtros atuais.',
+    feedClearFilters: 'Limpar filtros',
+    feedReadArticle: 'Ler artigo',
+    feedSeverityHigh: 'Alta Atenção',
+    feedSeverityMedium: 'Moderado',
+    feedSeverityLow: 'Informativo',
+    tabMap: 'Mapa',
+    tabFlights: 'Voos',
+    tabSocial: 'TikTok',
+    tabDossier: 'Dossiê',
+    tabBorders: 'Fronteiras',
+    mapTitle: 'Localização do Foco & Monitoramento',
+    mapLegendIrkutsk: '<strong>Irkutsk:</strong> Quarentena (~200)',
+    mapLegendMoscow: '<strong>Moscou:</strong> Rospotrebnadzor',
+    mapLegendGeneva: '<strong>Genebra:</strong> Vigilância OMS',
+    mapLegendBeijing: '<strong>Pequim / Ásia:</strong> Vigilância Portuária',
+    flightsTitle: 'Monitor de Voos • Aeroporto de Irkutsk (IKT)',
+    flightsNormal: 'Operação Normal',
+    flightsSubtitle: 'Rastreamento de partidas e triagem sanitária de conexões aéreas.',
+    flightsOverheadRange: 'OpenSky: {n} no Raio',
+    flightsOverheadCalm: 'OpenSky: Espaço Aéreo Calmo',
+    flightsScreeningActive: 'Triagem Térmica Preventiva Ativa',
+    flightsZeroBlocked: '0 Voos Bloqueados',
+    flightsKeyRoutes: 'Rotas Chave Monitoradas',
+    flightsDepartures: 'Partidas de Irkutsk',
+    socialRadarTitle: 'Radar de Redes Sociais & TikTok',
+    socialRadarSubtitle: 'Acompanhamento de vídeos e hashtags em alta sobre o caso.',
+    socialLiveBadge: 'Tempo Real',
+    socialRumorIndex: 'Índice de Rumores nas Redes:',
+    socialTrendingHashtags: 'Hashtags Populares no TikTok (Busca Direta)',
+    socialRecentPosts: 'Postagens e Vídeos Recentes',
+    socialViewsEst: 'Visualizações est.: ~{n}',
+    socialOpen: 'Abrir',
+    dossierTitle: 'Dossiê: Instituto Anti-Peste de Irkutsk',
+    dossierSubtitle: 'Fatos checados e cronologia dos eventos (Outubro 2026).',
+    dossierOfficialTitle: 'Versão Oficial (Rospotrebnadzor):',
+    dossierOfficialDesc: 'Classificado como <em>"pneumonia de etiologia desconhecida"</em>. Nega quebra de contenção física ou presença de peste nos laudos iniciais. Dra. Anna Popova inspecionou os hospitais locais.',
+    dossierIndependentTitle: 'Apurações Independentes (BMJ, Time, Reuters):',
+    dossierIndependentDesc: 'Técnica Darya Shipilova (28 anos) teria sofrido exposição acidental após quebra de tubo com <em>Yersinia pestis</em> em ~25 de setembro. Hospitalizada em Shelekhov e falecida em 1-2 de outubro. Quarentena de ~200 contatos.',
+    dossierTimelineTitle: 'Linha do Tempo dos Eventos',
+    bordersTitle: 'Vigilância de Fronteiras & Risco Externo',
+    bordersSubtitle: 'Rotas de trânsito, voos e monitoramento diplomático.',
+    bordersGlobalRiskTitle: 'Risco Global: Baixo / Sem Casos Externos',
+    bordersGlobalRiskDesc: 'Nenhum caso secundário foi detectado fora do círculo de isolamento hospitalar na Sibéria.',
+    bordersUsaTitle: 'EUA / OMS',
+    bordersUsaDesc: 'Atenção diplomática declarada por Washington.',
+    bordersUsaBadge: 'Monitorando',
+    bordersMongoliaTitle: 'Fronteira com a Mongólia',
+    bordersMongoliaDesc: 'Triagem sanitária reforçada no sul do Baikal.',
+    bordersMongoliaBadge: 'Triagem Ativa',
+    chartTitle: 'Distribuição por Severidade',
+    chartSubtitle: 'Classificação',
+    chartLabels: ['Alta Atenção', 'Moderada', 'Informativa'],
+    chartDatasetLabel: 'Notícias',
+    footerText: 'Painel de Vigilância Epidemiológica • Dados de Fontes Públicas Abertas e OpenStreetMap',
+    footerLastUpdate: 'Última atualização: ',
+    audioOn: 'Som Ativo',
+    audioMuted: 'Mudo',
+    timeAgo: {
+      now: 'Agora',
+      seconds: 'Há {n}s',
+      minutes: 'Há {n}m',
+      hours: 'Há {n}h',
+      days: 'Há {n}d'
+    }
+  },
+  en: {
+    newsTickerTitle: 'Breaking News',
+    newsTickerPlaceholder: 'Synchronizing official agencies and dispatches in real time...',
+    newsTickerSync: 'Updates in {s}s',
+    newsTickerFallback: '<span>Active surveillance • Irkutsk incident under prophylactic monitoring • No external cases</span>',
+    newsTickerAlert: 'Alert',
+    appTitle: 'Health Surveillance',
+    appRegion: 'Irkutsk • Siberia',
+    appSubtitle: 'Epidemiological Tracking & International Outbreak Monitor',
+    liveBadge: 'Live',
+    mapLayers: 'Map Layers',
+    refresh: 'Refresh',
+    cardSpreadTitle: 'External Spread',
+    cardSpreadBadge: 'Safe',
+    cardSpreadDesc: 'No confirmed cases outside the isolated hospital group in Siberia.',
+    cardSpreadRisk: 'WHO Global Risk: Low',
+    cardSpreadStatusDefault: 'Locally Contained',
+    cardQuarantineTitle: 'Contacts in Observation',
+    cardQuarantineBadge: 'Quarantine',
+    cardQuarantineDesc: 'Shelekhov and Irkutsk hospitals with preventative isolated wards.',
+    cardQuarantineSourceDefault: 'Verified in Real Time',
+    cardQuarantineSourcePrefix: 'Verified: ',
+    cardAlertsTitle: 'High Attention Alerts',
+    cardAlertsBadge: 'Priority',
+    cardAlertsSuffix: 'verified dispatches',
+    feedCountTotalPrefix: 'Total: ',
+    feedCountActiveSources: 'active sources',
+    feedCountLastHour: 'in the last hour',
+    cardSocialTitle: 'TikTok & Social Radar',
+    cardSocialBadge: 'Trending',
+    cardSocialDesc: 'Rumors and videos monitored via #Irkutsk and #RussiaPlague.',
+    cardSocialSentiment: 'Public Sentiment',
+    socialAlertSuffix: 'Alert',
+    briefingTitle: 'Situation in the Last Hours • Executive Briefing',
+    briefingStatusDefault: 'Locally Contained',
+    briefingEngineDefault: 'Real-Time AI',
+    briefingTimeWindowDefault: 'Last Hour',
+    briefingLoading: 'Loading synthesis of most recent events...',
+    modalTitle: 'OpenStreetMap Layers',
+    modalSelectLabel: 'Base Map Style:',
+    modalKeyLabel: 'Provider API Key (Optional):',
+    modalKeyNotice: '* OpenStreetMap and Carto Dark operate freely and do not require an API key.',
+    modalSaveBtn: 'Save & Apply',
+    searchPlaceholder: 'Search by keyword (Irkutsk, plague, quarantine, WHO, BNO, Shipilova)...',
+    filterAll: 'All',
+    filterIrkutsk: 'Irkutsk / Siberia',
+    filterRussia: 'Russia',
+    filterHigh: 'High Attention',
+    filterWho: 'WHO / Global',
+    filterSocial: 'Social / Reddit',
+    feedTitle: 'Dispatches & News',
+    feedLoading: 'Loading...',
+    feedCountArticles: '{filtered} of {total} articles',
+    feedEmpty: 'No results for the current filters.',
+    feedClearFilters: 'Clear filters',
+    feedReadArticle: 'Read article',
+    feedSeverityHigh: 'High Attention',
+    feedSeverityMedium: 'Moderate',
+    feedSeverityLow: 'Informational',
+    tabMap: 'Map',
+    tabFlights: 'Flights',
+    tabSocial: 'TikTok',
+    tabDossier: 'Dossier',
+    tabBorders: 'Borders',
+    mapTitle: 'Outbreak Epicenter & Surveillance',
+    mapLegendIrkutsk: '<strong>Irkutsk:</strong> Quarantine (~200)',
+    mapLegendMoscow: '<strong>Moscow:</strong> Rospotrebnadzor',
+    mapLegendGeneva: '<strong>Geneva:</strong> WHO Surveillance',
+    mapLegendBeijing: '<strong>Beijing / Asia:</strong> Port Surveillance',
+    flightsTitle: 'Flight Monitor • Irkutsk Airport (IKT)',
+    flightsNormal: 'Normal Operations',
+    flightsSubtitle: 'Departure tracking and health screening on air connections.',
+    flightsOverheadRange: 'OpenSky: {n} in Range',
+    flightsOverheadCalm: 'OpenSky: Calm Airspace',
+    flightsScreeningActive: 'Preventive Thermal Screening Active',
+    flightsZeroBlocked: '0 Blocked Flights',
+    flightsKeyRoutes: 'Monitored Key Routes',
+    flightsDepartures: 'Irkutsk Departures',
+    socialRadarTitle: 'Social Media & TikTok Radar',
+    socialRadarSubtitle: 'Trending video and hashtag monitoring regarding the incident.',
+    socialLiveBadge: 'Real Time',
+    socialRumorIndex: 'Social Rumor Index:',
+    socialTrendingHashtags: 'Trending TikTok Hashtags (Direct Search)',
+    socialRecentPosts: 'Recent Posts & Videos',
+    socialViewsEst: 'Est. views: ~{n}',
+    socialOpen: 'Open',
+    dossierTitle: 'Dossier: Irkutsk Anti-Plague Institute',
+    dossierSubtitle: 'Fact-checked events and chronological record (October 2026).',
+    dossierOfficialTitle: 'Official Version (Rospotrebnadzor):',
+    dossierOfficialDesc: 'Classified as <em>"pneumonia of unknown etiology"</em>. Denies physical containment breach or plague in initial reports. Dr. Anna Popova inspected local hospitals.',
+    dossierIndependentTitle: 'Independent Reporting (BMJ, Time, Reuters):',
+    dossierIndependentDesc: 'Technician Darya Shipilova (28) reportedly suffered accidental exposure after an ampoule containing <em>Yersinia pestis</em> broke around Sept 25. Hospitalized in Shelekhov and died Oct 1-2. Quarantine of ~200 contacts.',
+    dossierTimelineTitle: 'Timeline of Events',
+    bordersTitle: 'Border Surveillance & External Risk',
+    bordersSubtitle: 'Transit routes, flights and diplomatic monitoring.',
+    bordersGlobalRiskTitle: 'Global Risk: Low / No External Cases',
+    bordersGlobalRiskDesc: 'No secondary cases detected outside the Siberian hospital isolation ring.',
+    bordersUsaTitle: 'USA / WHO',
+    bordersUsaDesc: 'Diplomatic attention declared by Washington.',
+    bordersUsaBadge: 'Monitoring',
+    bordersMongoliaTitle: 'Mongolia Border',
+    bordersMongoliaDesc: 'Reinforced health screening in South Baikal.',
+    bordersMongoliaBadge: 'Active Screening',
+    chartTitle: 'Distribution by Severity',
+    chartSubtitle: 'Classification',
+    chartLabels: ['High Attention', 'Moderate', 'Informational'],
+    chartDatasetLabel: 'Dispatches',
+    footerText: 'Epidemiological Surveillance Dashboard • Open Public Data & OpenStreetMap',
+    footerLastUpdate: 'Last updated: ',
+    audioOn: 'Audio On',
+    audioMuted: 'Muted',
+    timeAgo: {
+      now: 'Just now',
+      seconds: '{n}s ago',
+      minutes: '{n}m ago',
+      hours: '{n}h ago',
+      days: '{n}d ago'
+    }
+  }
+};
+
+// Mapeamentos Bilíngues de Voo e Linha do Tempo
+const FLIGHT_TRANSLATIONS = {
+  status: {
+    'Decolou / Em Rota': 'Departed / En Route',
+    'No Portão / Embarque': 'At Gate / Boarding',
+    'Programado': 'Scheduled'
+  },
+  health: {
+    'Triagem Sanitária em Moscou': 'Sanitary Screening in Moscow',
+    'Triagem Sanitária em Pequim': 'Sanitary Screening in Beijing',
+    'Triagem de Fronteira no Baikal': 'Border Screening in Baikal',
+    'Desinfecção Preventiva de Carga': 'Preventive Cargo Disinfection',
+    'Conexão de Trânsito Internacional': 'International Transit Connection'
+  }
+};
+
+const TIMELINE_EN = [
+  {
+    date: 'Sept 25, 2026',
+    title: 'Laboratory Incident (Anti-Plague Institute)',
+    description: 'Accidental breakage of an ampoule containing Yersinia pestis in the biosecurity laboratory. Lab worker exposed during routine pathogen testing.'
+  },
+  {
+    date: 'Sept 29, 2026',
+    title: 'Onset of Severe Symptoms & Admission',
+    description: 'High fever and respiratory complications. Transported to Shelekhov District Hospital before primary transfer to specialized regional clinic.'
+  },
+  {
+    date: 'Oct 02, 2026',
+    title: 'Fatal Outcome & Isolation Ring',
+    description: 'Laboratory worker dies in intensive care. Emergency hospital isolation protocols triggered immediately for medical staff and close family.'
+  },
+  {
+    date: 'Oct 04-06, 2026',
+    title: 'Official Inspection & Border Alerts',
+    description: 'Rospotrebnadzor Chief Sanitary Inspector inspects Baikal region. ~200 contacts kept in prophylactic quarantine. Neighboring borders initiate passenger screening.'
+  }
+];
+
+const MAP_POINTS_EN = {
+  'Irkutsk': { statusText: 'Quarantine Ring (~200)', details: 'Local hospital isolation wards and prophylactic contact tracing active.' },
+  'Shelekhov': { statusText: 'District Hospital Area', details: 'Initial primary care clinic and local isolation perimeter.' },
+  'Moscou': { statusText: 'Epidemiological Command', details: 'Rospotrebnadzor central command and Vector Institute scientific oversight.' },
+  'Genebra': { statusText: 'WHO Alert System', details: 'World Health Organization active monitoring. Risk outside Russia classified as low.' },
+  'Pequim': { statusText: 'Preventive Port Screening', details: 'Sanitary inspection of cross-border Siberian logistics and transit passengers.' }
+};
+
+// Detecção Automática do Idioma do Sistema / Navegador
+function detectInitialLanguage() {
+  const saved = localStorage.getItem('preferred_language');
+  if (saved && (saved === 'pt' || saved === 'en')) {
+    return saved;
+  }
+  const browserLangs = navigator.languages || [navigator.language || 'en'];
+  for (const lang of browserLangs) {
+    if (lang && lang.toLowerCase().startsWith('pt')) {
+      return 'pt';
+    }
+  }
+  return 'en';
+}
+
 // Application State
 const state = {
   news: [],
@@ -15,7 +323,8 @@ const state = {
   briefing: null,
   flights: null,
   chart: null,
-  lastKnownFirstId: null
+  lastKnownFirstId: null,
+  currentLang: 'pt'
 };
 
 // Som Sutil de Notificação (Estilo Notificação macOS)
@@ -45,17 +354,89 @@ function playNotificationChime() {
   }
 }
 
-// Formatação de Tempo Relativo
+// Formatação de Tempo Relativo Bilíngue
 function formatRelativeTime(timestamp) {
   const diffSec = Math.floor((Date.now() - timestamp) / 1000);
-  if (isNaN(diffSec) || diffSec < 0) return "Agora";
-  if (diffSec < 60) return `Há ${diffSec}s`;
+  const t = TRANSLATIONS[state.currentLang].timeAgo;
+  if (isNaN(diffSec) || diffSec < 0) return t.now;
+  if (diffSec < 60) return t.seconds.replace('{n}', diffSec);
   const diffMin = Math.floor(diffSec / 60);
-  if (diffMin < 60) return `Há ${diffMin}m`;
+  if (diffMin < 60) return t.minutes.replace('{n}', diffMin);
   const diffHours = Math.floor(diffMin / 60);
-  if (diffHours < 24) return `Há ${diffHours}h`;
+  if (diffHours < 24) return t.hours.replace('{n}', diffHours);
   const diffDays = Math.floor(diffHours / 24);
-  return `Há ${diffDays}d`;
+  return t.days.replace('{n}', diffDays);
+}
+
+// Aplicar Traduções e Alternar Idioma
+function applyTranslations(lang) {
+  state.currentLang = lang;
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS.pt;
+  document.documentElement.lang = (lang === 'pt' ? 'pt-BR' : 'en');
+
+  // Atualizar textos estáticos via [data-i18n]
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) {
+      if (typeof dict[key] === 'string' && dict[key].includes('<')) {
+        el.innerHTML = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+
+  // Atualizar placeholders via [data-i18n-placeholder]
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key] !== undefined) {
+      el.placeholder = dict[key];
+    }
+  });
+
+  // Atualizar estado visual do seletor Cupertino EN | PT
+  const btnEn = document.getElementById('langBtnEn');
+  const btnPt = document.getElementById('langBtnPt');
+  if (btnEn && btnPt) {
+    if (lang === 'en') {
+      btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition bg-white/20 text-white shadow-sm';
+      btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition text-white/60 hover:text-white';
+    } else {
+      btnEn.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition text-white/60 hover:text-white';
+      btnPt.className = 'px-2.5 py-1 text-xs font-semibold rounded-lg transition bg-white/20 text-white shadow-sm';
+    }
+  }
+
+  // Atualizar botão de áudio
+  const audioText = document.getElementById('audioText');
+  if (audioText) {
+    audioText.textContent = state.audioEnabled ? dict.audioOn : dict.audioMuted;
+  }
+
+  // Atualizar contador de sincronização
+  const syncStatusText = document.getElementById('syncStatusText');
+  if (syncStatusText) {
+    syncStatusText.textContent = dict.newsTickerSync.replace('{s}', state.countdown);
+  }
+
+  // Re-renderizar dados dinâmicos com novos textos
+  updateMetrics();
+  renderBriefing();
+  renderFlights();
+  renderTicker();
+  renderNewsFeed();
+  renderSocialModule();
+  renderMapMarkers();
+  renderTimeline();
+  renderChart();
+}
+
+function setLanguage(lang) {
+  localStorage.setItem('preferred_language', lang);
+  if (state.currentLang === lang) return;
+  state.currentLang = lang;
+  applyTranslations(lang);
+  loadData(false);
 }
 
 // Configuração de Camadas OpenStreetMap
@@ -74,7 +455,7 @@ function applyMapTileLayer(styleKey, apiKey) {
     tileUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
     attribution = '&copy; OpenStreetMap contributors';
     subdomains = 'abc';
-    labelText = 'OpenStreetMap Padrão';
+    labelText = state.currentLang === 'en' ? 'OpenStreetMap Standard' : 'OpenStreetMap Padrão';
   } else if (styleKey === 'maptiler-dark') {
     const key = apiKey || 'get_your_own_OpIi9ZULNHzrESv6T2vL';
     tileUrl = `https://api.maptiler.com/maps/dataviz-dark/{z}/{x}/{y}.png?key=${key}`;
@@ -114,7 +495,7 @@ function initMap() {
   applyMapTileLayer(state.activeMapStyle, state.customApiKey);
 }
 
-// Marcadores no Mapa
+// Marcadores no Mapa Bilíngues
 function renderMapMarkers() {
   if (!state.map || !state.incident || !state.incident.monitoringPoints) return;
 
@@ -123,6 +504,8 @@ function renderMapMarkers() {
       state.map.removeLayer(layer);
     }
   });
+
+  const isEn = state.currentLang === 'en';
 
   state.incident.monitoringPoints.forEach(point => {
     let pinColor = '#0A84FF';
@@ -139,6 +522,10 @@ function renderMapMarkers() {
     } else if (point.status === 'normal') {
       pinColor = '#30D158';
     }
+
+    const localized = (isEn && MAP_POINTS_EN[point.name]) ? MAP_POINTS_EN[point.name] : point;
+    const statusText = localized.statusText || point.statusText;
+    const details = localized.details || point.details;
 
     const customIcon = L.divIcon({
       className: 'custom-apple-marker',
@@ -162,8 +549,8 @@ function renderMapMarkers() {
           <span style="width: 7px; height: 7px; border-radius: 50%; background: ${pinColor};"></span>
           <span>${point.name}</span>
         </div>
-        <div style="color: #FFFFFF; font-weight: 600; font-size: 11px; margin-bottom: 2px;">${point.statusText}</div>
-        <p style="color: #A1A1A6; font-size: 11px; line-height: 1.4; margin: 0;">${point.details}</p>
+        <div style="color: #FFFFFF; font-weight: 600; font-size: 11px; margin-bottom: 2px;">${statusText}</div>
+        <p style="color: #A1A1A6; font-size: 11px; line-height: 1.4; margin: 0;">${details}</p>
       </div>
     `;
 
@@ -173,14 +560,18 @@ function renderMapMarkers() {
   });
 }
 
-// Linha do Tempo
+// Linha do Tempo Bilíngue
 function renderTimeline() {
   const container = document.getElementById('timelineContainer');
-  if (!container || !state.incident || !state.incident.timeline) return;
+  if (!container) return;
 
-  container.innerHTML = state.incident.timeline.map((item, index) => `
-    <div class="relative pl-3 pb-3 ${index === state.incident.timeline.length - 1 ? '' : 'border-b border-white/[0.06]'}">
-      <div class="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full ${index === state.incident.timeline.length - 1 ? 'bg-[#0A84FF] ring-4 ring-[#0A84FF]/20' : 'bg-white/30'}"></div>
+  const isEn = state.currentLang === 'en';
+  const timelineData = isEn ? TIMELINE_EN : (state.incident?.timeline || []);
+  if (!timelineData.length) return;
+
+  container.innerHTML = timelineData.map((item, index) => `
+    <div class="relative pl-3 pb-3 ${index === timelineData.length - 1 ? '' : 'border-b border-white/[0.06]'}">
+      <div class="absolute -left-[17px] top-1.5 w-2 h-2 rounded-full ${index === timelineData.length - 1 ? 'bg-[#0A84FF] ring-4 ring-[#0A84FF]/20' : 'bg-white/30'}"></div>
       <div class="font-semibold text-[#0A84FF] text-[11px]">${item.date}</div>
       <div class="font-medium text-white text-xs mt-0.5">${item.title}</div>
       <p class="text-white/60 text-[11px] mt-0.5 leading-relaxed">${item.description}</p>
@@ -194,17 +585,17 @@ function renderTicker() {
   const track2 = document.getElementById('marqueeTrack2');
   if (!track1 || !track2) return;
 
+  const dict = TRANSLATIONS[state.currentLang];
   const urgentNews = state.news.filter(n => n.severity === 'high').slice(0, 8);
   if (urgentNews.length === 0) {
-    const fallback = `<span>Vigilância ativa • Incidente de Irkutsk sob monitoramento profilático • Nenhum caso externo</span>`;
-    track1.innerHTML = fallback;
-    track2.innerHTML = fallback;
+    track1.innerHTML = dict.newsTickerFallback;
+    track2.innerHTML = dict.newsTickerFallback;
     return;
   }
 
   const itemsHtml = urgentNews.map(n => `
     <a href="${n.link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-xs text-white/80 hover:text-white transition shrink-0 group">
-      <span class="pill-badge bg-[#FF453A]/15 text-[#FF453A] border border-[#FF453A]/20">Alerta</span>
+      <span class="pill-badge bg-[#FF453A]/15 text-[#FF453A] border border-[#FF453A]/20">${dict.newsTickerAlert}</span>
       <span class="text-white/90 group-hover:text-[#0A84FF]">${n.title}</span>
       <span class="text-white/40 text-[11px]">${formatRelativeTime(n.pubTimestamp)}</span>
     </a>
@@ -215,20 +606,30 @@ function renderTicker() {
   track2.innerHTML = itemsHtml;
 }
 
-// Módulo TikTok & Redes Sociais
+// Módulo TikTok & Redes Sociais Bilíngue
 function renderSocialModule() {
   if (!state.social) return;
+  const dict = TRANSLATIONS[state.currentLang];
+  const isEn = state.currentLang === 'en';
+
+  let panicStatus = state.social.panicStatus.replace(' nas Redes', '');
+  if (isEn) {
+    if (panicStatus.includes('Moderada')) panicStatus = 'Moderate Attention';
+    else if (panicStatus.includes('Elevado')) panicStatus = 'High Alert';
+    else if (panicStatus.includes('Calmo')) panicStatus = 'Calm';
+    else panicStatus = 'Active Attention';
+  }
 
   // Atualizar Widget
   const socialWidgetStatus = document.getElementById('socialWidgetStatus');
   const socialWidgetPanic = document.getElementById('socialWidgetPanic');
-  if (socialWidgetStatus) socialWidgetStatus.textContent = state.social.panicStatus.replace(' nas Redes', '');
-  if (socialWidgetPanic) socialWidgetPanic.textContent = `${state.social.panicIndex}% Alerta`;
+  if (socialWidgetStatus) socialWidgetStatus.textContent = panicStatus;
+  if (socialWidgetPanic) socialWidgetPanic.textContent = `${state.social.panicIndex}% ${dict.socialAlertSuffix}`;
 
   // Barra de Pânico
   const panicStatusEl = document.getElementById('socialPanicStatus');
   const panicBarEl = document.getElementById('socialPanicBar');
-  if (panicStatusEl) panicStatusEl.textContent = `${state.social.panicStatus} (${state.social.panicIndex}%)`;
+  if (panicStatusEl) panicStatusEl.textContent = `${panicStatus} (${state.social.panicIndex}%)`;
   if (panicBarEl) panicBarEl.style.width = `${state.social.panicIndex}%`;
 
   // Hashtags
@@ -252,6 +653,9 @@ function renderSocialModule() {
       if (post.platform.includes('TikTok')) platPill = 'bg-[#BF5AF2]/15 text-[#BF5AF2] border border-[#BF5AF2]/20';
       else if (post.platform.includes('Reddit')) platPill = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border border-[#FF9F0A]/20';
 
+      const viewsFormatted = post.estimatedViews.toLocaleString(isEn ? 'en-US' : 'pt-BR');
+      const viewsText = dict.socialViewsEst.replace('{n}', viewsFormatted);
+
       return `
         <div class="news-row flex flex-col space-y-1">
           <div class="flex items-center justify-between text-[11px]">
@@ -264,9 +668,9 @@ function renderSocialModule() {
             ${post.title}
           </a>
           <div class="flex items-center justify-between pt-1 text-[11px] text-white/40">
-            <span>Visualizações est.: ~${post.estimatedViews.toLocaleString('pt-BR')}</span>
+            <span>${viewsText}</span>
             <a href="${post.link}" target="_blank" rel="noopener noreferrer" class="text-[#0A84FF] hover:underline flex items-center gap-0.5">
-              <span>Abrir</span>
+              <span>${dict.socialOpen}</span>
               <i data-lucide="chevron-right" class="w-3 h-3"></i>
             </a>
           </div>
@@ -278,11 +682,13 @@ function renderSocialModule() {
   lucide.createIcons();
 }
 
-// Feed de Notícias
+// Feed de Notícias Bilíngue
 function renderNewsFeed() {
   const container = document.getElementById('newsFeedContainer');
   const filteredCountText = document.getElementById('filteredCountText');
   if (!container) return;
+
+  const dict = TRANSLATIONS[state.currentLang];
 
   let filtered = [...state.news];
 
@@ -329,15 +735,17 @@ function renderNewsFeed() {
   }
 
   if (filteredCountText) {
-    filteredCountText.textContent = `${filtered.length} de ${state.news.length} artigos`;
+    filteredCountText.textContent = dict.feedCountArticles
+      .replace('{filtered}', filtered.length)
+      .replace('{total}', state.news.length);
   }
 
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="text-center py-16 text-white/40">
         <i data-lucide="filter-x" class="w-8 h-8 mx-auto mb-2 text-white/20"></i>
-        <p class="text-xs">Nenhum resultado para os filtros atuais.</p>
-        <button onclick="clearAllFilters()" class="mt-2 text-xs text-[#0A84FF] hover:underline">Limpar filtros</button>
+        <p class="text-xs">${dict.feedEmpty}</p>
+        <button onclick="clearAllFilters()" class="mt-2 text-xs text-[#0A84FF] hover:underline">${dict.feedClearFilters}</button>
       </div>
     `;
     lucide.createIcons();
@@ -346,13 +754,13 @@ function renderNewsFeed() {
 
   container.innerHTML = filtered.map(item => {
     let pillStyle = 'bg-white/10 text-white/70 border-white/10';
-    let severityTag = 'Informativo';
+    let severityTag = dict.feedSeverityLow;
     if (item.severity === 'high') {
       pillStyle = 'bg-[#FF453A]/15 text-[#FF453A] border-[#FF453A]/25';
-      severityTag = 'Alta Atenção';
+      severityTag = dict.feedSeverityHigh;
     } else if (item.severity === 'medium') {
       pillStyle = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border-[#FF9F0A]/25';
-      severityTag = 'Moderado';
+      severityTag = dict.feedSeverityMedium;
     }
 
     const tagsHtml = item.locationTags.map(tag => `
@@ -385,7 +793,7 @@ function renderNewsFeed() {
             ${tagsHtml}
           </div>
           <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="text-[#0A84FF] hover:underline font-medium text-xs flex items-center gap-1">
-            <span>Ler artigo</span>
+            <span>${dict.feedReadArticle}</span>
             <i data-lucide="chevron-right" class="w-3 h-3"></i>
           </a>
         </div>
@@ -403,19 +811,35 @@ function updateMetrics() {
   const cardHighAlerts = document.getElementById('cardHighAlerts');
   const feedCountBadge = document.getElementById('feedCountBadge');
   const countAll = document.getElementById('countAll');
+  const dict = TRANSLATIONS[state.currentLang];
+  const isEn = state.currentLang === 'en';
 
-  if (state.incident && cardSpreadStatus) {
-    cardSpreadStatus.textContent = state.incident.riskAssessment.globalSpreadStatus.toLowerCase().replace(/^\w/, c => c.toUpperCase());
+  if (cardSpreadStatus) {
+    if (state.incident) {
+      cardSpreadStatus.textContent = isEn ? 'Locally Contained' : state.incident.riskAssessment.globalSpreadStatus.toLowerCase().replace(/^\w/, c => c.toUpperCase());
+    } else {
+      cardSpreadStatus.textContent = dict.cardSpreadStatusDefault;
+    }
   }
 
   if (cardQuarantine) {
-    const dynamicCount = state.briefing?.patientMetrics?.detectedCount || (state.incident?.keyMetrics?.quarantinedContacts?.split(' ')[0] + ' Pessoas');
-    const dynamicSource = state.briefing?.patientMetrics?.verifiedSource;
+    let dynamicCount = state.briefing?.patientMetrics?.detectedCount;
+    if (!dynamicCount && state.incident?.keyMetrics?.quarantinedContacts) {
+      const numOnly = state.incident.keyMetrics.quarantinedContacts.split(' ')[0];
+      dynamicCount = `${numOnly} ${isEn ? 'People' : 'Pessoas'}`;
+    } else if (!dynamicCount) {
+      dynamicCount = isEn ? '~200 People' : '~200 Pessoas';
+    } else if (isEn && dynamicCount.includes('Pessoas')) {
+      dynamicCount = dynamicCount.replace('Pessoas', 'People');
+    } else if (!isEn && dynamicCount.includes('People')) {
+      dynamicCount = dynamicCount.replace('People', 'Pessoas');
+    }
     cardQuarantine.textContent = dynamicCount;
 
+    const dynamicSource = state.briefing?.patientMetrics?.verifiedSource;
     const quarantineSourceEl = document.getElementById('cardQuarantineSource');
     if (quarantineSourceEl) {
-      quarantineSourceEl.textContent = dynamicSource ? `Apurado: ${dynamicSource}` : 'Apurado em Tempo Real';
+      quarantineSourceEl.textContent = dynamicSource ? `${dict.cardQuarantineSourcePrefix}${dynamicSource}` : dict.cardQuarantineSourceDefault;
     }
   }
 
@@ -425,22 +849,25 @@ function updateMetrics() {
   if (feedCountBadge) {
     const lastHourCount = state.briefing?.lastHourCount || 0;
     feedCountBadge.textContent = lastHourCount > 0
-      ? `Total: ${state.news.length} fontes (${lastHourCount} na última hora)`
-      : `Total: ${state.news.length} fontes ativas`;
+      ? `${dict.feedCountTotalPrefix}${state.news.length} ${dict.feedCountActiveSources} (${lastHourCount} ${dict.feedCountLastHour})`
+      : `${dict.feedCountTotalPrefix}${state.news.length} ${dict.feedCountActiveSources}`;
   }
   if (countAll) countAll.textContent = state.news.length;
 }
 
-// Renderizar Gráfico Minimalista
+// Renderizar Gráfico Minimalista Bilíngue
 function renderChart() {
   const canvas = document.getElementById('alertSeverityChart');
   if (!canvas) return;
 
+  const dict = TRANSLATIONS[state.currentLang];
   const high = state.news.filter(n => n.severity === 'high').length;
   const medium = state.news.filter(n => n.severity === 'medium').length;
   const low = state.news.filter(n => n.severity === 'low').length;
 
   if (state.chart) {
+    state.chart.data.labels = dict.chartLabels;
+    state.chart.data.datasets[0].label = dict.chartDatasetLabel;
     state.chart.data.datasets[0].data = [high, medium, low];
     state.chart.update();
     return;
@@ -450,9 +877,9 @@ function renderChart() {
   state.chart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: ['Alta Atenção', 'Moderada', 'Informativa'],
+      labels: dict.chartLabels,
       datasets: [{
-        label: 'Notícias',
+        label: dict.chartDatasetLabel,
         data: [high, medium, low],
         backgroundColor: [
           'rgba(255, 69, 58, 0.85)',
@@ -483,9 +910,10 @@ function renderChart() {
   });
 }
 
-// Renderizar Headline & Briefing Executivo
+// Renderizar Headline & Briefing Executivo Bilíngue
 function renderBriefing() {
   if (!state.briefing) return;
+  const dict = TRANSLATIONS[state.currentLang];
 
   const headlineEl = document.getElementById('briefingHeadline');
   const timeBadgeEl = document.getElementById('briefingTimeWindowBadge');
@@ -493,17 +921,17 @@ function renderBriefing() {
   const engineBadgeEl = document.getElementById('briefingEngineBadge');
   const bulletsContainer = document.getElementById('briefingBulletsContainer');
 
-  if (headlineEl) {
+  if (headlineEl && state.briefing.headline) {
     headlineEl.textContent = state.briefing.headline;
   }
   if (timeBadgeEl) {
-    timeBadgeEl.textContent = state.briefing.timeWindow;
+    timeBadgeEl.textContent = state.briefing.timeWindow || dict.briefingTimeWindowDefault;
   }
   if (statusBadgeEl) {
-    statusBadgeEl.textContent = state.briefing.statusBadge;
+    statusBadgeEl.textContent = state.briefing.statusBadge || dict.briefingStatusDefault;
   }
   if (engineBadgeEl) {
-    engineBadgeEl.textContent = state.briefing.engine || 'IA em Tempo Real';
+    engineBadgeEl.textContent = state.briefing.engine || dict.briefingEngineDefault;
   }
 
   if (bulletsContainer && state.briefing.bullets) {
@@ -522,26 +950,33 @@ function renderBriefing() {
   }
 }
 
-// Renderizar Monitor de Voos & Conexões Aéreas (IKT)
+// Renderizar Monitor de Voos & Conexões Aéreas Bilíngue
 function renderFlights() {
   if (!state.flights) return;
+  const dict = TRANSLATIONS[state.currentLang];
+  const isEn = state.currentLang === 'en';
 
   const overheadBadge = document.getElementById('overheadAirspaceBadge');
   const container = document.getElementById('flightsContainer');
 
   if (overheadBadge && state.flights.liveAirspace) {
     const count = state.flights.liveAirspace.activeTranspondersOverhead;
-    overheadBadge.textContent = count > 0 ? `OpenSky: ${count} no Raio` : 'OpenSky: Espaço Aéreo Calmo';
+    overheadBadge.textContent = count > 0
+      ? dict.flightsOverheadRange.replace('{n}', count)
+      : dict.flightsOverheadCalm;
   }
 
   if (container && state.flights.scheduledRoutes) {
     container.innerHTML = state.flights.scheduledRoutes.map(f => {
       let statusColor = 'bg-[#30D158]/15 text-[#30D158] border-[#30D158]/30';
-      if (f.status.includes('Decolou') || f.status.includes('Em Rota')) {
+      if (f.status.includes('Decolou') || f.status.includes('Em Rota') || f.status.includes('Departed')) {
         statusColor = 'bg-[#0A84FF]/15 text-[#0A84FF] border-[#0A84FF]/30';
-      } else if (f.status.includes('Embarque') || f.status.includes('Portão')) {
+      } else if (f.status.includes('Embarque') || f.status.includes('Portão') || f.status.includes('Gate') || f.status.includes('Boarding')) {
         statusColor = 'bg-[#FF9F0A]/15 text-[#FF9F0A] border-[#FF9F0A]/30';
       }
+
+      const statusText = (isEn && FLIGHT_TRANSLATIONS.status[f.status]) ? FLIGHT_TRANSLATIONS.status[f.status] : f.status;
+      const healthText = (isEn && FLIGHT_TRANSLATIONS.health[f.healthStatus]) ? FLIGHT_TRANSLATIONS.health[f.healthStatus] : f.healthStatus;
 
       return `
         <div class="news-row flex flex-col space-y-1.5 p-3">
@@ -552,7 +987,7 @@ function renderFlights() {
               <span class="text-white/70 font-medium">${f.airline}</span>
             </div>
             <span class="pill-badge ${statusColor} text-[10px] font-semibold">
-              ${f.status}
+              ${statusText}
             </span>
           </div>
 
@@ -565,7 +1000,7 @@ function renderFlights() {
             <span class="text-white/40">${f.aircraft}</span>
             <span class="text-[#0A84FF] font-medium flex items-center gap-1">
               <i data-lucide="shield-check" class="w-3 h-3"></i>
-              ${f.healthStatus}
+              ${healthText}
             </span>
           </div>
         </div>
@@ -575,17 +1010,18 @@ function renderFlights() {
   }
 }
 
-// Carregar Dados das APIs
+// Carregar Dados das APIs (com parâmetro de idioma)
 async function loadData(forceRefresh = false) {
   const refreshIcon = document.getElementById('refreshIcon');
   if (refreshIcon) refreshIcon.classList.add('animate-spin');
 
   try {
+    const lang = state.currentLang;
     const [newsRes, socialRes, incidentRes, briefingRes, flightsRes] = await Promise.all([
       fetch(`/api/news${forceRefresh ? '?refresh=true' : ''}`),
       fetch('/api/social'),
       fetch('/api/incident'),
-      fetch('/api/briefing'),
+      fetch(`/api/briefing?lang=${lang}`),
       fetch('/api/flights')
     ]);
 
@@ -637,7 +1073,7 @@ async function loadData(forceRefresh = false) {
 
     const footerLastSync = document.getElementById('footerLastSync');
     if (footerLastSync) {
-      footerLastSync.textContent = new Date().toLocaleTimeString('pt-BR');
+      footerLastSync.textContent = new Date().toLocaleTimeString(state.currentLang === 'en' ? 'en-US' : 'pt-BR');
     }
   } catch (err) {
     console.error('Falha ao carregar dados:', err);
@@ -671,7 +1107,8 @@ function startCountdown() {
   state.countdownInterval = setInterval(() => {
     state.countdown--;
     if (syncStatusText) {
-      syncStatusText.textContent = `Atualiza em ${state.countdown}s`;
+      const dict = TRANSLATIONS[state.currentLang];
+      syncStatusText.textContent = dict.newsTickerSync.replace('{s}', state.countdown);
     }
     if (state.countdown <= 0) {
       state.countdown = 60;
@@ -682,6 +1119,17 @@ function startCountdown() {
 
 // Event Listeners
 function setupEventListeners() {
+  // Alternador de Idioma EN / PT
+  const langBtnEn = document.getElementById('langBtnEn');
+  const langBtnPt = document.getElementById('langBtnPt');
+  if (langBtnEn) {
+    langBtnEn.addEventListener('click', () => setLanguage('en'));
+  }
+  if (langBtnPt) {
+    langBtnPt.addEventListener('click', () => setLanguage('pt'));
+  }
+
+  // Botão Atualizar
   const refreshBtn = document.getElementById('refreshBtn');
   if (refreshBtn) {
     refreshBtn.addEventListener('click', () => {
@@ -696,7 +1144,8 @@ function setupEventListeners() {
   if (toggleAudioBtn) {
     toggleAudioBtn.addEventListener('click', () => {
       state.audioEnabled = !state.audioEnabled;
-      if (audioText) audioText.textContent = state.audioEnabled ? 'Som Ativo' : 'Mudo';
+      const dict = TRANSLATIONS[state.currentLang];
+      if (audioText) audioText.textContent = state.audioEnabled ? dict.audioOn : dict.audioMuted;
       if (state.audioEnabled) playNotificationChime();
     });
   }
@@ -812,6 +1261,10 @@ function clearAllFilters() {
 
 // Bootstrap
 window.addEventListener('DOMContentLoaded', () => {
+  // Detectar idioma inicial baseado no sistema ou preferência salva
+  state.currentLang = detectInitialLanguage();
+  applyTranslations(state.currentLang);
+
   lucide.createIcons();
   initMap();
   setupEventListeners();

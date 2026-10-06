@@ -110,8 +110,9 @@ app.get('/api/social', async (req, res) => {
 // NOVO: Endpoint do Resumo Executivo / Headline da Última Hora
 app.get('/api/briefing', async (req, res) => {
   try {
+    const lang = req.query.lang === 'en' ? 'en' : 'pt';
     const { news } = await fetchAllFeeds();
-    const briefing = await generateHourlyBriefing(news);
+    const briefing = await generateHourlyBriefing(news, null, lang);
     res.json(briefing);
   } catch (error) {
     console.error('Erro na rota /api/briefing:', error);
@@ -142,10 +143,11 @@ app.get('/api/incident', (req, res) => {
 // Endpoint de estatísticas em tempo real com contagem dinâmica
 app.get('/api/stats', async (req, res) => {
   try {
+    const lang = req.query.lang === 'en' ? 'en' : 'pt';
     const { news, lastUpdated } = await fetchAllFeeds();
     const highAlerts = news.filter(n => n.severity === 'high').length;
     const mediumAlerts = news.filter(n => n.severity === 'medium').length;
-    const patientMetrics = extractDynamicPatientMetrics(news);
+    const patientMetrics = extractDynamicPatientMetrics(news, lang);
 
     res.json({
       success: true,

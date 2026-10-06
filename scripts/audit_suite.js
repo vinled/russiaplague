@@ -298,6 +298,42 @@ async function runAudit() {
       auditResults.warnings.push('Busca por termo retornou 0 resultados');
     }
 
+    // 8.1. Teste de Alternador Bilíngue EN / PT
+    console.log('\n🌐 [TESTE 5.1/6] Testando Alternador Bilíngue EN / PT...');
+    const langAudit = await client.eval(`
+      (() => {
+        const btnEn = document.getElementById('langBtnEn');
+        const btnPt = document.getElementById('langBtnPt');
+        if (!btnEn || !btnPt) return { error: 'Botões EN/PT não encontrados' };
+
+        // Testar alternância para EN
+        btnEn.click();
+        const enLang = document.documentElement.lang;
+        const enTitle = document.querySelector('[data-i18n="appTitle"]')?.textContent;
+        const enSearchHolder = document.getElementById('searchInput')?.placeholder;
+        const enPref = localStorage.getItem('preferred_language');
+
+        // Testar alternância de volta para PT
+        btnPt.click();
+        const ptLang = document.documentElement.lang;
+        const ptTitle = document.querySelector('[data-i18n="appTitle"]')?.textContent;
+        const ptPref = localStorage.getItem('preferred_language');
+
+        return {
+          enOk: enLang === 'en' && enTitle.includes('Health') && enPref === 'en',
+          ptOk: ptLang === 'pt-BR' && ptTitle.includes('Sanitária') && ptPref === 'pt',
+          enTitle,
+          ptTitle
+        };
+      })()
+    `);
+
+    if (langAudit.enOk && langAudit.ptOk) {
+      auditResults.checks.push(`Sistema Bilíngue validado: EN ("${langAudit.enTitle}") e PT ("${langAudit.ptTitle}")`);
+    } else {
+      auditResults.errors.push(`Falha na alternância de idioma: ${JSON.stringify(langAudit)}`);
+    }
+
     // 9. Auditoria Responsiva: Mobile Viewport (iPhone 14 / 390x844)
     console.log('\n📱 [TESTE 6/6] Testando Layout Mobile (iPhone 14 / 390x844)...');
     await client.send('Emulation.setDeviceMetricsOverride', {

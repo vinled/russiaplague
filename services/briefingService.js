@@ -5,22 +5,23 @@
  */
 
 // Extrai números dinâmicos de quarentena e pacientes das notícias reais mais recentes
-function extractDynamicPatientMetrics(newsList) {
+function extractDynamicPatientMetrics(newsList, lang = 'pt') {
+  const isEn = lang === 'en';
   const numberPatterns = [
     /(?:quarantine[d]?|isolad[ao]s?|hospitaliz\w+|observation|observação|contatos?|patients?|pacientes?)\s*(?:of|de|about|cerca de|around|roughly|nearly)?\s*(\d+(?:[\s–-]+\d+)?)/i,
     /(?:nearly|about|almost|cerca de|aproximadamente)\s*(\d+)\s*(?:people|pessoas|contacts|contatos|workers|funcion[aá]rios)/i
   ];
 
-  let detectedCount = "~200 Pessoas";
+  let detectedCount = isEn ? "~200 People" : "~200 Pessoas";
   let verifiedSource = "The Moscow Times / CNBC";
-  let contextSnippet = "Sob observação médica profilática e isolamento hospitalar";
+  let contextSnippet = isEn ? "Under prophylactic medical observation and hospital isolation" : "Sob observação médica profilática e isolamento hospitalar";
 
   for (const item of newsList) {
     const fullText = (item.title + ' ' + (item.summary || ''));
     for (const pattern of numberPatterns) {
       const match = fullText.match(pattern);
       if (match && match[1]) {
-        detectedCount = match[1].trim() + " Pessoas";
+        detectedCount = match[1].trim() + (isEn ? " People" : " Pessoas");
         verifiedSource = item.source.replace(/\(.*?\)/g, '').trim();
         contextSnippet = item.title;
         return {
@@ -42,9 +43,28 @@ function extractDynamicPatientMetrics(newsList) {
 }
 
 // Chamada opcional à API do Gemini caso haja GEMINI_API_KEY
-async function callGeminiSummarizer(newsItems, apiKey) {
+async function callGeminiSummarizer(newsItems, apiKey, lang = 'pt') {
+  const isEn = lang === 'en';
   try {
-    const prompt = `Você é um analista sênior de inteligência epidemiológica.
+    const prompt = isEn
+      ? `You are a senior epidemiological intelligence analyst.
+Analyze the following recent real news dispatches regarding the laboratory incident in Irkutsk (Siberia, Russia):
+
+${newsItems.map((n, i) => `${i + 1}. [${n.source}] ${n.title} (Published: ${n.pubDate})`).join('\n')}
+
+Generate a briefing in JSON format with EXACTLY this structure:
+{
+  "headline": "A high-impact and accurate 1-line headline summarizing the latest developments",
+  "timeWindow": "Last Hour",
+  "bullets": [
+    { "topic": "Hospital Containment & Contacts", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "International Repercussions & WHO", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "Spread Outside Siberia", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "Investigation & Official Measures", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" }
+  ]
+}
+Respond ONLY with the valid JSON, no markdown backticks.`
+      : `Você é um analista sênior de inteligência epidemiológica.
 Analise os seguintes despachos jornalísticos reais recentes sobre o incidente no laboratório de Irkutsk (Sibéria, Rússia):
 
 ${newsItems.map((n, i) => `${i + 1}. [${n.source}] ${n.title} (Publicado: ${n.pubDate})`).join('\n')}
@@ -54,10 +74,10 @@ Gere um resumo em formato JSON com EXATAMENTE esta estrutura:
   "headline": "Uma manchete de alto impacto e precisa de 1 linha resumindo a situação mais recente",
   "timeWindow": "Última Hora",
   "bullets": [
-    { "topic": "Contenção & Hospitais", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
-    { "topic": "Repercussão Internacional", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
-    { "topic": "Status de Disseminação", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
-    { "topic": "Vigilância & Autoridades", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" }
+    { "topic": "Isolamento Hospitalar & Contatos", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Repercussão Internacional & OMS", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Disseminação Fora da Sibéria", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Investigação & Medidas Oficiais", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" }
   ]
 }
 Responda APENAS com o JSON válido, sem crases de markdown.`;
@@ -76,7 +96,7 @@ Responda APENAS com o JSON válido, sem crases de markdown.`;
       const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
       const cleanJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleanJson);
-      parsed.engine = "Gemini 1.5 Flash (Neural AI)";
+      parsed.engine = isEn ? "Gemini 1.5 Flash (Neural AI)" : "Gemini 1.5 Flash (IA Neural)";
       return parsed;
     }
   } catch (err) {
@@ -86,7 +106,8 @@ Responda APENAS com o JSON válido, sem crases de markdown.`;
 }
 
 // Motor de Síntese Extrativa Dinâmica com NLP e Agrupamento Semântico
-function generateDynamicNlpBriefing(newsList) {
+function generateDynamicNlpBriefing(newsList, lang = 'pt') {
+  const isEn = lang === 'en';
   const now = Date.now();
   const ONE_HOUR_MS = 60 * 60 * 1000;
   const THREE_HOURS_MS = 3 * ONE_HOUR_MS;
@@ -136,7 +157,7 @@ function generateDynamicNlpBriefing(newsList) {
   // Headline mais recente e de maior peso jornalístico
   const priorityItems = pool.filter(item => item.severity === 'high' && !item.source.includes('Reddit'));
   const leadItem = priorityItems[0] || pool.find(item => !item.source.includes('Reddit')) || pool[0] || newsList[0];
-  let headline = leadItem ? leadItem.title.replace(/\s+-\s+[A-Za-z0-9\s.,]+$/, '').trim() : "Vigilância Ativa no Foco de Irkutsk";
+  let headline = leadItem ? leadItem.title.replace(/\s+-\s+[A-Za-z0-9\s.,]+$/, '').trim() : (isEn ? "Active Surveillance at Irkutsk Perimeter" : "Vigilância Ativa no Foco de Irkutsk");
 
   // Montagem dinâmica dos 4 tópicos com fontes reais e fatos extraídos dos artigos reais
   const bullets = [];
@@ -144,46 +165,53 @@ function generateDynamicNlpBriefing(newsList) {
   // Tópico 1: Contenção & Isolamento
   const hospItem = clusters.hospitals[0] || pool[0];
   bullets.push({
-    topic: "Isolamento Hospitalar & Contatos",
-    text: hospItem ? hospItem.title : "Quarentena médica mantida em unidades hospitalares de Shelekhov e Irkutsk.",
-    source: hospItem ? (hospItem.source.replace(/\(.*?\)/g, '').trim()) : "Fontes Oficiais",
+    topic: isEn ? "Hospital Isolation & Contacts" : "Isolamento Hospitalar & Contatos",
+    text: hospItem ? hospItem.title : (isEn ? "Medical quarantine maintained at Shelekhov and Irkutsk hospital units." : "Quarentena médica mantida em unidades hospitalares de Shelekhov e Irkutsk."),
+    source: hospItem ? (hospItem.source.replace(/\(.*?\)/g, '').trim()) : (isEn ? "Official Sources" : "Fontes Oficiais"),
     timestamp: hospItem ? hospItem.pubTimestamp : now
   });
 
   // Tópico 2: Repercussão Internacional
   const intlItem = clusters.international[0] || pool[1];
   bullets.push({
-    topic: "Repercussão Internacional & OMS",
-    text: intlItem ? intlItem.title : "Agências internacionais e governos monitoram a evolução do protocolo sanitário.",
-    source: intlItem ? (intlItem.source.replace(/\(.*?\)/g, '').trim()) : "Imprensa Internacional",
+    topic: isEn ? "International Repercussions & WHO" : "Repercussão Internacional & OMS",
+    text: intlItem ? intlItem.title : (isEn ? "International agencies and foreign authorities monitoring sanitary containment protocol." : "Agências internacionais e governos monitoram a evolução do protocolo sanitário."),
+    source: intlItem ? (intlItem.source.replace(/\(.*?\)/g, '').trim()) : (isEn ? "International Press" : "Imprensa Internacional"),
     timestamp: intlItem ? intlItem.pubTimestamp : now
   });
 
   // Tópico 3: Status de Propagação
   const spreadItem = clusters.spread[0] || pool[2];
   bullets.push({
-    topic: "Disseminação Fora da Sibéria",
-    text: spreadItem ? spreadItem.title : "Zero casos secundários registrados fora do cordão de isolamento da região de Irkutsk.",
-    source: spreadItem ? (spreadItem.source.replace(/\(.*?\)/g, '').trim()) : "Vigilância Epidemiológica",
+    topic: isEn ? "Spread Outside Siberia" : "Disseminação Fora da Sibéria",
+    text: spreadItem ? spreadItem.title : (isEn ? "Zero secondary cases recorded outside the Irkutsk quarantine perimeter." : "Zero casos secundários registrados fora do cordão de isolamento da região de Irkutsk."),
+    source: spreadItem ? (spreadItem.source.replace(/\(.*?\)/g, '').trim()) : (isEn ? "Epidemiological Surveillance" : "Vigilância Epidemiológica"),
     timestamp: spreadItem ? spreadItem.pubTimestamp : now
   });
 
   // Tópico 4: Medidas de Triagem & Investigação
   const govItem = clusters.government[0] || pool[3];
   bullets.push({
-    topic: "Investigação & Medidas Oficiais",
-    text: govItem ? govItem.title : "Comissões sanitárias e peritos dão seguimento à investigação técnica sobre a ocorrência.",
-    source: govItem ? (govItem.source.replace(/\(.*?\)/g, '').trim()) : "Rospotrebnadzor / Mídia",
+    topic: isEn ? "Investigation & Official Measures" : "Investigação & Medidas Oficiais",
+    text: govItem ? govItem.title : (isEn ? "Sanitary commissions and technical teams investigating laboratory biosecurity standards." : "Comissões sanitárias e peritos dão seguimento à investigação técnica sobre a ocorrência."),
+    source: govItem ? (govItem.source.replace(/\(.*?\)/g, '').trim()) : (isEn ? "Rospotrebnadzor / Media" : "Rospotrebnadzor / Mídia"),
     timestamp: govItem ? govItem.pubTimestamp : now
   });
 
+  let timeWindowStr = isEn ? "Real Time" : "Tempo Real";
+  if (lastHourItems.length > 0) {
+    timeWindowStr = isEn ? `Last Hour (${lastHourItems.length} new dispatches)` : `Última Hora (${lastHourItems.length} novos despachos)`;
+  } else if (recentItems.length > 0) {
+    timeWindowStr = isEn ? `Last 3 Hours (${recentItems.length} dispatches)` : `Últimas 3 Horas (${recentItems.length} despachos)`;
+  }
+
   return {
-    engine: "NLP Dinâmico em Tempo Real",
+    engine: isEn ? "Real-Time Dynamic NLP" : "NLP Dinâmico em Tempo Real",
     headline,
-    timeWindow: lastHourItems.length > 0 ? `Última Hora (${lastHourItems.length} novos despachos)` : (recentItems.length > 0 ? `Últimas 3 Horas (${recentItems.length} despachos)` : "Tempo Real"),
+    timeWindow: timeWindowStr,
     dispatchesCount: lastHourItems.length > 0 ? lastHourItems.length : pool.length,
     lastHourCount: lastHourItems.length,
-    statusBadge: "Contido Localmente • Vigilância Ativa",
+    statusBadge: isEn ? "Locally Contained • Active Surveillance" : "Contido Localmente • Vigilância Ativa",
     bullets,
     latestBreaking: leadItem ? {
       title: leadItem.title,
@@ -195,23 +223,23 @@ function generateDynamicNlpBriefing(newsList) {
   };
 }
 
-async function generateHourlyBriefing(newsList, customApiKey = null) {
+async function generateHourlyBriefing(newsList, customApiKey = null, lang = 'pt') {
   const apiKey = customApiKey || process.env.GEMINI_API_KEY;
 
   // Extrair números de pacientes em tempo real
-  const patientMetrics = extractDynamicPatientMetrics(newsList);
+  const patientMetrics = extractDynamicPatientMetrics(newsList, lang);
 
   let briefingResult = null;
 
   // Se houver chave do Gemini, tentar sintetizar via IA Neural
   if (apiKey) {
     const candidateItems = newsList.slice(0, 10);
-    briefingResult = await callGeminiSummarizer(candidateItems, apiKey);
+    briefingResult = await callGeminiSummarizer(candidateItems, apiKey, lang);
   }
 
   // Se não houver chave ou se falhar, usar o motor NLP dinâmico de alta precisão
   if (!briefingResult) {
-    briefingResult = generateDynamicNlpBriefing(newsList);
+    briefingResult = generateDynamicNlpBriefing(newsList, lang);
   }
 
   briefingResult.patientMetrics = patientMetrics;
