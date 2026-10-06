@@ -406,13 +406,27 @@ function updateMetrics() {
   if (state.incident && cardSpreadStatus) {
     cardSpreadStatus.textContent = state.incident.riskAssessment.globalSpreadStatus.toLowerCase().replace(/^\w/, c => c.toUpperCase());
   }
-  if (state.incident && cardQuarantine) {
-    cardQuarantine.textContent = state.incident.keyMetrics.quarantinedContacts.split(' ')[0] + ' ' + (state.incident.keyMetrics.quarantinedContacts.split(' ')[1] || 'Pessoas');
+
+  if (cardQuarantine) {
+    const dynamicCount = state.briefing?.patientMetrics?.detectedCount || (state.incident?.keyMetrics?.quarantinedContacts?.split(' ')[0] + ' Pessoas');
+    const dynamicSource = state.briefing?.patientMetrics?.verifiedSource;
+    cardQuarantine.textContent = dynamicCount;
+
+    const quarantineSourceEl = document.getElementById('cardQuarantineSource');
+    if (quarantineSourceEl) {
+      quarantineSourceEl.textContent = dynamicSource ? `Apurado: ${dynamicSource}` : 'Apurado em Tempo Real';
+    }
   }
 
   const highCount = state.news.filter(n => n.severity === 'high').length;
   if (cardHighAlerts) cardHighAlerts.textContent = highCount;
-  if (feedCountBadge) feedCountBadge.textContent = `Total: ${state.news.length} fontes ativas`;
+
+  if (feedCountBadge) {
+    const lastHourCount = state.briefing?.lastHourCount || 0;
+    feedCountBadge.textContent = lastHourCount > 0
+      ? `Total: ${state.news.length} fontes (${lastHourCount} na última hora)`
+      : `Total: ${state.news.length} fontes ativas`;
+  }
   if (countAll) countAll.textContent = state.news.length;
 }
 
@@ -475,6 +489,7 @@ function renderBriefing() {
   const headlineEl = document.getElementById('briefingHeadline');
   const timeBadgeEl = document.getElementById('briefingTimeWindowBadge');
   const statusBadgeEl = document.getElementById('briefingStatusBadge');
+  const engineBadgeEl = document.getElementById('briefingEngineBadge');
   const bulletsContainer = document.getElementById('briefingBulletsContainer');
 
   if (headlineEl) {
@@ -486,14 +501,20 @@ function renderBriefing() {
   if (statusBadgeEl) {
     statusBadgeEl.textContent = state.briefing.statusBadge;
   }
+  if (engineBadgeEl) {
+    engineBadgeEl.textContent = state.briefing.engine || 'IA em Tempo Real';
+  }
 
   if (bulletsContainer && state.briefing.bullets) {
     bulletsContainer.innerHTML = state.briefing.bullets.map(b => `
-      <div class="flex items-start space-x-2 bg-white/[0.03] p-2.5 rounded-xl border border-white/[0.05]">
-        <div class="w-1.5 h-1.5 rounded-full bg-[#0A84FF] mt-1.5 shrink-0"></div>
-        <div>
-          <strong class="text-white/90 font-semibold block mb-0.5">${b.topic}:</strong>
-          <span class="text-white/70 leading-relaxed text-xs">${b.text}</span>
+      <div class="flex items-start space-x-2.5 bg-white/[0.03] hover:bg-white/[0.05] p-3 rounded-xl border border-white/[0.05] transition">
+        <div class="w-2 h-2 rounded-full bg-[#0A84FF] mt-1.5 shrink-0 shadow-sm shadow-[#0A84FF]/40"></div>
+        <div class="flex-1">
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <strong class="text-white/90 font-semibold text-xs">${b.topic}</strong>
+            ${b.source ? `<span class="pill-badge bg-white/[0.06] text-white/50 text-[10px] font-medium">${b.source}</span>` : ''}
+          </div>
+          <p class="text-white/70 leading-relaxed text-xs m-0 font-normal">${b.text}</p>
         </div>
       </div>
     `).join('');

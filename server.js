@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const { fetchAllFeeds, getCachedNews, getLastFetchTime } = require('./services/rssService');
 const { fetchSocialFeed } = require('./services/socialService');
-const { generateHourlyBriefing } = require('./services/briefingService');
+const { generateHourlyBriefing, extractDynamicPatientMetrics } = require('./services/briefingService');
 const incidentData = require('./services/incidentData');
 
 const app = express();
@@ -110,7 +110,7 @@ app.get('/api/social', async (req, res) => {
 app.get('/api/briefing', async (req, res) => {
   try {
     const { news } = await fetchAllFeeds();
-    const briefing = generateHourlyBriefing(news);
+    const briefing = await generateHourlyBriefing(news);
     res.json(briefing);
   } catch (error) {
     console.error('Erro na rota /api/briefing:', error);
@@ -127,12 +127,13 @@ app.get('/api/incident', (req, res) => {
   });
 });
 
-// Endpoint de estatísticas em tempo real
+// Endpoint de estatísticas em tempo real com contagem dinâmica
 app.get('/api/stats', async (req, res) => {
   try {
     const { news, lastUpdated } = await fetchAllFeeds();
     const highAlerts = news.filter(n => n.severity === 'high').length;
     const mediumAlerts = news.filter(n => n.severity === 'medium').length;
+    const patientMetrics = extractDynamicPatientMetrics(news);
 
     res.json({
       success: true,
@@ -140,11 +141,13 @@ app.get('/api/stats', async (req, res) => {
       totalNewsTracked: news.length,
       highAlerts,
       mediumAlerts,
+      patientMetrics,
       incidentSummary: {
         location: incidentData.incident.location.city,
         facility: incidentData.incident.location.facility,
         globalSpreadStatus: incidentData.incident.riskAssessment.globalSpreadStatus,
-        quarantined: incidentData.incident.keyMetrics.quarantinedContacts,
+        quarantined: patientMetrics.detectedCount,
+        quarantinedSource: patientMetrics.verifiedSource,
         monitoringPointsCount: incidentData.incident.monitoringPoints.length
       }
     });
