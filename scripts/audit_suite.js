@@ -221,6 +221,12 @@ async function runAudit() {
         const verifiedItems = document.querySelectorAll('#latestVerifiedContainer > div').length;
         const rumorsCount = document.querySelectorAll('#overviewRumorWatchContainer > div').length;
 
+        const pathogenCard = document.getElementById('pathogenIntelCard');
+        const pathogenAiText = document.getElementById('pathogenAiSummaryText')?.textContent.trim() || '';
+        const pathogenFindings = document.querySelectorAll('#pathogenKeyFindings > div').length;
+        const pathogenEngine = document.getElementById('pathogenEngineLabel')?.textContent.trim() || '';
+        const pathogenAgent = document.getElementById('pathogenAgentIdentity')?.textContent.trim() || '';
+
         return {
           threatLevel,
           threatHeadline,
@@ -230,7 +236,13 @@ async function runAudit() {
           milestones,
           evoRows,
           verifiedItems,
-          rumorsCount
+          rumorsCount,
+          pathogenCard: !!pathogenCard,
+          pathogenAiText,
+          pathogenFindings,
+          pathogenEngine,
+          pathogenAgent,
+          pathogenHasContent: pathogenAiText.length > 20 && !pathogenAiText.includes('Synchronizing neural')
         };
       })()
     `);
@@ -265,7 +277,20 @@ async function runAudit() {
       auditResults.errors.push(`Falha no Rumor Watch da home: ${overviewAudit.rumorsCount} itens`);
     }
 
+    if (overviewAudit.pathogenCard && overviewAudit.pathogenFindings >= 3 && overviewAudit.pathogenAiText.length > 20) {
+      auditResults.checks.push(`Card PATHOGEN INTELLIGENCE validado com sucesso (${overviewAudit.pathogenEngine} | Agente: "${overviewAudit.pathogenAgent.slice(0, 30)}..." | ${overviewAudit.pathogenFindings} achados estruturados)`);
+    } else {
+      auditResults.errors.push(`Falha no Card Pathogen Intelligence: card=${overviewAudit.pathogenCard}, achados=${overviewAudit.pathogenFindings}`);
+    }
+
     await client.captureScreenshot(path.join(rootDir, 'audit_result_1_overview.png'));
+
+    // Capturar screenshot focado no novo card Pathogen Intelligence
+    await client.eval(`document.getElementById('pathogenIntelCard')?.scrollIntoView({ behavior: 'instant', block: 'center' });`);
+    await new Promise(r => setTimeout(r, 400));
+    await client.captureScreenshot(path.join(rootDir, 'audit_result_1_pathogen_card.png'));
+    await client.eval(`window.scrollTo({ top: 0, behavior: 'instant' });`);
+    await new Promise(r => setTimeout(r, 200));
 
     // 5. Teste da Aba TIMELINE
     console.log('\n⏱️ [TESTE 3/7] Testando Aba "TIMELINE"...');

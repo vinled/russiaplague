@@ -450,6 +450,58 @@
             </div>
           </div>
 
+          <!-- PATHOGEN INTELLIGENCE CARD (Powered by Gemini AI) -->
+          <div class="intel-panel p-4 space-y-3" id="pathogenIntelCard">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-2.5 border-b border-white/[0.06]">
+              <div class="flex items-center space-x-2">
+                <i data-lucide="dna" class="w-4 h-4 text-[#388BFD]"></i>
+                <h3 class="text-xs font-bold text-white tracking-wider uppercase font-mono" data-i18n="pathogenIntelTitle">
+                  PATHOGEN INTELLIGENCE
+                </h3>
+              </div>
+              <span class="tag-badge tag-official text-[9px] font-mono flex items-center gap-1.5" id="pathogenEngineBadge" title="AI Synthesis Status">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#388BFD] animate-pulse"></span>
+                <span id="pathogenEngineLabel">GEMINI 1.5 FLASH</span>
+              </span>
+            </div>
+
+            <!-- Agent Identity Highlight Banner -->
+            <div class="p-2.5 rounded bg-white/[0.02] border border-white/[0.06] flex items-center justify-between gap-2">
+              <div>
+                <span class="text-[9px] text-white/40 uppercase font-mono block" data-i18n="pathogenAgentLabel">Etiological Classification</span>
+                <span class="text-xs font-bold text-[#E6EDF3] font-mono" id="pathogenAgentIdentity">
+                  Yersinia pestis (Suspected) / Unknown Etiology
+                </span>
+              </div>
+              <span class="tag-badge tag-unverified text-[9px] font-mono shrink-0" id="pathogenAgentBadge" data-i18n="pathogenAgentBadge">
+                Under Investigation
+              </span>
+            </div>
+
+            <!-- Executive AI Synthesis Paragraph -->
+            <div class="p-2.5 rounded bg-[#388BFD]/[0.04] border border-[#388BFD]/20 text-[11px] leading-relaxed text-white/80" id="pathogenAiSummaryBox">
+              <div class="flex items-center gap-1.5 text-[#388BFD] font-mono text-[10px] font-bold mb-1">
+                <i data-lucide="sparkles" class="w-3 h-3"></i>
+                <span data-i18n="pathogenAiSummaryTitle">AI EPIDEMIOLOGICAL SYNTHESIS (REAL TIME)</span>
+              </div>
+              <p id="pathogenAiSummaryText" class="text-white/80 text-[11px] leading-relaxed">
+                Synchronizing neural analysis of monitored dispatches...
+              </p>
+            </div>
+
+            <!-- 4 Structured Key Findings -->
+            <div class="space-y-1.5" id="pathogenKeyFindings">
+              <!-- Dynamically populated via app.js -->
+            </div>
+
+            <!-- Footer Stats -->
+            <div class="flex items-center justify-between pt-2 border-t border-white/[0.04] text-[10px] text-white/40 font-mono">
+              <span id="pathogenDispatchesAnalyzed">Monitored from -- dispatches</span>
+              <span id="pathogenLastUpdated">Updated: --:--:--</span>
+            </div>
+          </div>
+
         </div>
 
       </div>

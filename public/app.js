@@ -94,7 +94,13 @@ const TRANSLATIONS = {
     riskHumanSpreadVal: 'None',
     riskGeoExpansionVal: 'None',
     riskBordersVal: 'Monitoring',
-    riskFacilityVal: 'BSL-3 Inspected'
+    riskFacilityVal: 'BSL-3 Inspected',
+    pathogenIntelTitle: 'PATHOGEN INTELLIGENCE',
+    pathogenAgentLabel: 'Etiological Classification',
+    pathogenAgentBadge: 'Under Investigation',
+    pathogenAiSummaryTitle: 'AI EPIDEMIOLOGICAL SYNTHESIS (REAL TIME)',
+    pathogenDispatchesAnalyzed: 'Monitored from {n} dispatches',
+    pathogenSyncing: 'Synchronizing neural analysis of monitored dispatches...'
   },
   pt: {
     brandTitle: 'OUTBREAK INTELLIGENCE',
@@ -185,7 +191,13 @@ const TRANSLATIONS = {
     riskHumanSpreadVal: 'Nenhuma',
     riskGeoExpansionVal: 'Nenhuma',
     riskBordersVal: 'Monitoramento',
-    riskFacilityVal: 'BSL-3 Inspecionado'
+    riskFacilityVal: 'BSL-3 Inspecionado',
+    pathogenIntelTitle: 'INTELIGÊNCIA DO PATÓGENO',
+    pathogenAgentLabel: 'Classificação Etiológica',
+    pathogenAgentBadge: 'Sob Investigação',
+    pathogenAiSummaryTitle: 'SÍNTESE EPIDEMIOLÓGICA POR IA (TEMPO REAL)',
+    pathogenDispatchesAnalyzed: 'Monitorado a partir de {n} despachos',
+    pathogenSyncing: 'Sincronizando análise neural dos despachos monitorados...'
   }
 };
 
@@ -230,6 +242,7 @@ const state = {
   incident: null,
   briefing: null,
   flights: null,
+  pathogenIntel: null,
   currentTab: 'navOverview',
   currentLang: 'en',
   currentTheme: localStorage.getItem('theme_preference') || 'dark',
@@ -432,6 +445,7 @@ function applyTranslations(lang) {
   renderOutbreakEvolution();
   renderLatestVerifiedIntelligence();
   renderRumorWatch();
+  renderPathogenIntelligence();
   renderTimelineArchive();
   renderIntelligenceModules();
   renderSourcesFeed();
@@ -440,6 +454,7 @@ function applyTranslations(lang) {
 function setLanguage(lang) {
   localStorage.setItem('preferred_language', lang);
   applyTranslations(lang);
+  loadData(false);
 }
 
 // Map Tile Layer Updater for Theme Switching
@@ -878,6 +893,60 @@ function renderRumorWatch() {
       </tr>
     `).join('');
   }
+}
+
+// 6.1. Pathogen Intelligence (Overview Card, Powered by Gemini AI)
+function renderPathogenIntelligence() {
+  const card = document.getElementById('pathogenIntelCard');
+  if (!card) return;
+
+  const data = state.pathogenIntel;
+  const isEn = state.currentLang === 'en';
+  const dict = TRANSLATIONS[state.currentLang];
+
+  if (!data) return;
+
+  const engineLabel = document.getElementById('pathogenEngineLabel');
+  const agentIdentity = document.getElementById('pathogenAgentIdentity');
+  const aiSummaryText = document.getElementById('pathogenAiSummaryText');
+  const keyFindingsContainer = document.getElementById('pathogenKeyFindings');
+  const dispatchesEl = document.getElementById('pathogenDispatchesAnalyzed');
+  const lastUpdatedEl = document.getElementById('pathogenLastUpdated');
+
+  if (engineLabel) engineLabel.textContent = data.engine || (isEn ? 'GEMINI 1.5 FLASH' : 'GEMINI 1.5 FLASH');
+  if (agentIdentity) agentIdentity.textContent = data.agentIdentity || (isEn ? 'Yersinia pestis (Suspected) / Unknown Etiology' : 'Yersinia pestis (Suspeita) / Etiologia Desconhecida');
+  if (aiSummaryText) aiSummaryText.textContent = data.executiveSummary || dict.pathogenSyncing;
+
+  if (dispatchesEl && data.dispatchesAnalyzedCount) {
+    dispatchesEl.textContent = dict.pathogenDispatchesAnalyzed.replace('{n}', data.dispatchesAnalyzedCount);
+  }
+
+  if (lastUpdatedEl && data.lastAnalyzed) {
+    const timeStr = new Date(data.lastAnalyzed).toLocaleTimeString(isEn ? 'en-US' : 'pt-BR', { hour12: false });
+    lastUpdatedEl.textContent = `${isEn ? 'Updated' : 'Atualizado'}: ${timeStr}`;
+  }
+
+  if (keyFindingsContainer && Array.isArray(data.findings)) {
+    keyFindingsContainer.innerHTML = data.findings.map(f => {
+      let badgeClass = 'tag-reported';
+      if (f.statusType === 'safe') badgeClass = 'tag-confirmed';
+      else if (f.statusType === 'warning') badgeClass = 'tag-unverified';
+      else if (f.statusType === 'danger') badgeClass = 'tag-disputed';
+      else if (f.statusType === 'info') badgeClass = 'tag-official';
+
+      return `
+        <div class="p-2 bg-white/[0.02] hover:bg-white/[0.04] rounded border border-white/[0.04] transition">
+          <div class="flex items-center justify-between gap-1 flex-wrap mb-1">
+            <span class="text-[11px] font-bold text-white/90 font-mono">${f.label}</span>
+            <span class="tag-badge ${badgeClass} text-[9px] font-mono">${f.status}</span>
+          </div>
+          <p class="text-[10px] text-white/60 leading-relaxed font-sans">${f.details}</p>
+        </div>
+      `;
+    }).join('');
+  }
+
+  lucide.createIcons();
 }
 
 // 7. Full Timeline Archive (Tab 2)
@@ -1371,12 +1440,13 @@ async function loadData(forceRefresh = false) {
 
   try {
     const lang = state.currentLang;
-    const [newsRes, socialRes, incidentRes, briefingRes, flightsRes] = await Promise.all([
+    const [newsRes, socialRes, incidentRes, briefingRes, flightsRes, pathogenRes] = await Promise.all([
       fetch(`/api/news${forceRefresh ? '?refresh=true' : ''}`),
       fetch('/api/social'),
       fetch('/api/incident'),
       fetch(`/api/briefing?lang=${lang}`),
-      fetch('/api/flights')
+      fetch('/api/flights'),
+      fetch(`/api/pathogen-intel?lang=${lang}${forceRefresh ? '&refresh=true' : ''}`)
     ]);
 
     const newsData = await newsRes.json();
@@ -1384,6 +1454,7 @@ async function loadData(forceRefresh = false) {
     const incidentData = await incidentRes.json();
     const briefingData = await briefingRes.json();
     const flightsData = await flightsRes.json();
+    const pathogenData = await pathogenRes.json();
 
     if (newsData.success) {
       if (state.news.length > 0 && newsData.data.length > 0) {
@@ -1402,6 +1473,7 @@ async function loadData(forceRefresh = false) {
     if (incidentData.success) state.incident = incidentData.data;
     if (briefingData && briefingData.success) state.briefing = briefingData;
     if (flightsData && flightsData.success) state.flights = flightsData;
+    if (pathogenData && pathogenData.success) state.pathogenIntel = pathogenData.data;
 
     // Update timestamp
     const nowTimeStr = new Date().toLocaleTimeString('en-US', { hour12: false });
@@ -1416,6 +1488,7 @@ async function loadData(forceRefresh = false) {
     renderOutbreakEvolution();
     renderLatestVerifiedIntelligence();
     renderRumorWatch();
+    renderPathogenIntelligence();
     renderTimelineArchive();
     renderIntelligenceModules();
     renderSourcesFeed();

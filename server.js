@@ -5,6 +5,7 @@ const { fetchAllFeeds, getCachedNews, getLastFetchTime } = require('./services/r
 const { fetchSocialFeed } = require('./services/socialService');
 const { generateHourlyBriefing, extractDynamicPatientMetrics } = require('./services/briefingService');
 const { fetchFlightSurveillance } = require('./services/flightService');
+const { getPathogenIntelligence } = require('./services/pathogenService');
 const incidentData = require('./services/incidentData');
 
 const app = express();
@@ -133,6 +134,23 @@ app.get('/api/briefing', async (req, res) => {
     res.json(briefing);
   } catch (error) {
     console.error('Erro na rota /api/briefing:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// NOVO: Endpoint do Patógeno / Síntese via Gemini AI (com cache inteligente)
+app.get('/api/pathogen-intel', async (req, res) => {
+  try {
+    const lang = req.query.lang === 'en' ? 'en' : 'pt';
+    const forceRefresh = req.query.refresh === 'true';
+    const { news } = await fetchAllFeeds();
+    const pathogenData = await getPathogenIntelligence(news, null, lang, forceRefresh);
+    res.json({
+      success: true,
+      data: pathogenData
+    });
+  } catch (error) {
+    console.error('Erro na rota /api/pathogen-intel:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

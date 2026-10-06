@@ -702,3 +702,19 @@ body {
   background: #F3F4F6 !important;
   color: var(--oi-blue) !important;
 }
+
+/* Pathogen AI Box Theme Overrides */
+[data-theme="light"] #pathogenAiSummaryBox {
+  background-color: rgba(9, 105, 218, 0.06) !important;
+  border-color: rgba(9, 105, 218, 0.25) !important;
+}
+
+[data-theme="light"] #pathogenAgentIdentity {
+  color: #1F2328 !important;
+}
+
+[data-theme="high-contrast"] #pathogenAiSummaryBox {
+  background-color: rgba(88, 166, 255, 0.08) !important;
+  border-color: rgba(88, 166, 255, 0.40) !important;
+}
+
