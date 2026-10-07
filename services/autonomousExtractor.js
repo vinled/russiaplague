@@ -6,21 +6,19 @@
  */
 
 const incidentData = require('./incidentData');
+const { getAvailableLocalModel, generateLocalChatCompletion, extractJsonFromText } = require('./localAiService');
 
 // Cache em memória para evitar chamadas excessivas à API (TTL de 90 segundos)
 let autonomousCache = null;
 let lastAnalysisTimestamp = 0;
 const CACHE_TTL_MS = 90 * 1000;
 
-/**
- * Chamada à API do Gemini 1.5 Flash para análise estruturada do incidente
- */
-async function callGeminiAutonomousAnalyzer(newsItems, apiKey) {
+function buildAutonomousPrompt(newsItems) {
   const topNews = newsItems.slice(0, 20).map((n, i) =>
     `${i + 1}. [${n.source} | ${n.classification || 'REPORTED'}] ${n.title} - ${n.summary || ''}`
   ).join('\n\n');
 
-  const prompt = `You are a Chief Epidemiological Intelligence Officer operating in a Situation Room.
+  return `You are a Chief Epidemiological Intelligence Officer operating in a Situation Room.
 Analyze the following incoming news dispatches regarding the biological incident in Irkutsk/Shelekhov (Siberia, Russia):
 
 Dispatches:
@@ -86,7 +84,13 @@ Generate a JSON object strictly following this structure:
 }
 
 Respond ONLY with valid JSON. No markdown backticks, no preamble.`;
+}
 
+/**
+ * Chamada à API do Gemini 1.5 Flash para análise estruturada do incidente
+ */
+async function callGeminiAutonomousAnalyzer(newsItems, apiKey) {
+  const prompt = buildAutonomousPrompt(newsItems);
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -286,7 +290,25 @@ async function getAutonomousIncidentState(newsItems, forceRefresh = false) {
 
   let extracted = null;
 
-  if (apiKey) {
+  // 1. Tentar primeiro via LLM Local (LM Studio) para economizar créditos
+  const localModel = await getAvailableLocalModel();
+  if (localModel) {
+    try {
+      const prompt = buildAutonomousPrompt(newsItems);
+      const rawText = await generateLocalChatCompletion(prompt, { max_tokens: 800 });
+      const parsed = extractJsonFromText(rawText);
+      if (parsed && parsed.kpis && parsed.threatAssessment) {
+        extracted = parsed;
+        extracted.engine = `Local AI (${localModel})`;
+        console.log(`[Autonomous Extractor] Extração concluída com sucesso via LLM Local: ${localModel}`);
+      }
+    } catch (err) {
+      console.warn('[Autonomous Extractor] Falha no LLM local:', err.message);
+    }
+  }
+
+  // 2. Se local não respondeu e houver chave do Gemini, tentar sintetizar via Gemini
+  if (!extracted && apiKey) {
     try {
       extracted = await callGeminiAutonomousAnalyzer(newsItems, apiKey);
       extracted.engine = "Gemini 1.5 Flash (Autonomous Situation Room)";
@@ -295,7 +317,7 @@ async function getAutonomousIncidentState(newsItems, forceRefresh = false) {
       extracted = analyzeNewsHeuristically(newsItems);
       extracted.engine = "Deterministic NLP Engine (Heuristic Fallback)";
     }
-  } else {
+  } else if (!extracted) {
     extracted = analyzeNewsHeuristically(newsItems);
     extracted.engine = "Deterministic NLP Engine (Heuristic Fallback)";
   }

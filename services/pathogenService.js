@@ -5,6 +5,7 @@
  */
 
 const incidentData = require('./incidentData');
+const { getAvailableLocalModel, generateLocalChatCompletion, extractJsonFromText } = require('./localAiService');
 
 // Cache em memória com TTL de 5 minutos (evita estourar cota do Gemini na Vercel)
 const cache = {
@@ -15,14 +16,10 @@ const cache = {
 };
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
-/**
- * Chamada à API do Gemini 1.5 Flash para resumir o que se sabe sobre o patógeno
- */
-async function callGeminiPathogenAnalyzer(newsItems, apiKey, lang = 'pt') {
+function buildPathogenPrompt(newsItems, lang = 'pt') {
   const isEn = lang === 'en';
-  try {
-    const prompt = isEn
-      ? `You are an elite epidemiological intelligence and biodefense analyst.
+  return isEn
+    ? `You are an elite epidemiological intelligence and biodefense analyst.
 Analyze the following dispatches and verified incident facts regarding the pathogen/virus involved in the Irkutsk laboratory incident (Siberia, Russia):
 
 Verified Incident Dossier:
@@ -66,7 +63,7 @@ Generate an intelligence synthesis in valid JSON format with EXACTLY this struct
   ]
 }
 Respond ONLY with the valid JSON, no markdown backticks, no preamble.`
-      : `Você é um analista sênior de inteligência epidemiológica e biossegurança.
+    : `Você é um analista sênior de inteligência epidemiológica e biossegurança.
 Analise os seguintes despachos jornalísticos e fatos verificados sobre o patógeno/vírus envolvido no incidente laboratorial de Irkutsk (Sibéria, Rússia):
 
 Dossiê Verificado do Incidente:
@@ -110,7 +107,14 @@ Gere uma síntese de inteligência em formato JSON com EXATAMENTE esta estrutura
   ]
 }
 Responda APENAS com o JSON válido, sem crases de markdown, sem preâmbulo.`;
+}
 
+/**
+ * Chamada à API do Gemini 1.5 Flash para resumir o que se sabe sobre o patógeno
+ */
+async function callGeminiPathogenAnalyzer(newsItems, apiKey, lang = 'pt') {
+  try {
+    const prompt = buildPathogenPrompt(newsItems, lang);
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     const response = await fetch(url, {
       method: 'POST',
@@ -252,12 +256,31 @@ async function getPathogenIntelligence(newsList = [], customApiKey = null, lang 
 
   let intelData = null;
 
-  // Tentativa com Gemini API se houver chave
-  if (apiKey) {
+  // 1. Tentar primeiro via LLM Local (LM Studio em http://localhost:1234/v1) para economizar créditos do Gemini
+  const localModel = await getAvailableLocalModel();
+  if (localModel) {
+    try {
+      const localPrompt = buildPathogenPrompt(candidateItems, lang);
+      const rawText = await generateLocalChatCompletion(localPrompt, { max_tokens: 700 });
+      const parsed = extractJsonFromText(rawText);
+      if (parsed && parsed.findings && Array.isArray(parsed.findings) && parsed.findings.length >= 3) {
+        intelData = parsed;
+        intelData.engine = `Local AI (${localModel})`;
+        intelData.isAiGenerated = true;
+        intelData.lastAnalyzed = new Date().toISOString();
+        console.log(`[Pathogen Service] Síntese gerada com sucesso via LLM Local: ${localModel}`);
+      }
+    } catch (e) {
+      console.warn('[Pathogen Service] Falha na síntese local:', e.message);
+    }
+  }
+
+  // 2. Se local não respondeu, tentar com Gemini API se houver chave
+  if (!intelData && apiKey) {
     intelData = await callGeminiPathogenAnalyzer(candidateItems, apiKey, lang);
   }
 
-  // Se não houver chave ou ocorrer erro, usar contingência analítica
+  // 3. Contingência analítica heurística
   if (!intelData) {
     intelData = generateAnalyticalFallback(candidateItems, lang);
   }

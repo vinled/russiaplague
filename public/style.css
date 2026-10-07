@@ -267,19 +267,22 @@ body {
 }
 
 /* ==========================================================================
-   KPI TILES
+/* ==========================================================================
+   KPI TILES (VERTICALLY CENTERED & BALANCED)
    ========================================================================== */
 
 .kpi-tile {
   background: var(--oi-surface);
   border: 1px solid var(--oi-border);
   border-radius: var(--radius-lg);
-  padding: 16px 14px;
+  padding: 24px 14px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   transition: all 0.2s ease;
+  min-height: 160px;
 }
 
 .kpi-tile:hover {
@@ -290,42 +293,44 @@ body {
 
 .kpi-num {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: -0.02em;
+  margin-bottom: 8px;
 }
 
 @media (min-width: 1440px) {
   .kpi-num {
-    font-size: 42px;
+    font-size: 46px;
   }
 }
 
 .kpi-label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--oi-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-top: 6px;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
 }
 
 .kpi-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--oi-text-muted);
-  margin-top: 4px;
+  margin-top: 8px;
   font-family: 'Inter', sans-serif;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 /* Backwards-compatibility for kpi-cell inside kpiStrip */
 .kpi-cell {
-  padding: 16px 12px;
+  padding: 20px 14px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   transition: background 0.15s ease;
 }
 
@@ -343,12 +348,14 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  padding: 3px 8px;
+  padding: 4px 9px;
   border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1.2;
 }
 
 .tag-confirmed {
@@ -431,7 +438,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  gap: 16px;
+  padding: 12px 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--oi-border-subtle);
   border-radius: var(--radius-md);

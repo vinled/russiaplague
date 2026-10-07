@@ -243,22 +243,22 @@
           </div>
 
           <!-- Bottom Critical Containment Factors -->
-          <div class="pt-3 mt-3 border-t border-[#243040] grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div class="flex items-center justify-between bg-white/[0.02] p-2 rounded border border-[#243040]/50">
-              <span class="text-white/60" data-i18n="threatSecTrans">Secondary transmission:</span>
-              <span class="font-bold text-[#D29922] font-mono" id="criteriaSecTrans">Suspected in Hospital</span>
+          <div class="pt-3.5 mt-3.5 border-t border-[#243040] grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
+              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatSecTrans">Secondary transmission:</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaSecTrans">Suspected in Hospital</span>
             </div>
-            <div class="flex items-center justify-between bg-white/[0.02] p-2 rounded border border-[#243040]/50">
-              <span class="text-white/60" data-i18n="threatExtSpread">Confirmed external spread:</span>
-              <span class="font-bold text-[#2EA043] font-mono" id="criteriaExtSpread">None</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
+              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatExtSpread">Confirmed external spread:</span>
+              <span class="font-bold text-[#2EA043] font-mono text-[11px] text-left sm:text-right" id="criteriaExtSpread">None</span>
             </div>
-            <div class="flex items-center justify-between bg-white/[0.02] p-2 rounded border border-[#243040]/50">
-              <span class="text-white/60" data-i18n="threatGeoExpand">Geographic expansion:</span>
-              <span class="font-bold text-[#D29922] font-mono" id="criteriaGeoExpand">Shelekhov Satellite Cordon</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
+              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatGeoExpand">Geographic expansion:</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaGeoExpand">Shelekhov Satellite Cordon</span>
             </div>
-            <div class="flex items-center justify-between bg-white/[0.02] p-2 rounded border border-[#243040]/50">
-              <span class="text-white/60" data-i18n="threatQuarantine">Quarantine:</span>
-              <span class="font-bold text-[#D29922] font-mono" id="criteriaQuarantine">Active (5 Hospitals)</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
+              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatQuarantine">Quarantine:</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaQuarantine">Active (5 Hospitals)</span>
             </div>
             <!-- Hidden elements for test audit compatibility -->
             <span class="hidden" id="criteriaContInfect">0</span>
@@ -395,48 +395,48 @@
               </div>
 
               <!-- Scannable Meaningful Changes -->
-              <div class="space-y-2.5 text-xs">
+              <div class="space-y-3 text-xs">
                 <div class="change-delta-item">
-                  <div>
-                    <span class="text-white/60 font-medium block">Fatalities Toll</span>
+                  <div class="pr-2">
+                    <span class="text-white/60 font-medium block text-[11px] mb-1">Fatalities Toll</span>
                     <span class="text-white/90 text-sm font-bold font-mono text-[#F85149]">1 → 2 Deaths</span>
                   </div>
-                  <div class="text-right">
-                    <span class="tag-badge tag-disputed text-[10px]">▲ +1 CLAIMED</span>
-                    <span class="text-white/50 text-[11px] block mt-0.5">Shelekhov District Hospital</span>
+                  <div class="text-right shrink-0">
+                    <span class="tag-badge tag-disputed text-[10px] mb-1">▲ +1 CLAIMED</span>
+                    <span class="text-white/50 text-[11px] block">Shelekhov District Hospital</span>
                   </div>
                 </div>
 
                 <div class="change-delta-item">
-                  <div>
-                    <span class="text-white/60 font-medium block">Contacts Monitored</span>
+                  <div class="pr-2">
+                    <span class="text-white/60 font-medium block text-[11px] mb-1">Contacts Monitored</span>
                     <span class="text-white/90 text-sm font-bold font-mono text-[#D29922]">190 → ~200 Contacts</span>
                   </div>
-                  <div class="text-right">
-                    <span class="tag-badge tag-unverified text-[10px]">QUARANTINED</span>
-                    <span class="text-white/50 text-[11px] block mt-0.5">5 Regional Hospitals Isolated</span>
+                  <div class="text-right shrink-0">
+                    <span class="tag-badge tag-unverified text-[10px] mb-1">QUARANTINED</span>
+                    <span class="text-white/50 text-[11px] block">5 Regional Hospitals Isolated</span>
                   </div>
                 </div>
 
                 <div class="change-delta-item">
-                  <div>
-                    <span class="text-white/60 font-medium block">External Spread</span>
+                  <div class="pr-2">
+                    <span class="text-white/60 font-medium block text-[11px] mb-1">External Spread</span>
                     <span class="text-white/90 text-sm font-bold font-mono text-[#2EA043]">No Change Detected</span>
                   </div>
-                  <div class="text-right">
-                    <span class="tag-badge tag-confirmed text-[10px]">CONTAINED</span>
-                    <span class="text-white/50 text-[11px] block mt-0.5">Zero cross-border spillover</span>
+                  <div class="text-right shrink-0">
+                    <span class="tag-badge tag-confirmed text-[10px] mb-1">CONTAINED</span>
+                    <span class="text-white/50 text-[11px] block">Zero cross-border spillover</span>
                   </div>
                 </div>
 
                 <div class="change-delta-item">
-                  <div>
-                    <span class="text-white/60 font-medium block">Official Response</span>
+                  <div class="pr-2">
+                    <span class="text-white/60 font-medium block text-[11px] mb-1">Official Response</span>
                     <span class="text-white/90 text-sm font-bold font-mono text-white/90">Quarantine Maintained</span>
                   </div>
-                  <div class="text-right">
-                    <span class="tag-badge tag-official text-[10px]">DENIAL</span>
-                    <span class="text-white/50 text-[11px] block mt-0.5">Rospotrebnadzor: "Pneumonia"</span>
+                  <div class="text-right shrink-0">
+                    <span class="tag-badge tag-official text-[10px] mb-1">DENIAL</span>
+                    <span class="text-white/50 text-[11px] block">Rospotrebnadzor: "Pneumonia"</span>
                   </div>
                 </div>
               </div>
@@ -469,33 +469,33 @@
               </p>
 
               <!-- Progress Meters & Operational Badges -->
-              <div class="space-y-3 text-xs">
+              <div class="space-y-3.5 text-xs">
                 <div>
                   <div class="flex items-center justify-between mb-1.5 font-mono">
-                    <span class="text-white/60">Evidence Confidence</span>
-                    <span class="text-[#388BFD] font-bold">78% (Corroborated by UK & Local Press)</span>
+                    <span class="text-white/60 text-[11px]">Evidence Confidence</span>
+                    <span class="text-[#388BFD] font-bold text-[11px]">78% (Corroborated by UK & Local Press)</span>
                   </div>
                   <div class="w-full bg-[#090D13] h-2 rounded-full overflow-hidden border border-[#243040]">
                     <div class="bg-gradient-to-r from-[#388BFD] to-[#2EA043] h-full rounded-full" style="width: 78%"></div>
                   </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
-                  <div class="p-2 bg-white/[0.02] border border-[#243040] rounded flex items-center justify-between">
-                    <span class="text-white/60">Human-to-Human:</span>
-                    <span class="text-[#2EA043] font-bold">NOT CONFIRMED</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 font-mono text-[11px]">
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
+                    <span class="text-white/60 shrink-0">Human-to-Human:</span>
+                    <span class="text-[#2EA043] font-bold text-right">NOT CONFIRMED</span>
                   </div>
-                  <div class="p-2 bg-white/[0.02] border border-[#243040] rounded flex items-center justify-between">
-                    <span class="text-white/60">Geographic Spread:</span>
-                    <span class="text-[#D29922] font-bold">LOCALIZED</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
+                    <span class="text-white/60 shrink-0">Geographic Spread:</span>
+                    <span class="text-[#D29922] font-bold text-right">LOCALIZED</span>
                   </div>
-                  <div class="p-2 bg-white/[0.02] border border-[#243040] rounded flex items-center justify-between">
-                    <span class="text-white/60">International:</span>
-                    <span class="text-[#2EA043] font-bold">NONE DETECTED</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
+                    <span class="text-white/60 shrink-0">International:</span>
+                    <span class="text-[#2EA043] font-bold text-right">NONE DETECTED</span>
                   </div>
-                  <div class="p-2 bg-white/[0.02] border border-[#243040] rounded flex items-center justify-between">
-                    <span class="text-white/60">Containment:</span>
-                    <span class="text-[#D29922] font-bold">ACTIVE CORDON</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
+                    <span class="text-white/60 shrink-0">Containment:</span>
+                    <span class="text-[#D29922] font-bold text-right">ACTIVE CORDON</span>
                   </div>
                 </div>
               </div>

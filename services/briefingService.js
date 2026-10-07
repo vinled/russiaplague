@@ -4,6 +4,47 @@
  * Motor NLP de Síntese Extrativa Dinâmica com Análise de Frequência Temporal.
  */
 
+const { getAvailableLocalModel, generateLocalChatCompletion, extractJsonFromText } = require('./localAiService');
+
+function buildBriefingPrompt(newsItems, lang = 'pt') {
+  const isEn = lang === 'en';
+  return isEn
+    ? `You are a senior epidemiological intelligence analyst.
+Analyze the following recent real news dispatches regarding the laboratory incident in Irkutsk (Siberia, Russia):
+
+${newsItems.map((n, i) => `${i + 1}. [${n.source}] ${n.title} (Published: ${n.pubDate || 'Recent'})`).join('\n')}
+
+Generate a briefing in JSON format with EXACTLY this structure:
+{
+  "headline": "A high-impact and accurate 1-line headline summarizing the latest developments",
+  "timeWindow": "Last Hour",
+  "bullets": [
+    { "topic": "Hospital Containment & Contacts", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "International Repercussions & WHO", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "Spread Outside Siberia", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" },
+    { "topic": "Investigation & Official Measures", "text": "concise 1-2 sentence briefing based on facts", "source": "Source name" }
+  ]
+}
+Respond ONLY with the valid JSON, no markdown backticks.`
+    : `Você é um analista sênior de inteligência epidemiológica.
+Analise os seguintes despachos jornalísticos reais recentes sobre o incidente no laboratório de Irkutsk (Sibéria, Rússia):
+
+${newsItems.map((n, i) => `${i + 1}. [${n.source}] ${n.title} (Publicado: ${n.pubDate || 'Recente'})`).join('\n')}
+
+Gere um resumo em formato JSON com EXATAMENTE esta estrutura:
+{
+  "headline": "Uma manchete de alto impacto e precisa de 1 linha resumindo a situação mais recente",
+  "timeWindow": "Última Hora",
+  "bullets": [
+    { "topic": "Isolamento Hospitalar & Contatos", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Repercussão Internacional & OMS", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Disseminação Fora da Sibéria", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" },
+    { "topic": "Investigação & Medidas Oficiais", "text": "explicação concisa de 1 a 2 frases baseada nos fatos reais", "source": "Nome da fonte" }
+  ]
+}
+Responda APENAS com o JSON válido, sem crases de markdown.`;
+}
+
 // Extrai números dinâmicos de quarentena e pacientes das notícias reais mais recentes
 function extractDynamicPatientMetrics(newsList, lang = 'pt') {
   const isEn = lang === 'en';
@@ -231,13 +272,31 @@ async function generateHourlyBriefing(newsList, customApiKey = null, lang = 'pt'
 
   let briefingResult = null;
 
-  // Se houver chave do Gemini, tentar sintetizar via IA Neural
-  if (apiKey) {
+  // 1. Tentar primeiro via LLM Local (LM Studio) para economizar créditos
+  const localModel = await getAvailableLocalModel();
+  if (localModel) {
+    try {
+      const candidateItems = newsList.slice(0, 10);
+      const prompt = buildBriefingPrompt(candidateItems, lang);
+      const rawText = await generateLocalChatCompletion(prompt, { max_tokens: 600 });
+      const parsed = extractJsonFromText(rawText);
+      if (parsed && parsed.headline && parsed.bullets && Array.isArray(parsed.bullets)) {
+        briefingResult = parsed;
+        briefingResult.engine = `Local AI (${localModel})`;
+        console.log(`[Briefing Service] Briefing gerado com sucesso via LLM Local: ${localModel}`);
+      }
+    } catch (err) {
+      console.warn('[Briefing Service] Falha na síntese local:', err.message);
+    }
+  }
+
+  // 2. Se local não respondeu e houver chave do Gemini, tentar sintetizar via Gemini
+  if (!briefingResult && apiKey) {
     const candidateItems = newsList.slice(0, 10);
     briefingResult = await callGeminiSummarizer(candidateItems, apiKey, lang);
   }
 
-  // Se não houver chave ou se falhar, usar o motor NLP dinâmico de alta precisão
+  // 3. Se não houver chave ou se falhar, usar o motor NLP dinâmico de alta precisão
   if (!briefingResult) {
     briefingResult = generateDynamicNlpBriefing(newsList, lang);
   }
