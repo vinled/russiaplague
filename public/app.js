@@ -505,7 +505,10 @@ function setTheme(themeName) {
     }
   });
 
-  updateMapTileLayers(theme);
+    updateMapTileLayers(theme);
+  if (typeof renderOutbreakEvolution === 'function') {
+    renderOutbreakEvolution();
+  }
 }
 
 // ============================================================================
@@ -772,14 +775,14 @@ function renderOverviewMilestones() {
     const descStr = isEn ? (item.descriptionEn || item.description) : (item.descriptionPt || item.description);
 
     return `
-      <div class="flex items-start space-x-3 p-2 bg-white/[0.02] hover:bg-white/[0.04] rounded border border-white/[0.04] transition">
-        <div class="w-1.5 h-1.5 rounded-full bg-[#388BFD] mt-2 shrink-0"></div>
+      <div class="cursor-pointer flex items-start space-x-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] rounded border border-white/[0.04] transition group" onclick="window.openIntelligenceDrawer('event', window.outbreakState?.incident?.timeline?.[${idx}])">
+        <div class="w-2 h-2 rounded-full bg-[#388BFD] group-hover:bg-[#58A6FF] mt-1.5 shrink-0 transition shadow-sm"></div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center justify-between gap-2 flex-wrap mb-1">
             <div class="flex items-center space-x-2">
               <span class="font-mono text-[11px] font-bold text-white/90">${dateStr}</span>
               <span class="text-white/30 text-[10px]">·</span>
-              <span class="font-semibold text-white/80 text-xs">${titleStr}</span>
+              <span class="font-semibold text-white/90 text-xs group-hover:text-[#58A6FF] transition">${titleStr}</span>
             </div>
             <span class="tag-badge ${tagClass} text-[9px]">${item.classification}</span>
           </div>
@@ -790,29 +793,194 @@ function renderOverviewMilestones() {
   }).join('');
 }
 
-// 4. Outbreak Evolution (Replaces Severity Chart)
+// 4. Outbreak Evolution (Interactive Chart.js Stepped Curve + Quantitative Table)
+let evolutionChartInstance = null;
+
+function renderEvolutionChart(filteredData) {
+  const canvas = document.getElementById('evolutionChartCanvas');
+  if (!canvas || typeof Chart === 'undefined') return;
+
+  const ctx = canvas.getContext('2d');
+  const labels = filteredData.map(d => d.dateLabel || d.title);
+  const suspected = filteredData.map(d => Number(d.suspected) || 0);
+  const confirmed = filteredData.map(d => Number(d.confirmed) || 0);
+  const deaths = filteredData.map(d => Number(d.deaths) || 0);
+  const contacts = filteredData.map(d => Number(d.contacts) || 0);
+
+  if (evolutionChartInstance) {
+    evolutionChartInstance.destroy();
+    evolutionChartInstance = null;
+  }
+
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const textColor = isLight ? '#24292F' : '#8B949E';
+  const gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+
+  evolutionChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: state.currentLang === 'en' ? 'Fatalities' : 'Óbitos',
+          data: deaths,
+          borderColor: '#F85149',
+          backgroundColor: 'rgba(248, 81, 73, 0.12)',
+          borderWidth: 2.5,
+          stepped: 'after',
+          fill: true,
+          tension: 0,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#F85149',
+          yAxisID: 'y'
+        },
+        {
+          label: state.currentLang === 'en' ? 'Confirmed' : 'Confirmados',
+          data: confirmed,
+          borderColor: '#388BFD',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          stepped: 'after',
+          tension: 0,
+          pointRadius: 3,
+          pointBackgroundColor: '#388BFD',
+          yAxisID: 'y'
+        },
+        {
+          label: state.currentLang === 'en' ? 'Under Investigation' : 'Sob Investigação',
+          data: suspected,
+          borderColor: '#D29922',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          stepped: 'after',
+          tension: 0,
+          pointRadius: 3,
+          pointBackgroundColor: '#D29922',
+          yAxisID: 'y'
+        },
+        {
+          label: state.currentLang === 'en' ? 'Contacts (~)' : 'Contatos (~)',
+          data: contacts,
+          borderColor: '#6E7681',
+          borderDash: [3, 3],
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          tension: 0.1,
+          pointRadius: 2,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'end',
+          labels: {
+            boxWidth: 8,
+            boxHeight: 8,
+            color: textColor,
+            font: {
+              family: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              size: 10
+            }
+          }
+        },
+        tooltip: {
+          backgroundColor: isLight ? '#FFFFFF' : '#151E29',
+          titleColor: isLight ? '#090D13' : '#F0F6FC',
+          bodyColor: isLight ? '#24292F' : '#C9D1D9',
+          borderColor: isLight ? '#E1E4E8' : '#243040',
+          borderWidth: 1,
+          padding: 8,
+          bodyFont: {
+            family: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+            size: 11
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: {
+            color: textColor,
+            font: { family: 'ui-monospace, SFMono-Regular, Menlo, monospace', size: 10 }
+          }
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          grid: { color: gridColor },
+          ticks: {
+            color: textColor,
+            stepSize: 1,
+            font: { family: 'ui-monospace, SFMono-Regular, Menlo, monospace', size: 10 }
+          },
+          title: {
+            display: false
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          grid: { drawOnChartArea: false },
+          ticks: {
+            color: '#6E7681',
+            font: { family: 'ui-monospace, SFMono-Regular, Menlo, monospace', size: 9 }
+          },
+          title: {
+            display: false
+          }
+        }
+      }
+    }
+  });
+}
+
 function renderOutbreakEvolution() {
   const tbody = document.getElementById('evolutionTableBody');
-  if (!tbody) return;
-
   const evoData = state.incident?.outbreakEvolution || [];
   const isEn = state.currentLang === 'en';
 
-  tbody.innerHTML = evoData.map(step => `
-    <tr class="hover:bg-white/[0.02] transition">
-      <td class="py-2 px-2 text-white/90 font-bold">${step.dateLabel}</td>
-      <td class="py-2 px-2 text-white/70">
-        <div class="font-medium">${isEn ? step.title : (step.titlePt || step.title)}</div>
-        <div class="text-[10px] text-white/40 font-sans">${step.description}</div>
-      </td>
-      <td class="py-2 px-2 text-right text-[#D29922] font-semibold">${step.suspected}</td>
-      <td class="py-2 px-2 text-right text-[#2EA043] font-semibold">${step.confirmed}</td>
-      <td class="py-2 px-2 text-right text-white/90">${step.deaths}</td>
-      <td class="py-2 px-2 text-right text-white/90 font-bold">~${step.contacts}</td>
-      <td class="py-2 px-2 text-right text-[#2EA043] font-bold">${step.secondary}</td>
-      <td class="py-2 px-2 text-right font-mono text-white/70">${step.locations || 1}</td>
-    </tr>
-  `).join('');
+  let displayData = [...evoData];
+  const range = state.evolutionRange || 'all';
+
+  if (range === '24h' && evoData.length > 2) {
+    displayData = evoData.slice(-2);
+  } else if (range === '7d' && evoData.length > 4) {
+    displayData = evoData.slice(-4);
+  } else if (range === '30d' && evoData.length > 6) {
+    displayData = evoData.slice(-6);
+  }
+
+  // Render Chart
+  renderEvolutionChart(displayData);
+
+  // Render Table
+  if (tbody) {
+    tbody.innerHTML = evoData.map(step => `
+      <tr class="hover:bg-white/[0.02] transition">
+        <td class="py-2 px-2.5 text-white/90 font-bold">${step.dateLabel}</td>
+        <td class="py-2 px-2.5 text-white/70">
+          <div class="font-medium">${isEn ? step.title : (step.titlePt || step.title)}</div>
+          <div class="text-[10px] text-white/40 font-sans">${step.description}</div>
+        </td>
+        <td class="py-2 px-2.5 text-right text-[#D29922] font-semibold">${step.suspected}</td>
+        <td class="py-2 px-2.5 text-right text-[#2EA043] font-semibold">${step.confirmed}</td>
+        <td class="py-2 px-2.5 text-right ${Number(step.deaths) > 1 ? 'text-[#F85149] font-bold' : 'text-white/90'}">${step.deaths}</td>
+        <td class="py-2 px-2.5 text-right text-white/90 font-bold">~${step.contacts}</td>
+      </tr>
+    `).join('');
+  }
 }
 
 // 5. Latest Verified Intelligence (Top ~5 items on Overview, Req 8 & 16)
@@ -1576,6 +1744,110 @@ function startCountdown() {
 }
 
 // ============================================================================
+// SLIDE-OUT INTELLIGENCE DRAWER CONTROLLER
+// ============================================================================
+
+function openIntelligenceDrawer(type, payload) {
+  const drawer = document.getElementById('intelligenceDrawer');
+  const backdrop = document.getElementById('drawerBackdrop');
+  const title = document.getElementById('drawerTitle');
+  const body = document.getElementById('drawerBody');
+  if (!drawer || !backdrop || !title || !body) return;
+
+  const isEn = state.currentLang === 'en';
+
+  if (type === 'pathogen') {
+    title.textContent = isEn ? 'Pathogen & Laboratory Intelligence Dossier' : 'Dossiê Laboratorial e Patológico do Agente';
+    const p = state.pathogenIntel || {};
+    body.innerHTML = `
+      <div class="space-y-4 text-xs font-sans">
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="text-[11px] font-mono uppercase text-white/50 mb-1">${isEn ? 'Etiological Classification' : 'Classificação Etiológica'}</div>
+          <div class="text-sm font-bold text-white font-mono">${p.agentIdentity || 'Yersinia pestis (Suspected)'}</div>
+          <div class="text-[11px] text-[#388BFD] font-mono mt-0.5">${p.engine || 'Neural Extraction: Gemini 1.5 Flash'}</div>
+        </div>
+
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="text-[11px] font-mono uppercase text-[#388BFD] mb-1 font-bold">${isEn ? 'Executive AI Synthesis' : 'Síntese Executiva de IA'}</div>
+          <p class="text-white/85 leading-relaxed">${p.executiveSummary || (isEn ? 'Synchronizing dispatches...' : 'Sincronizando despachos...')}</p>
+        </div>
+
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="text-[11px] font-mono uppercase text-white/50 mb-2 font-bold">${isEn ? 'Biosecurity & Clinical Verification Matrix' : 'Matriz de Verificação Clínica e Biossegurança'}</div>
+          <div class="space-y-2">
+            ${(p.findings || []).map(f => `
+              <div class="p-2.5 bg-white/[0.02] border border-[#243040] rounded">
+                <div class="flex items-center justify-between font-mono text-[11px] mb-1">
+                  <span class="font-bold text-white">${f.label}</span>
+                  <span class="text-white/60">${f.status}</span>
+                </div>
+                <div class="text-[11px] text-white/70 leading-relaxed">${f.details}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="p-3 bg-white/[0.03] border border-[#243040] rounded-lg text-[11px] text-white/60 font-mono space-y-1">
+          <div>Facility: Irkutsk Anti-Plague Research Institute of Siberia and the Far East</div>
+          <div>Jurisdiction: Rospotrebnadzor / Russian Academy of Medical Sciences</div>
+          <div>Biocontainment Standard: BSL-3 / Specialized Plague Outbreak Response Unit</div>
+        </div>
+      </div>
+    `;
+  } else if (type === 'snapshot') {
+    title.textContent = isEn ? 'Comprehensive Situation Audit' : 'Auditoria Abrangente da Situação';
+    const inc = state.incident || {};
+    const kpis = inc.kpis || {};
+    body.innerHTML = `
+      <div class="space-y-4 text-xs font-sans">
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="text-[11px] font-mono uppercase text-[#388BFD] mb-1.5 font-bold">${isEn ? 'Containment Perimeter Status' : 'Status do Perímetro de Contenção'}</div>
+          <p class="text-white/85 leading-relaxed mb-3">${isEn ? 'Quarantine cordons remain enforced at Shelekhov District Hospital and affiliated clinics. Medical personnel undergoing daily streptomycin/doxycycline prophylactic monitoring.' : 'Cordões de isolamento continuam vigentes no Hospital Distrital de Shelekhov e clínicas associadas. Equipes sob monitoramento profilático.'}</p>
+          <div class="grid grid-cols-2 gap-2 font-mono text-[11px]">
+            <div class="p-2 bg-[#090D13] border border-[#243040] rounded flex justify-between"><span>Confirmed:</span> <span class="text-white font-bold">${kpis.confirmed || 0}</span></div>
+            <div class="p-2 bg-[#090D13] border border-[#243040] rounded flex justify-between"><span>Suspected:</span> <span class="text-[#D29922] font-bold">${kpis.underInvestigation || 1}</span></div>
+            <div class="p-2 bg-[#090D13] border border-[#243040] rounded flex justify-between"><span>Deaths:</span> <span class="text-[#F85149] font-bold">${kpis.deaths || 1}</span></div>
+            <div class="p-2 bg-[#090D13] border border-[#243040] rounded flex justify-between"><span>Contacts:</span> <span class="text-white font-bold">${kpis.contactsMonitored || '~200'}</span></div>
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="text-[11px] font-mono uppercase text-white/50 mb-1 font-bold">${isEn ? 'Contested Intelligence Assessment' : 'Avaliação de Inteligência Contestada'}</div>
+          <p class="text-white/80 leading-relaxed">${isEn ? 'Local Siberian publications report a second fatality among hospital contacts, while official Russian federal sanitarians maintain only one confirmed laboratory transmission. Threat level is kept ELEVATED pending bilateral clarification.' : 'Veículos regionais siberianos relatam uma segunda vítima fatal entre contatos, enquanto autoridades sanitárias federais sustentam apenas uma transmissão em laboratório.'}</p>
+        </div>
+      </div>
+    `;
+  } else if (type === 'event' && payload) {
+    title.textContent = isEn ? 'Timeline Incident Node Detail' : 'Detalhe do Evento da Linha do Tempo';
+    body.innerHTML = `
+      <div class="space-y-4 text-xs font-sans">
+        <div class="p-3.5 bg-white/[0.03] border border-[#243040] rounded-lg">
+          <div class="font-mono text-xs text-[#388BFD] font-bold mb-1">${payload.dateEn || payload.date}</div>
+          <div class="text-sm font-bold text-white mb-2">${isEn ? (payload.titleEn || payload.title) : (payload.titlePt || payload.title)}</div>
+          <p class="text-white/85 leading-relaxed mb-3">${isEn ? (payload.descriptionEn || payload.description) : (payload.descriptionPt || payload.description)}</p>
+          <div class="flex items-center gap-2 font-mono text-[11px]">
+            <span class="text-white/40">Classification:</span>
+            <span class="tag-badge text-[10px] ${payload.classification === 'CONFIRMED' ? 'tag-confirmed' : payload.classification === 'OFFICIAL' ? 'tag-official' : payload.classification === 'DISPUTED' ? 'tag-disputed' : 'tag-unverified'}">${payload.classification}</span>
+          </div>
+          ${payload.source ? `<div class="mt-2 text-white/60 font-mono text-[11px]">Primary Source Wire: <span class="text-white/90">${payload.source}</span></div>` : ''}
+        </div>
+      </div>
+    `;
+  }
+
+  drawer.classList.add('open');
+  backdrop.classList.add('open');
+  lucide.createIcons();
+}
+
+function closeIntelligenceDrawer() {
+  const drawer = document.getElementById('intelligenceDrawer');
+  const backdrop = document.getElementById('drawerBackdrop');
+  if (drawer) drawer.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+}
+
+// ============================================================================
 // EVENT LISTENERS & WIRING
 // ============================================================================
 
@@ -1587,6 +1859,38 @@ function setupEventListeners() {
       switchTab(tabId);
     });
   });
+
+  // Outbreak evolution range selector
+  document.querySelectorAll('[data-evo-range]').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('[data-evo-range]').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      state.evolutionRange = pill.getAttribute('data-evo-range');
+      renderOutbreakEvolution();
+    });
+  });
+
+  // Slide-out intelligence drawer
+  const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+  const drawerBackdrop = document.getElementById('drawerBackdrop');
+  if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeIntelligenceDrawer);
+  if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeIntelligenceDrawer);
+
+  const btnOpenSnapshot = document.getElementById('btnOpenSnapshotDossier');
+  if (btnOpenSnapshot) btnOpenSnapshot.addEventListener('click', () => openIntelligenceDrawer('snapshot'));
+
+  const btnOpenPathogen = document.getElementById('btnOpenPathogenDrawer');
+  if (btnOpenPathogen) btnOpenPathogen.addEventListener('click', () => openIntelligenceDrawer('pathogen'));
+
+  const btnOpenRumor = document.getElementById('btnOpenRumorMatrix');
+  if (btnOpenRumor) {
+    btnOpenRumor.addEventListener('click', () => {
+      switchTab('navIntelligence');
+      setTimeout(() => {
+        document.getElementById('secRumorWatch')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    });
+  }
 
   // Jump buttons on Overview
   const btnGoToTimeline = document.getElementById('btnGoToTimeline');
@@ -1823,4 +2127,6 @@ window.addEventListener('DOMContentLoaded', () => {
 // Test / audit helpers
 window.playCriticalEmergencyAlarm = playCriticalEmergencyAlarm;
 window.setTheme = setTheme;
+window.openIntelligenceDrawer = openIntelligenceDrawer;
+window.closeIntelligenceDrawer = closeIntelligenceDrawer;
 window.outbreakState = state;
