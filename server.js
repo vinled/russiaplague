@@ -6,6 +6,7 @@ const { fetchSocialFeed } = require('./services/socialService');
 const { generateHourlyBriefing, extractDynamicPatientMetrics } = require('./services/briefingService');
 const { fetchFlightSurveillance } = require('./services/flightService');
 const { getPathogenIntelligence } = require('./services/pathogenService');
+const { getAutonomousIncidentState } = require('./services/autonomousExtractor');
 const incidentData = require('./services/incidentData');
 
 const app = express();
@@ -166,13 +167,25 @@ app.get('/api/flights', async (req, res) => {
   }
 });
 
-// Endpoint de dados do incidente
-app.get('/api/incident', (req, res) => {
-  res.json({
-    success: true,
-    data: incidentData.incident,
-    lastChecked: new Date().toISOString()
-  });
+// Endpoint de dados do incidente (Processado Autonomamente com Gemini AI + NLP)
+app.get('/api/incident', async (req, res) => {
+  try {
+    const forceRefresh = req.query.refresh === 'true';
+    const { news } = await fetchAllFeeds();
+    const liveIncident = await getAutonomousIncidentState(news, forceRefresh);
+    res.json({
+      success: true,
+      data: liveIncident,
+      lastChecked: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Erro na rota /api/incident:', error);
+    res.json({
+      success: true,
+      data: incidentData.incident,
+      lastChecked: new Date().toISOString()
+    });
+  }
 });
 
 // Endpoint de estatísticas em tempo real com contagem dinâmica
@@ -180,6 +193,7 @@ app.get('/api/stats', async (req, res) => {
   try {
     const lang = req.query.lang === 'en' ? 'en' : 'pt';
     const { news, lastUpdated } = await fetchAllFeeds();
+    const liveIncident = await getAutonomousIncidentState(news);
     const highAlerts = news.filter(n => n.severity === 'high').length;
     const mediumAlerts = news.filter(n => n.severity === 'medium').length;
     const patientMetrics = extractDynamicPatientMetrics(news, lang);
@@ -191,13 +205,16 @@ app.get('/api/stats', async (req, res) => {
       highAlerts,
       mediumAlerts,
       patientMetrics,
+      threatLevel: liveIncident.threatAssessment?.level || 'GUARDED',
+      deaths: liveIncident.kpis?.deaths || 1,
+      deathStatus: liveIncident.deathStatus || 'CONFIRMED',
       incidentSummary: {
-        location: incidentData.incident.location.city,
-        facility: incidentData.incident.location.facility,
-        globalSpreadStatus: incidentData.incident.riskAssessment.globalSpreadStatus,
+        location: liveIncident.location.city,
+        facility: liveIncident.location.facility,
+        globalSpreadStatus: liveIncident.riskAssessment.globalSpreadStatus,
         quarantined: patientMetrics.detectedCount,
         quarantinedSource: patientMetrics.verifiedSource,
-        monitoringPointsCount: incidentData.incident.monitoringPoints.length
+        monitoringPointsCount: liveIncident.monitoringPoints.length
       }
     });
   } catch (error) {
@@ -205,12 +222,15 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
-// Atualização periódica a cada 90 segundos
+// Atualização periódica a cada 90 segundos com inteligência autônoma
 setInterval(async () => {
   try {
     const result = await fetchAllFeeds();
+    const liveIncident = await getAutonomousIncidentState(result.news, true);
     broadcastSSE('background_refresh', {
       total: result.news.length,
+      threatLevel: liveIncident.threatAssessment?.level,
+      deaths: liveIncident.kpis?.deaths,
       lastUpdated: result.lastUpdated
     });
   } catch (e) {

@@ -572,7 +572,27 @@ function renderOverviewThreatAndKPIs() {
 
   if (elConfirmed) elConfirmed.textContent = kpis.confirmed !== undefined ? kpis.confirmed : 0;
   if (elInvestigation) elInvestigation.textContent = kpis.underInvestigation !== undefined ? kpis.underInvestigation : 1;
-  if (elDeaths) elDeaths.textContent = kpis.deaths !== undefined ? kpis.deaths : 1;
+  
+  const elDeathsBadge = document.getElementById('kpiDeathsBadge');
+  if (elDeaths) {
+    elDeaths.textContent = kpis.deaths !== undefined ? kpis.deaths : 1;
+    if (Number(kpis.deaths) > 1) {
+      elDeaths.className = 'kpi-num text-[#F85149] font-bold';
+    } else {
+      elDeaths.className = 'kpi-num text-white/90';
+    }
+  }
+
+  if (elDeathsBadge) {
+    if (incident?.deathStatus === 'DISPUTED' || Number(kpis.deaths) > 1) {
+      elDeathsBadge.textContent = isEn
+        ? (incident.deathDetailsEn || '1 OFCL · 1 CLAIMED')
+        : (incident.deathDetailsPt || '1 OFIC · 1 APURAÇÃO');
+      elDeathsBadge.classList.remove('hidden');
+    } else {
+      elDeathsBadge.classList.add('hidden');
+    }
+  }
 
   // Check for Situation Escalation or Increased Deaths to trigger emergency situation-room alarm
   const threatLevelRanks = {
@@ -616,7 +636,7 @@ function renderOverviewThreatAndKPIs() {
   const geoStatusRussia = document.getElementById('geoStatusRussia');
   const geoStatusIntl = document.getElementById('geoStatusIntl');
   const geoStatusBorders = document.getElementById('geoStatusBorders');
-  if (geoStatusLocal) geoStatusLocal.textContent = isEn ? 'Contained' : 'Contido';
+  if (geoStatusLocal) geoStatusLocal.textContent = isEn ? (currentDeaths > 1 ? 'Cordon Active' : 'Contained') : (currentDeaths > 1 ? 'Cordão Ativo' : 'Contido');
   if (geoStatusRussia) geoStatusRussia.textContent = isEn ? 'Monitoring' : 'Monitoramento';
   if (geoStatusIntl) geoStatusIntl.textContent = isEn ? 'None detected' : 'Nenhum detectado';
   if (geoStatusBorders) geoStatusBorders.textContent = isEn ? 'Screening / Monitoring' : 'Triagem / Monitoramento';
@@ -639,7 +659,15 @@ function renderOverviewThreatAndKPIs() {
   const isDismissed = sessionStorage.getItem('dismissed_significant_change');
 
   let significantChangeTrigger = null;
-  if (kpis.secondaryCases > 0) {
+  if (currentDeaths > 1) {
+    significantChangeTrigger = isEn
+      ? 'Second fatality reported at Shelekhov District Hospital (under official dispute).'
+      : 'Segunda vítima fatal relatada no Hospital Distrital de Shelekhov (sob apuração / contestada pelo Kremlin).';
+  } else if (threatLevel === 'ELEVATED') {
+    significantChangeTrigger = isEn
+      ? 'Threat level escalated to ELEVATED due to hospital quarantine and reported fatalities.'
+      : 'Nível de ameaça elevado para ELEVADO devido à quarentena hospitalar e relatos de óbitos.';
+  } else if (kpis.secondaryCases > 0) {
     significantChangeTrigger = isEn ? 'Secondary transmission detected in monitored contacts.' : 'Transmissão secundária detectada entre contatos monitorados.';
   } else if (kpis.externalCases > 0) {
     significantChangeTrigger = isEn ? 'International spread / cross-border case reported.' : 'Disseminação internacional / caso transfronteiriço reportado.';
@@ -692,9 +720,21 @@ function updateWhatChangedDelta() {
   const translatedLevel = levelNames[threatLevel] || threatLevel;
 
   if (summaryEl) {
+    const currentDeaths = state.incident?.kpis?.deaths || 1;
+    let riskSnippet = '';
+    if (currentDeaths > 1 || threatLevel === 'ELEVATED') {
+      riskSnippet = isEn
+        ? `Alert escalated to ${translatedLevel} (+1 fatality claimed in Shelekhov) · 5 hospitals quarantined`
+        : `Alerta elevado para ${translatedLevel} (+1 óbito relatado em Shelekhov) · 5 hospitais sob quarentena`;
+    } else {
+      riskSnippet = isEn
+        ? `Risk level (${translatedLevel}) · Contact testing remains negative`
+        : `Nível (${translatedLevel}) · Testagem de contatos permanece negativa`;
+    }
+
     const text = isEn
-      ? `+${deltaNews} new verified reports · 0 new cases · Risk level unchanged (${translatedLevel}) · Contact testing remains negative`
-      : `+${deltaNews} novos despachos verificados · 0 novos casos · Nível inalterado (${translatedLevel}) · Testagem de contatos permanece negativa`;
+      ? `+${deltaNews} new verified reports · ${riskSnippet}`
+      : `+${deltaNews} novos despachos verificados · ${riskSnippet}`;
     summaryEl.textContent = text;
   }
 
@@ -731,9 +771,9 @@ function renderOverviewMilestones() {
     else if (item.classification === 'DISPUTED') tagClass = 'tag-disputed';
     else if (item.classification === 'UNVERIFIED') tagClass = 'tag-unverified';
 
-    const dateStr = isEn ? (item.dateEn || item.date) : item.date;
-    const titleStr = isEn ? (item.titleEn || item.title) : item.title;
-    const descStr = isEn ? (item.descriptionEn || item.description) : item.description;
+    const dateStr = isEn ? (item.dateEn || item.date) : (item.datePt || item.date);
+    const titleStr = isEn ? (item.titleEn || item.title) : (item.titlePt || item.title);
+    const descStr = isEn ? (item.descriptionEn || item.description) : (item.descriptionPt || item.description);
 
     return `
       <div class="flex items-start space-x-3 p-2 bg-white/[0.02] hover:bg-white/[0.04] rounded border border-white/[0.04] transition">
@@ -979,9 +1019,9 @@ function renderTimelineArchive() {
       tagClass = 'tag-unverified';
     }
 
-    const dateStr = isEn ? (item.dateEn || item.date) : item.date;
-    const titleStr = isEn ? (item.titleEn || item.title) : item.title;
-    const descStr = isEn ? (item.descriptionEn || item.description) : item.description;
+    const dateStr = isEn ? (item.dateEn || item.date) : (item.datePt || item.date);
+    const titleStr = isEn ? (item.titleEn || item.title) : (item.titlePt || item.title);
+    const descStr = isEn ? (item.descriptionEn || item.description) : (item.descriptionPt || item.description);
 
     return `
       <div class="relative pl-4 pb-4">
