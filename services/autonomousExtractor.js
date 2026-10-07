@@ -29,16 +29,30 @@ ${topNews}
 Baseline Incident Facts:
 - First casualty: Darya Shipilova (28, lab worker at Irkutsk Anti-Plague Institute, deceased Oct 2).
 - Quarantined contacts: ~200 people.
-- Russian government (Rospotrebnadzor/Kremlin) position: insists death was "unspecified pneumonia", denies plague outbreak.
-- Local/independent media & international reports: claim a second patient has died at Shelekhov District Hospital; five hospitals placed in quarantine; local government in Baikalsk issued/deleted travel warning; US State Dept monitoring.
+- Russian government (Rospotrebnadzor/Kremlin) position: insists initial death was "unspecified pneumonia", denies plague outbreak.
+- Disputed/independent reports: investigate if further patients (second, third, fourth, or multiple victims) have died in Shelekhov or Irkutsk hospitals.
+
+Task:
+Extract and synthesize the CURRENT situation dynamically. Do NOT hardcode numbers.
+1. "deaths": Integer. Compute the total cumulative death count reported across all news dispatches (including official and claimed/disputed). If 1, return 1. If 2, return 2. If 3, 4, 10, 20 or more are reported, return that EXACT integer.
+2. "deathStatus": "CONFIRMED" if all are confirmed by official health agencies, or "DISPUTED" if any fatalities are reported by media but denied/withheld by authorities.
+3. "deathDetailsEn": Text breakdown (e.g. "1 Official · 1 Disputed" or "1 Official · 4 Reported" or "20 Reported Fatalities").
+4. "deathDetailsPt": Text breakdown in Portuguese.
+5. "threatAssessment.level": Dynamically scale threat level based on epidemiological findings:
+   - 1 fatality, contained: "GUARDED"
+   - 2 fatalities or suspected hospital spread: "ELEVATED"
+   - 3 to 9 fatalities or hospital cluster: "HIGH"
+   - 10+ fatalities or community spread: "CRITICAL"
+6. "headline" & "headlinePt": Dynamic 1-line headline summarizing the current death toll and containment state.
+7. "newMilestones": Array of chronological milestone objects for any newly identified casualty or major epidemiological change.
 
 Generate a JSON object strictly following this structure:
 {
   "kpis": {
     "deaths": 2,
     "deathStatus": "DISPUTED",
-    "deathDetailsEn": "1 Official (Lab Worker) · 1 Disputed (Shelekhov Hospital)",
-    "deathDetailsPt": "1 Oficial (Técnica Lab) · 1 Em Apuração (Hospital de Shelekhov)",
+    "deathDetailsEn": "1 Official · 1 Disputed",
+    "deathDetailsPt": "1 Oficial · 1 Em Apuração",
     "underInvestigation": 2,
     "confirmed": 0,
     "contactsMonitored": 200,
@@ -48,8 +62,8 @@ Generate a JSON object strictly following this structure:
   },
   "threatAssessment": {
     "level": "ELEVATED",
-    "headline": "Elevated Alert: Second Fatality Reported at Shelekhov Hospital; Russian Authorities Maintain Denial",
-    "headlinePt": "Alerta Elevado: Segunda Vítima Fatal Relatada no Hospital de Shelekhov; Autoridades Mantêm Negativa",
+    "headline": "Dynamic English headline matching extracted deaths and threat level",
+    "headlinePt": "Manchete dinâmica em português correspondente",
     "reasons": {
       "secondaryTransmission": "Suspected in Hospital / Unverified",
       "secondaryTransmissionPt": "Suspeita Hospitalar / Não Confirmada",
@@ -58,37 +72,16 @@ Generate a JSON object strictly following this structure:
       "contactsInfected": 0,
       "geographicExpansion": "Shelekhov Satellite Cordon",
       "geographicExpansionPt": "Cordão Sanitário em Shelekhov",
-      "quarantine": "Active (5 Hospitals Locked Down)",
-      "quarantinePt": "Ativa (5 Hospitais em Quarentena)"
+      "quarantine": "Active",
+      "quarantinePt": "Ativa"
     }
   },
-  "newMilestones": [
-    {
-      "date": "2026-10-06",
-      "dateLabel": "Oct 06",
-      "title": "Second Fatality Reported at Shelekhov Hospital",
-      "titlePt": "Segunda Morte Relatada no Hospital de Shelekhov",
-      "source": "Daily Mail / Local Russian Media",
-      "classification": "DISPUTED",
-      "description": "Reports claim a second patient died from plague-like symptoms at Shelekhov District Hospital; Kremlin disputes diagnosis and maintains unspecified pneumonia classification.",
-      "descriptionPt": "Relatos afirmam que um segundo paciente faleceu com sintomas de peste no Hospital Distrital de Shelekhov; Kremlin contesta diagnóstico e mantém classificação de pneumonia inespecífica."
-    },
-    {
-      "date": "2026-10-06",
-      "dateLabel": "Oct 06",
-      "title": "US State Dept & International Monitoring Activated",
-      "titlePt": "Monitoramento Ativado pelo Departamento de Estado dos EUA",
-      "source": "Daily Mail / State Dept Wire",
-      "classification": "OFFICIAL",
-      "description": "Secretary of State Marco Rubio confirms US surveillance of Siberian biological reports; bilateral diplomatic exchanges on biosecurity containment.",
-      "descriptionPt": "Secretário de Estado Marco Rubio confirma vigilância americana sobre relatórios biológicos na Sibéria; trocas diplomáticas bilaterais sobre contenção de biossegurança."
-    }
-  ],
+  "newMilestones": [],
   "shelekhovCordon": {
     "status": "Active Quarantine",
     "statusPt": "Quarentena Ativa",
     "hospitalsAffected": 5,
-    "details": "City Clinical Hospitals No1, No3, No10 and Ivano-Matreninskaya Children Hospital cordoned off for 3-week observation"
+    "details": "Hospital and containment status"
   }
 }
 
@@ -114,30 +107,65 @@ Respond ONLY with valid JSON. No markdown backticks, no preamble.`;
 }
 
 /**
- * Fallback de NLP Heurístico e Extração Determinística
- * Executado quando a API do Gemini não estiver acessível ou sem chave em testes locais.
+ * Fallback de NLP Heurístico e Extração Determinística Totalmente Dinâmica
+ * Analisa qualquer número de mortes (2ª, 3ª, 4ª, 10ª, 20ª, etc.) via Regex e Expressões Numéricas
  */
 function analyzeNewsHeuristically(newsItems) {
-  let hasSecondDeathClaim = false;
-  let secondDeathSource = "Daily Mail / Mídia Regional";
+  let maxDeathsDetected = 1;
+  let isDisputed = false;
+  let deathSource = "Despachos Verificados";
   let hasRubioDiplomacy = false;
 
-  for (const item of newsItems) {
-    const text = ((item.title || "") + " " + (item.summary || "")).toLowerCase();
+  // Padrões de ordinais em inglês e português
+  const ordinalRules = [
+    { regex: /(?:second|segund[ao]|2nd|two|duas|dois)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 2 },
+    { regex: /(?:third|terceir[ao]|3rd|three|tr[êe]s)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 3 },
+    { regex: /(?:fourth|quart[ao]|4th|four|quatro)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 4 },
+    { regex: /(?:fifth|quint[ao]|5th|five|cinco)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 5 },
+    { regex: /(?:sixth|sext[ao]|6th|six|seis)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 6 },
+    { regex: /(?:seventh|s[ée]tim[ao]|7th|seven|sete)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 7 },
+    { regex: /(?:eighth|oitav[ao]|8th|eight|oito)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 8 },
+    { regex: /(?:ninth|non[ao]|9th|nine|nove)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 9 },
+    { regex: /(?:tenth|d[ée]cim[ao]|10th|ten|dez)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 10 },
+    { regex: /(?:twentieth|vig[ée]sim[ao]|20th|twenty|vinte)\s*(?:victim|v[íi]tima|death|morte|[óo]bito|patient|paciente|person|pessoa)/i, num: 20 }
+  ];
 
-    if (
-      text.includes("second victim") ||
-      text.includes("second death") ||
-      text.includes("segunda vítima") ||
-      text.includes("segunda vitima") ||
-      text.includes("second person has died") ||
-      text.includes("segundo óbito") ||
-      text.includes("segundo obito") ||
-      text.includes("two dead") ||
-      text.includes("duas mortes")
-    ) {
-      hasSecondDeathClaim = true;
-      secondDeathSource = item.source || secondDeathSource;
+  // Expressões numéricas para contagem de mortes
+  const deathCountPatterns = [
+    /(?:death toll|tolls?|número de mortos|total de mortes|número de óbitos)\s*(?:rises to|climbs to|reaches|hits|sobe para|atinge|chega a)?\s*(\d+)/i,
+    /(\d+)\s*(?:people|patients|victims|pacientes|pessoas|vítimas|vitimas)?\s*(?:have died|died|dead|killed|morreram|mortos|mortas|óbitos|obitos)/i,
+    /(\d+)\s*(?:deaths|fatalities|mortes|óbitos|obitos)/i
+  ];
+
+  for (const item of newsItems) {
+    const rawText = (item.title || "") + " " + (item.summary || "");
+    const text = rawText.toLowerCase();
+
+    // 1. Verificar padrões numéricos diretos (ex: "death toll rises to 15", "4 people died", "20 mortes")
+    for (const pattern of deathCountPatterns) {
+      const match = text.match(pattern);
+      if (match && match[1]) {
+        const count = parseInt(match[1], 10);
+        // Filtrar anos ou números absurdos que não sejam de pacientes
+        if (count >= 2 && count <= 500) {
+          if (count > maxDeathsDetected) {
+            maxDeathsDetected = count;
+            deathSource = item.source || deathSource;
+            isDisputed = true;
+          }
+        }
+      }
+    }
+
+    // 2. Verificar ordinais com flexão de gênero e número
+    for (const rule of ordinalRules) {
+      if (rule.regex.test(text)) {
+        if (rule.num > maxDeathsDetected) {
+          maxDeathsDetected = rule.num;
+          deathSource = item.source || deathSource;
+          isDisputed = true;
+        }
+      }
     }
 
     if (text.includes("rubio") || text.includes("marco rubio") || text.includes("state department") || text.includes("trump")) {
@@ -145,37 +173,59 @@ function analyzeNewsHeuristically(newsItems) {
     }
   }
 
+  // Escalonamento dinâmico de ameaça conforme a contagem real de vítimas
+  let dynamicThreatLevel = "GUARDED";
+  let dynamicHeadline = "No evidence of secondary transmission";
+  let dynamicHeadlinePt = "Sem evidência de transmissão secundária";
+
+  if (maxDeathsDetected >= 10) {
+    dynamicThreatLevel = "CRITICAL";
+    dynamicHeadline = `Critical Outbreak Alert: ${maxDeathsDetected} Fatalities Reported; Severe Containment Measures Active`;
+    dynamicHeadlinePt = `Alerta Crítico de Surto: ${maxDeathsDetected} Óbitos Relatados; Medidas Severas de Contenção Ativas`;
+  } else if (maxDeathsDetected >= 3) {
+    dynamicThreatLevel = "HIGH";
+    dynamicHeadline = `High Threat: ${maxDeathsDetected} Fatalities Reported in Regional Hospital Cluster`;
+    dynamicHeadlinePt = `Ameaça Alta: ${maxDeathsDetected} Óbitos Relatados em Cluster Hospitalar Regional`;
+  } else if (maxDeathsDetected === 2) {
+    dynamicThreatLevel = "ELEVATED";
+    dynamicHeadline = "Elevated Alert: Second Fatality Reported at Shelekhov Hospital; Russian Authorities Maintain Denial";
+    dynamicHeadlinePt = "Alerta Elevado: Segunda Vítima Fatal Relatada no Hospital de Shelekhov; Autoridades Mantêm Negativa";
+  }
+
+  const deathDetailsEn = maxDeathsDetected > 1
+    ? `1 Official · ${maxDeathsDetected - 1} Reported/Disputed`
+    : "1 Official Deceased";
+  const deathDetailsPt = maxDeathsDetected > 1
+    ? `1 Oficial · ${maxDeathsDetected - 1} em Apuração/Disputados`
+    : "1 Óbito Oficial";
+
   const result = {
     kpis: {
-      deaths: hasSecondDeathClaim ? 2 : 1,
-      deathStatus: hasSecondDeathClaim ? "DISPUTED" : "CONFIRMED",
-      deathDetailsEn: hasSecondDeathClaim ? "1 Official (Lab Worker) · 1 Disputed (Shelekhov Hospital)" : "1 Official Deceased",
-      deathDetailsPt: hasSecondDeathClaim ? "1 Oficial (Técnica Lab) · 1 Em Apuração (Hospital de Shelekhov)" : "1 Óbito Oficial",
-      underInvestigation: hasSecondDeathClaim ? 2 : 1,
+      deaths: maxDeathsDetected,
+      deathStatus: isDisputed ? "DISPUTED" : "CONFIRMED",
+      deathDetailsEn,
+      deathDetailsPt,
+      underInvestigation: Math.max(2, maxDeathsDetected),
       confirmed: 0,
-      contactsMonitored: 200,
-      secondaryCases: 0,
+      contactsMonitored: Math.max(200, maxDeathsDetected * 70),
+      secondaryCases: Math.max(0, maxDeathsDetected - 1),
       countriesAffected: 1,
       externalCases: 0
     },
     threatAssessment: {
-      level: hasSecondDeathClaim ? "ELEVATED" : "GUARDED",
-      headline: hasSecondDeathClaim
-        ? "Elevated Alert: Second Fatality Reported at Shelekhov Hospital; Russian Authorities Maintain Denial"
-        : "No evidence of secondary transmission",
-      headlinePt: hasSecondDeathClaim
-        ? "Alerta Elevado: Segunda Vítima Fatal Relatada no Hospital de Shelekhov; Autoridades Mantêm Negativa"
-        : "Sem evidência de transmissão secundária",
+      level: dynamicThreatLevel,
+      headline: dynamicHeadline,
+      headlinePt: dynamicHeadlinePt,
       reasons: {
-        secondaryTransmission: hasSecondDeathClaim ? "Suspected in Hospital / Unverified" : "None",
-        secondaryTransmissionPt: hasSecondDeathClaim ? "Suspeita Hospitalar / Não Confirmada" : "Nenhuma",
+        secondaryTransmission: maxDeathsDetected > 1 ? "Suspected in Hospital / Under Investigation" : "None",
+        secondaryTransmissionPt: maxDeathsDetected > 1 ? "Suspeita Hospitalar / Em Apuração" : "Nenhuma",
         externalSpread: "None",
         externalSpreadPt: "Nenhuma",
-        contactsInfected: 0,
-        geographicExpansion: hasSecondDeathClaim ? "Shelekhov Satellite Cordon" : "None",
-        geographicExpansionPt: hasSecondDeathClaim ? "Cordão Sanitário em Shelekhov" : "Nenhuma",
-        quarantine: hasSecondDeathClaim ? "Active (5 Hospitals Locked Down)" : "Active",
-        quarantinePt: hasSecondDeathClaim ? "Ativa (5 Hospitais em Quarentena)" : "Ativa"
+        contactsInfected: maxDeathsDetected > 1 ? (maxDeathsDetected - 1) : 0,
+        geographicExpansion: maxDeathsDetected > 1 ? "Shelekhov Satellite Cordon" : "None",
+        geographicExpansionPt: maxDeathsDetected > 1 ? "Cordão Sanitário em Shelekhov" : "Nenhuma",
+        quarantine: "Active (Hospitals Locked Down)",
+        quarantinePt: "Ativa (Hospitais sob Quarentena)"
       }
     },
     newMilestones: [],
@@ -187,16 +237,23 @@ function analyzeNewsHeuristically(newsItems) {
     }
   };
 
-  if (hasSecondDeathClaim) {
+  if (maxDeathsDetected > 1) {
+    const milestoneTitle = maxDeathsDetected === 2
+      ? "Second Fatality Reported at Shelekhov Hospital"
+      : `Cumulative Fatalities Rise to ${maxDeathsDetected} Patients`;
+    const milestoneTitlePt = maxDeathsDetected === 2
+      ? "Segunda Morte Relatada no Hospital de Shelekhov"
+      : `Total de Vítimas Fatais Sobe para ${maxDeathsDetected} Pacientes`;
+
     result.newMilestones.push({
       date: "2026-10-06",
       dateLabel: "Oct 06",
-      title: "Second Fatality Reported at Shelekhov Hospital",
-      titlePt: "Segunda Morte Relatada no Hospital de Shelekhov",
-      source: secondDeathSource,
+      title: milestoneTitle,
+      titlePt: milestoneTitlePt,
+      source: deathSource,
       classification: "DISPUTED",
-      description: "Reports claim a second patient died from plague-like symptoms at Shelekhov District Hospital; Kremlin disputes diagnosis and maintains unspecified pneumonia classification.",
-      descriptionPt: "Relatos afirmam que um segundo paciente faleceu com sintomas de peste no Hospital Distrital de Shelekhov; Kremlin contesta diagnóstico e mantém classificação de pneumonia inespecífica."
+      description: `Dispatches report cumulative casualties have reached ${maxDeathsDetected} individuals under observation or hospital quarantine; authorities maintain strict information cordon.`,
+      descriptionPt: `Despachos reportam que o total de vítimas fatais atingiu ${maxDeathsDetected} indivíduos sob observação ou quarentena hospitalar; autoridades mantêm rigoroso controle informativo.`
     });
   }
 

@@ -573,7 +573,7 @@ function renderOverviewThreatAndKPIs() {
   if (elConfirmed) elConfirmed.textContent = kpis.confirmed !== undefined ? kpis.confirmed : 0;
   if (elInvestigation) elInvestigation.textContent = kpis.underInvestigation !== undefined ? kpis.underInvestigation : 1;
   
-  const elDeathsBadge = document.getElementById('kpiDeathsBadge');
+  const elDeathsCell = document.getElementById('kpiDeathsCell');
   if (elDeaths) {
     elDeaths.textContent = kpis.deaths !== undefined ? kpis.deaths : 1;
     if (Number(kpis.deaths) > 1) {
@@ -583,15 +583,11 @@ function renderOverviewThreatAndKPIs() {
     }
   }
 
-  if (elDeathsBadge) {
-    if (incident?.deathStatus === 'DISPUTED' || Number(kpis.deaths) > 1) {
-      elDeathsBadge.textContent = isEn
-        ? (incident.deathDetailsEn || '1 OFCL · 1 CLAIMED')
-        : (incident.deathDetailsPt || '1 OFIC · 1 APURAÇÃO');
-      elDeathsBadge.classList.remove('hidden');
-    } else {
-      elDeathsBadge.classList.add('hidden');
-    }
+  if (elDeathsCell) {
+    const tooltipText = isEn
+      ? (incident?.deathDetailsEn || `${kpis.deaths || 1} Reported Fatalities`)
+      : (incident?.deathDetailsPt || `${kpis.deaths || 1} Óbitos Registrados`);
+    elDeathsCell.setAttribute('title', tooltipText);
   }
 
   // Check for Situation Escalation or Increased Deaths to trigger emergency situation-room alarm
