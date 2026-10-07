@@ -267,7 +267,6 @@ body {
 }
 
 /* ==========================================================================
-/* ==========================================================================
    KPI TILES (VERTICALLY CENTERED & BALANCED)
    ========================================================================== */
 
@@ -275,14 +274,15 @@ body {
   background: var(--oi-surface);
   border: 1px solid var(--oi-border);
   border-radius: var(--radius-lg);
-  padding: 24px 14px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  padding: 24px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
   transition: all 0.2s ease;
   min-height: 160px;
+  height: 100%;
 }
 
 .kpi-tile:hover {
@@ -291,46 +291,54 @@ body {
   transform: translateY(-1px);
 }
 
+.kpi-tile .kpi-num,
 .kpi-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 42px;
-  font-weight: 700;
-  line-height: 1.05;
+  font-weight: 800;
+  line-height: 1;
   letter-spacing: -0.02em;
-  margin-bottom: 8px;
+  margin: 0 0 10px 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (min-width: 1440px) {
+  .kpi-tile .kpi-num,
   .kpi-num {
     font-size: 46px;
   }
 }
 
+.kpi-tile .kpi-label,
 .kpi-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--oi-text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 2px;
+  letter-spacing: 0.08em;
+  margin: 0 0 6px 0 !important;
+  line-height: 1.2;
 }
 
+.kpi-tile .kpi-sub,
 .kpi-sub {
   font-size: 11px;
   color: var(--oi-text-muted);
-  margin-top: 8px;
   font-family: 'Inter', sans-serif;
   line-height: 1.35;
+  margin: 0 !important;
 }
 
 /* Backwards-compatibility for kpi-cell inside kpiStrip */
 .kpi-cell {
   padding: 20px 14px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
   transition: background 0.15s ease;
 }
 

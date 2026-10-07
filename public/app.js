@@ -22,11 +22,11 @@ const TRANSLATIONS = {
     lastUpdatedLabel: 'Last updated:',
     whatChangedTitle: 'WHAT CHANGED SINCE LAST VISIT:',
     currentThreatTitle: 'CURRENT THREAT',
-    threatSecTrans: 'Secondary transmission:',
-    threatExtSpread: 'Confirmed external spread:',
-    threatContInfect: 'Contacts infected:',
-    threatGeoExpand: 'Geographic expansion:',
-    threatQuarantine: 'Quarantine:',
+    threatSecTrans: 'Secondary Transmission',
+    threatExtSpread: 'External Spread',
+    threatContInfect: 'Contacts Infected',
+    threatGeoExpand: 'Geographic Expansion',
+    threatQuarantine: 'Quarantine Status',
     kpiConfirmedLabel: 'CONFIRMED',
     kpiInvestigatedLabel: 'UNDER INVESTIGATION',
     kpiDeathsLabel: 'DEATHS',
@@ -119,11 +119,11 @@ const TRANSLATIONS = {
     lastUpdatedLabel: 'Última atualização:',
     whatChangedTitle: 'O QUE MUDOU DESDE SUA ÚLTIMA VISITA:',
     currentThreatTitle: 'AMEAÇA ATUAL',
-    threatSecTrans: 'Transmissão secundária:',
-    threatExtSpread: 'Disseminação externa confirmada:',
-    threatContInfect: 'Contatos infectados:',
-    threatGeoExpand: 'Expansão geográfica:',
-    threatQuarantine: 'Quarentena:',
+    threatSecTrans: 'Transmissão Secundária',
+    threatExtSpread: 'Disseminação Externa',
+    threatContInfect: 'Contatos Infectados',
+    threatGeoExpand: 'Expansão Geográfica',
+    threatQuarantine: 'Status de Quarentena',
     kpiConfirmedLabel: 'CONFIRMADOS',
     kpiInvestigatedLabel: 'SOB INVESTIGAÇÃO',
     kpiDeathsLabel: 'ÓBITOS',
@@ -778,13 +778,13 @@ function renderOverviewMilestones() {
       <div class="cursor-pointer flex items-start space-x-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] rounded border border-white/[0.04] transition group" onclick="window.openIntelligenceDrawer('event', window.outbreakState?.incident?.timeline?.[${idx}])">
         <div class="w-2 h-2 rounded-full bg-[#388BFD] group-hover:bg-[#58A6FF] mt-1.5 shrink-0 transition shadow-sm"></div>
         <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between gap-2 flex-wrap mb-1.5">
-            <div class="flex items-center space-x-2 min-w-0">
+          <div class="flex items-center justify-between gap-3 mb-1">
+            <div class="flex items-center space-x-2 min-w-0 flex-1">
               <span class="font-mono text-[11px] font-bold text-white/90 shrink-0">${dateStr}</span>
               <span class="text-white/30 text-[10px]">·</span>
               <span class="font-semibold text-white/90 text-xs group-hover:text-[#58A6FF] transition truncate">${titleStr}</span>
             </div>
-            <span class="tag-badge ${tagClass} text-[9px] shrink-0 ml-auto">${item.classification}</span>
+            <span class="tag-badge ${tagClass} text-[9px] shrink-0">${item.classification}</span>
           </div>
           <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2">${descStr}</p>
         </div>
@@ -1140,9 +1140,9 @@ function renderPathogenIntelligence() {
 
       return `
         <div class="p-2.5 bg-white/[0.02] hover:bg-white/[0.04] rounded-md border border-white/[0.04] transition mb-1.5">
-          <div class="flex items-center justify-between gap-2 flex-wrap mb-1.5">
-            <span class="text-[11px] font-bold text-white/90 font-mono">${f.label}</span>
-            <span class="tag-badge ${badgeClass} text-[9px] font-mono shrink-0 ml-auto">${f.status}</span>
+          <div class="flex items-center justify-between gap-3 mb-1">
+            <span class="text-[11px] font-bold text-white/90 font-mono tracking-tight min-w-0 flex-1 truncate">${f.label}</span>
+            <span class="tag-badge ${badgeClass} text-[9px] font-mono shrink-0">${f.status}</span>
           </div>
           <p class="text-[11px] text-white/60 leading-relaxed font-sans">${f.details}</p>
         </div>

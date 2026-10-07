@@ -40,7 +40,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <!-- Professional Situation Room Stylesheet -->
-  <link rel="stylesheet" href="style.css?v=6.0.0">
+  <link rel="stylesheet" href="style.css?v=6.0.1">
 </head>
 <body class="min-h-screen flex flex-col font-sans selection:bg-[#388BFD]/30 selection:text-white">
 
@@ -243,22 +243,22 @@
           </div>
 
           <!-- Bottom Critical Containment Factors -->
-          <div class="pt-3.5 mt-3.5 border-t border-[#243040] grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
-              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatSecTrans">Secondary transmission:</span>
-              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaSecTrans">Suspected in Hospital</span>
+          <div class="pt-3 mt-3 border-t border-[#243040] grid grid-cols-2 gap-2 text-xs">
+            <div class="flex flex-col justify-center p-2.5 bg-white/[0.02] rounded-md border border-[#243040]/60 gap-0.5">
+              <span class="text-white/50 text-[10px] uppercase font-mono tracking-wider truncate" data-i18n="threatSecTrans">Secondary Transmission</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] leading-tight truncate" id="criteriaSecTrans">Suspected in Hospital</span>
             </div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
-              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatExtSpread">Confirmed external spread:</span>
-              <span class="font-bold text-[#2EA043] font-mono text-[11px] text-left sm:text-right" id="criteriaExtSpread">None</span>
+            <div class="flex flex-col justify-center p-2.5 bg-white/[0.02] rounded-md border border-[#243040]/60 gap-0.5">
+              <span class="text-white/50 text-[10px] uppercase font-mono tracking-wider truncate" data-i18n="threatExtSpread">External Spread</span>
+              <span class="font-bold text-[#2EA043] font-mono text-[11px] leading-tight truncate" id="criteriaExtSpread">None</span>
             </div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
-              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatGeoExpand">Geographic expansion:</span>
-              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaGeoExpand">Shelekhov Satellite Cordon</span>
+            <div class="flex flex-col justify-center p-2.5 bg-white/[0.02] rounded-md border border-[#243040]/60 gap-0.5">
+              <span class="text-white/50 text-[10px] uppercase font-mono tracking-wider truncate" data-i18n="threatGeoExpand">Geographic Expansion</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] leading-tight truncate" id="criteriaGeoExpand">Shelekhov Cordon</span>
             </div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 bg-white/[0.02] p-2.5 rounded-md border border-[#243040]/60">
-              <span class="text-white/60 text-[11px] shrink-0" data-i18n="threatQuarantine">Quarantine:</span>
-              <span class="font-bold text-[#D29922] font-mono text-[11px] text-left sm:text-right" id="criteriaQuarantine">Active (5 Hospitals)</span>
+            <div class="flex flex-col justify-center p-2.5 bg-white/[0.02] rounded-md border border-[#243040]/60 gap-0.5">
+              <span class="text-white/50 text-[10px] uppercase font-mono tracking-wider truncate" data-i18n="threatQuarantine">Quarantine Status</span>
+              <span class="font-bold text-[#D29922] font-mono text-[11px] leading-tight truncate" id="criteriaQuarantine">Active (5 Hospitals)</span>
             </div>
             <!-- Hidden elements for test audit compatibility -->
             <span class="hidden" id="criteriaContInfect">0</span>
@@ -395,48 +395,48 @@
               </div>
 
               <!-- Scannable Meaningful Changes -->
-              <div class="space-y-3 text-xs">
+              <div class="space-y-2.5 text-xs">
                 <div class="change-delta-item">
-                  <div class="pr-2">
-                    <span class="text-white/60 font-medium block text-[11px] mb-1">Fatalities Toll</span>
-                    <span class="text-white/90 text-sm font-bold font-mono text-[#F85149]">1 → 2 Deaths</span>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-white/50 font-medium block text-[10px] uppercase tracking-wider font-mono">Fatalities Toll</span>
+                    <span class="text-[#F85149] text-sm font-bold font-mono mt-0.5 block">1 → 2 Deaths</span>
                   </div>
-                  <div class="text-right shrink-0">
-                    <span class="tag-badge tag-disputed text-[10px] mb-1">▲ +1 CLAIMED</span>
-                    <span class="text-white/50 text-[11px] block">Shelekhov District Hospital</span>
+                  <div class="shrink-0 flex flex-col items-end gap-1">
+                    <span class="tag-badge tag-disputed text-[10px]">▲ +1 CLAIMED</span>
+                    <span class="text-white/40 text-[10px] font-mono">Shelekhov Hospital</span>
                   </div>
                 </div>
 
                 <div class="change-delta-item">
-                  <div class="pr-2">
-                    <span class="text-white/60 font-medium block text-[11px] mb-1">Contacts Monitored</span>
-                    <span class="text-white/90 text-sm font-bold font-mono text-[#D29922]">190 → ~200 Contacts</span>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-white/50 font-medium block text-[10px] uppercase tracking-wider font-mono">Contacts Monitored</span>
+                    <span class="text-[#D29922] text-sm font-bold font-mono mt-0.5 block">190 → ~200 Contacts</span>
                   </div>
-                  <div class="text-right shrink-0">
-                    <span class="tag-badge tag-unverified text-[10px] mb-1">QUARANTINED</span>
-                    <span class="text-white/50 text-[11px] block">5 Regional Hospitals Isolated</span>
-                  </div>
-                </div>
-
-                <div class="change-delta-item">
-                  <div class="pr-2">
-                    <span class="text-white/60 font-medium block text-[11px] mb-1">External Spread</span>
-                    <span class="text-white/90 text-sm font-bold font-mono text-[#2EA043]">No Change Detected</span>
-                  </div>
-                  <div class="text-right shrink-0">
-                    <span class="tag-badge tag-confirmed text-[10px] mb-1">CONTAINED</span>
-                    <span class="text-white/50 text-[11px] block">Zero cross-border spillover</span>
+                  <div class="shrink-0 flex flex-col items-end gap-1">
+                    <span class="tag-badge tag-unverified text-[10px]">QUARANTINED</span>
+                    <span class="text-white/40 text-[10px] font-mono">5 Hospitals Isolated</span>
                   </div>
                 </div>
 
                 <div class="change-delta-item">
-                  <div class="pr-2">
-                    <span class="text-white/60 font-medium block text-[11px] mb-1">Official Response</span>
-                    <span class="text-white/90 text-sm font-bold font-mono text-white/90">Quarantine Maintained</span>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-white/50 font-medium block text-[10px] uppercase tracking-wider font-mono">External Spread</span>
+                    <span class="text-[#2EA043] text-sm font-bold font-mono mt-0.5 block">No Change Detected</span>
                   </div>
-                  <div class="text-right shrink-0">
-                    <span class="tag-badge tag-official text-[10px] mb-1">DENIAL</span>
-                    <span class="text-white/50 text-[11px] block">Rospotrebnadzor: "Pneumonia"</span>
+                  <div class="shrink-0 flex flex-col items-end gap-1">
+                    <span class="tag-badge tag-confirmed text-[10px]">CONTAINED</span>
+                    <span class="text-white/40 text-[10px] font-mono">Zero Spillover</span>
+                  </div>
+                </div>
+
+                <div class="change-delta-item">
+                  <div class="min-w-0 flex-1">
+                    <span class="text-white/50 font-medium block text-[10px] uppercase tracking-wider font-mono">Official Response</span>
+                    <span class="text-white/90 text-sm font-bold font-mono mt-0.5 block">Quarantine Maintained</span>
+                  </div>
+                  <div class="shrink-0 flex flex-col items-end gap-1">
+                    <span class="tag-badge tag-official text-[10px]">DENIAL</span>
+                    <span class="text-white/40 text-[10px] font-mono">Rospotrebnadzor</span>
                   </div>
                 </div>
               </div>
@@ -480,22 +480,22 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 font-mono text-[11px]">
-                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
-                    <span class="text-white/60 shrink-0">Human-to-Human:</span>
-                    <span class="text-[#2EA043] font-bold text-right">NOT CONFIRMED</span>
+                <div class="grid grid-cols-2 gap-2 pt-1 font-mono">
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex flex-col justify-center gap-0.5">
+                    <span class="text-white/50 text-[10px] uppercase tracking-wider truncate">Human-to-Human</span>
+                    <span class="text-[#2EA043] font-bold text-xs truncate">NOT CONFIRMED</span>
                   </div>
-                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
-                    <span class="text-white/60 shrink-0">Geographic Spread:</span>
-                    <span class="text-[#D29922] font-bold text-right">LOCALIZED</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex flex-col justify-center gap-0.5">
+                    <span class="text-white/50 text-[10px] uppercase tracking-wider truncate">Geographic Spread</span>
+                    <span class="text-[#D29922] font-bold text-xs truncate">LOCALIZED</span>
                   </div>
-                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
-                    <span class="text-white/60 shrink-0">International:</span>
-                    <span class="text-[#2EA043] font-bold text-right">NONE DETECTED</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex flex-col justify-center gap-0.5">
+                    <span class="text-white/50 text-[10px] uppercase tracking-wider truncate">International</span>
+                    <span class="text-[#2EA043] font-bold text-xs truncate">NONE DETECTED</span>
                   </div>
-                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex items-center justify-between gap-2">
-                    <span class="text-white/60 shrink-0">Containment:</span>
-                    <span class="text-[#D29922] font-bold text-right">ACTIVE CORDON</span>
+                  <div class="p-2.5 bg-white/[0.02] border border-[#243040]/70 rounded-md flex flex-col justify-center gap-0.5">
+                    <span class="text-white/50 text-[10px] uppercase tracking-wider truncate">Containment</span>
+                    <span class="text-[#D29922] font-bold text-xs truncate">ACTIVE CORDON</span>
                   </div>
                 </div>
               </div>
@@ -624,10 +624,10 @@
             </div>
 
             <!-- Pathogen Identity -->
-            <div class="p-3 rounded-lg bg-white/[0.02] border border-[#243040] mb-3 flex items-center justify-between">
-              <div>
+            <div class="p-3 rounded-lg bg-white/[0.02] border border-[#243040] mb-3 flex items-center justify-between gap-3">
+              <div class="min-w-0 flex-1">
                 <span class="text-[10px] text-white/40 uppercase font-mono block">Etiological Agent</span>
-                <span class="text-sm font-bold text-[#E6EDF3] font-mono" id="pathogenAgentIdentity">
+                <span class="text-sm font-bold text-[#E6EDF3] font-mono block truncate" id="pathogenAgentIdentity">
                   Yersinia pestis (Pneumonic Strain)
                 </span>
               </div>
@@ -1133,7 +1133,7 @@
     </div>
   </footer>
 
-  <!-- Core JavaScript Application v6.0.0 -->
-  <script src="app.js?v=6.0.0"></script>
+  <!-- Core JavaScript Application v6.0.1 -->
+  <script src="app.js?v=6.0.1"></script>
 </body>
 </html>
