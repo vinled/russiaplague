@@ -100,7 +100,119 @@ const TRANSLATIONS = {
     pathogenAgentBadge: 'Under Investigation',
     pathogenAiSummaryTitle: 'AI EPIDEMIOLOGICAL SYNTHESIS (REAL TIME)',
     pathogenDispatchesAnalyzed: 'Monitored from {n} dispatches',
-    pathogenSyncing: 'Synchronizing neural analysis of monitored dispatches...'
+    pathogenSyncing: 'Synchronizing neural analysis of monitored dispatches...',
+
+    kpiConfirmedSub: '0 lab verified',
+    kpiInvestigatedSub: '+1 in isolation ward',
+    kpiDeathsSub: '+1 in last 24h (disputed)',
+    kpiContactsSub: 'Hospital ring cordon',
+    kpiSecondarySub: '0 community clusters',
+    kpiCountriesSub: 'Russian Fed. only',
+
+    deltaFatalitiesLabel: 'Fatalities Toll',
+    deltaFatalitiesVal: '1 → 2 Deaths',
+    deltaFatalitiesTag: '▲ +1 CLAIMED',
+    deltaFatalitiesSub: 'Shelekhov Hospital',
+    deltaContactsLabel: 'Contacts Monitored',
+    deltaContactsVal: '190 → ~200 Contacts',
+    deltaContactsTag: 'QUARANTINED',
+    deltaContactsSub: '5 Hospitals Isolated',
+    deltaSpreadLabel: 'External Spread',
+    deltaSpreadVal: 'No Change Detected',
+    deltaSpreadTag: 'CONTAINED',
+    deltaSpreadSub: 'Zero Spillover',
+    deltaResponseLabel: 'Official Response',
+    deltaResponseVal: 'Quarantine Maintained',
+    deltaResponseTag: 'DENIAL',
+    deltaResponseSub: 'Rospotrebnadzor',
+
+    snapshotTitle: 'SITUATION SNAPSHOT',
+    snapshotInspectDossier: 'Inspect Dossier',
+    snapshotLeadText: 'Possible pneumonic plague incident under active investigation following accidental exposure at Irkutsk Anti-Plague Institute. Five hospitals in Shelekhov placed under quarantine cordon.',
+    snapshotEvidenceConfidence: 'Evidence Confidence',
+    snapshotConfidenceScoreVal: '78% (Corroborated by UK & Local Press)',
+    snapshotH2HLabel: 'Human-to-Human',
+    snapshotH2HValText: 'NOT CONFIRMED',
+    snapshotGeoLabel: 'Geographic Spread',
+    snapshotGeoValText: 'LOCALIZED',
+    snapshotIntlLabel: 'International',
+    snapshotIntlValText: 'NONE DETECTED',
+    snapshotContainLabel: 'Containment',
+    snapshotContainValText: 'ACTIVE CORDON',
+
+    geoSubtitle: 'Irkutsk / Shelekhov Epicenter · Lake Baikal Region · Siberia',
+    geoFocusEpicenter: 'Focus Epicenter',
+    mapLegendLabel: 'Legend:',
+    mapLegendRed: 'Red = Confirmed/Critical',
+    mapLegendAmber: 'Amber = Cordon / Investigation',
+    mapLegendYellow: 'Yellow = Contact Watch',
+    mapLegendGreen: 'Green = Contained',
+    mapLegendBlue: 'Blue = Official Command',
+
+    evoTableHeading: 'Quantitative Progression Table',
+    evoTooltipNote: 'Tooltips active on curve',
+    evoColDate: 'Date',
+    evoColPhase: 'Phase',
+    evoColSuspected: 'Suspected',
+    evoColConfirmed: 'Confirmed',
+    evoColDeaths: 'Deaths',
+    evoColContacts: 'Contacts',
+    evoRange24h: '24H',
+    evoRange7d: '7D',
+    evoRange30d: '30D',
+    evoRangeAll: 'ALL',
+
+    timelineFooterNote: 'Click any event node to inspect source intelligence',
+    timelineLiveChain: 'Live Chain Active',
+    timelineFilterAll: 'All Events',
+    timelineFilterConfirmed: 'Confirmed',
+    timelineFilterOfficial: 'Official',
+    timelineFilterReported: 'Reported',
+    timelineFilterUnverified: 'Unverified',
+    timelineFilterDisputed: 'Disputed',
+
+    pathogenAgentEtiologyLabel: 'Etiological Agent',
+    pathogenAgentIdentityVal: 'Yersinia pestis (Pneumonic Strain)',
+    pathogenAgentBadgeText: 'Under Investigation',
+    pathogenFullDossierBtn: 'Full Pathogen Dossier',
+
+    tierPriorityLabel: 'Tier 1 & Tier 2 Prioritized',
+    corroboratedLabel: 'Corroborated',
+    viralityVsCredibility: 'Virality vs Credibility',
+    rumorPlatformsMonitored: 'TikTok / X / Telegram Monitored',
+    rumorSeparatedFromFacts: 'Separated from facts',
+    rumorVirality: 'Virality',
+    rumorCredibility: 'Credibility',
+    rumorCorroboration: 'Corroboration',
+    rumorTrend: 'Trend',
+    rumorIntelNote: 'Intelligence Note',
+
+    sourcesCategoryLabel: 'Category:',
+    sourcesTierLabel: 'Trust Tier:',
+    sourcesRegionLabel: 'Region:',
+    sourcesSearchPlaceholder: 'Filter dispatches by keyword, entity, or source...',
+    catAll: 'All Categories',
+    catOfficial: 'Official',
+    catEpidemiology: 'Epidemiology',
+    catLaboratory: 'Laboratory',
+    catRussia: 'Russia',
+    catInternational: 'International',
+    catWHO: 'WHO',
+    catSocial: 'Social',
+    catScientific: 'Scientific',
+    tierAll: 'All Tiers',
+    tier1Label: 'Tier 1 (WHO / Reuters / Gov)',
+    tier2Label: 'Tier 2 (Major Press)',
+    tier3Label: 'Tier 3 (Regional)',
+    tier4Label: 'Tier 4 (Social / OSINT)',
+    regionAll: 'All Regions',
+    regionRussia: 'Russia / Siberia',
+    regionWHO: 'WHO / Global',
+    regionMongolia: 'Mongolia',
+    regionChina: 'China',
+    regionBrazil: 'Brazil / Lusophone',
+    paginationPrev: '← Previous',
+    paginationNext: 'Next →'
   },
   pt: {
     brandTitle: 'OUTBREAK INTELLIGENCE',
@@ -197,7 +309,119 @@ const TRANSLATIONS = {
     pathogenAgentBadge: 'Sob Investigação',
     pathogenAiSummaryTitle: 'SÍNTESE EPIDEMIOLÓGICA POR IA (TEMPO REAL)',
     pathogenDispatchesAnalyzed: 'Monitorado a partir de {n} despachos',
-    pathogenSyncing: 'Sincronizando análise neural dos despachos monitorados...'
+    pathogenSyncing: 'Sincronizando análise neural dos despachos monitorados...',
+
+    kpiConfirmedSub: '0 verificado em laboratório',
+    kpiInvestigatedSub: '+1 em ala de isolamento',
+    kpiDeathsSub: '+1 nas últimas 24h (disputado)',
+    kpiContactsSub: 'Cordão sanitário hospitalar',
+    kpiSecondarySub: '0 surtos comunitários',
+    kpiCountriesSub: 'Apenas Federação Russa',
+
+    deltaFatalitiesLabel: 'Total de Óbitos',
+    deltaFatalitiesVal: '1 → 2 Óbitos',
+    deltaFatalitiesTag: '▲ +1 RELATADO',
+    deltaFatalitiesSub: 'Hospital de Shelekhov',
+    deltaContactsLabel: 'Contatos Monitorados',
+    deltaContactsVal: '190 → ~200 Contatos',
+    deltaContactsTag: 'QUARENTENA',
+    deltaContactsSub: '5 Hospitais Isolados',
+    deltaSpreadLabel: 'Disseminação Externa',
+    deltaSpreadVal: 'Nenhuma Mudança',
+    deltaSpreadTag: 'CONTIDO',
+    deltaSpreadSub: 'Zero Dispersão',
+    deltaResponseLabel: 'Resposta Oficial',
+    deltaResponseVal: 'Quarentena Mantida',
+    deltaResponseTag: 'NEGATIVA',
+    deltaResponseSub: 'Rospotrebnadzor',
+
+    snapshotTitle: 'SÍNTESE DA SITUAÇÃO',
+    snapshotInspectDossier: 'Inspecionar Dossiê',
+    snapshotLeadText: 'Incidente de possível peste pneumônica sob investigação ativa após quebra acidental no Instituto Anti-Peste de Irkutsk. Cinco hospitais em Shelekhov sob cordão de quarentena.',
+    snapshotEvidenceConfidence: 'Confiança das Evidências',
+    snapshotConfidenceScoreVal: '78% (Corroborado por Imprensa Britânica e Local)',
+    snapshotH2HLabel: 'Humano para Humano',
+    snapshotH2HValText: 'NÃO CONFIRMADA',
+    snapshotGeoLabel: 'Disseminação Geográfica',
+    snapshotGeoValText: 'LOCALIZADA',
+    snapshotIntlLabel: 'Disseminação Internacional',
+    snapshotIntlValText: 'NENHUMA DETECTADA',
+    snapshotContainLabel: 'Contenção',
+    snapshotContainValText: 'CORDÃO ATIVO',
+
+    geoSubtitle: 'Epicentro Irkutsk / Shelekhov · Região do Lago Baikal · Sibéria',
+    geoFocusEpicenter: 'Focar Epicentro',
+    mapLegendLabel: 'Legenda:',
+    mapLegendRed: 'Vermelho = Confirmado / Crítico',
+    mapLegendAmber: 'Âmbar = Cordão / Investigação',
+    mapLegendYellow: 'Amarelo = Vigilância de Contatos',
+    mapLegendGreen: 'Verde = Contido',
+    mapLegendBlue: 'Azul = Comando Oficial',
+
+    evoTableHeading: 'Tabela de Progressão Quantitativa',
+    evoTooltipNote: 'Tooltips ativos na curva',
+    evoColDate: 'Data',
+    evoColPhase: 'Fase',
+    evoColSuspected: 'Suspeitos',
+    evoColConfirmed: 'Confirmados',
+    evoColDeaths: 'Óbitos',
+    evoColContacts: 'Contatos',
+    evoRange24h: '24H',
+    evoRange7d: '7D',
+    evoRange30d: '30D',
+    evoRangeAll: 'TODOS',
+
+    timelineFooterNote: 'Clique em qualquer marco para inspecionar fontes de inteligência',
+    timelineLiveChain: 'Cadeia de Fatos Ativa',
+    timelineFilterAll: 'Todos os Eventos',
+    timelineFilterConfirmed: 'Confirmados',
+    timelineFilterOfficial: 'Oficiais',
+    timelineFilterReported: 'Relatados',
+    timelineFilterUnverified: 'Não Verificados',
+    timelineFilterDisputed: 'Disputados',
+
+    pathogenAgentEtiologyLabel: 'Agente Etiológico',
+    pathogenAgentIdentityVal: 'Yersinia pestis (Cepa Pneumônica)',
+    pathogenAgentBadgeText: 'Sob Investigação',
+    pathogenFullDossierBtn: 'Dossiê Completo do Patógeno',
+
+    tierPriorityLabel: 'Prioridade Tier 1 & Tier 2',
+    corroboratedLabel: 'Corroborado',
+    viralityVsCredibility: 'Viralidade vs Credibilidade',
+    rumorPlatformsMonitored: 'TikTok / X / Telegram Monitorados',
+    rumorSeparatedFromFacts: 'Separado dos Fatos',
+    rumorVirality: 'Viralidade',
+    rumorCredibility: 'Credibilidade',
+    rumorCorroboration: 'Corroboração',
+    rumorTrend: 'Tendência',
+    rumorIntelNote: 'Nota de Inteligência',
+
+    sourcesCategoryLabel: 'Categoria:',
+    sourcesTierLabel: 'Nível de Confiança:',
+    sourcesRegionLabel: 'Região:',
+    sourcesSearchPlaceholder: 'Filtrar despachos por palavra-chave, entidade ou fonte...',
+    catAll: 'Todas as Categorias',
+    catOfficial: 'Oficial',
+    catEpidemiology: 'Epidemiologia',
+    catLaboratory: 'Laboratório',
+    catRussia: 'Rússia',
+    catInternational: 'Internacional',
+    catWHO: 'OMS',
+    catSocial: 'Redes Sociais',
+    catScientific: 'Científico',
+    tierAll: 'Todos os Níveis',
+    tier1Label: 'Tier 1 (OMS / Reuters / Governos)',
+    tier2Label: 'Tier 2 (Grande Imprensa)',
+    tier3Label: 'Tier 3 (Regional)',
+    tier4Label: 'Tier 4 (Redes / OSINT)',
+    regionAll: 'Todas as Regiões',
+    regionRussia: 'Rússia / Sibéria',
+    regionWHO: 'OMS / Global',
+    regionMongolia: 'Mongólia',
+    regionChina: 'China',
+    regionBrazil: 'Brasil / Lusófono',
+    paginationPrev: '← Anterior',
+    paginationNext: 'Próxima →'
   }
 };
 
@@ -215,6 +439,26 @@ const THREAT_LEVEL_NAMES = {
     GUARDED: 'MODERADO',
     ELEVATED: 'ELEVADO',
     HIGH: 'ALTO',
+    CRITICAL: 'CRÍTICO'
+  }
+};
+
+// Classification Badge Labels Dictionary
+const CLASSIFICATION_LABELS = {
+  en: {
+    CONFIRMED: 'CONFIRMED',
+    OFFICIAL: 'OFFICIAL',
+    REPORTED: 'REPORTED',
+    UNVERIFIED: 'UNVERIFIED',
+    DISPUTED: 'DISPUTED',
+    CRITICAL: 'CRITICAL'
+  },
+  pt: {
+    CONFIRMED: 'CONFIRMADO',
+    OFFICIAL: 'OFICIAL',
+    REPORTED: 'RELATADO',
+    UNVERIFIED: 'NÃO VERIFICADO',
+    DISPUTED: 'DISPUTADO',
     CRITICAL: 'CRÍTICO'
   }
 };
@@ -759,9 +1003,13 @@ function renderOverviewMilestones() {
   const container = document.getElementById('overviewMilestonesList');
   if (!container) return;
 
-  const timeline = state.incident?.timeline || [];
+  const rawTimeline = [...(state.incident?.timeline || [])];
+  // Strictly chronological order (earliest to newest)
+  rawTimeline.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
   const isEn = state.currentLang === 'en';
-  const displayItems = timeline.slice(0, 6);
+  const displayItems = rawTimeline.slice(0, 7);
+  const classLabels = CLASSIFICATION_LABELS[state.currentLang] || CLASSIFICATION_LABELS.en;
 
   container.innerHTML = displayItems.map((item, idx) => {
     let tagClass = 'tag-reported';
@@ -773,6 +1021,7 @@ function renderOverviewMilestones() {
     const dateStr = isEn ? (item.dateEn || item.date) : (item.datePt || item.date);
     const titleStr = isEn ? (item.titleEn || item.title) : (item.titlePt || item.title);
     const descStr = isEn ? (item.descriptionEn || item.description) : (item.descriptionPt || item.description);
+    const localizedClass = classLabels[item.classification] || item.classification;
 
     return `
       <div class="cursor-pointer flex items-start space-x-3 p-2.5 bg-white/[0.02] hover:bg-white/[0.05] rounded border border-white/[0.04] transition group" onclick="window.openIntelligenceDrawer('event', window.outbreakState?.incident?.timeline?.[${idx}])">
@@ -784,7 +1033,7 @@ function renderOverviewMilestones() {
               <span class="text-white/30 text-[10px]">·</span>
               <span class="font-semibold text-white/90 text-xs group-hover:text-[#58A6FF] transition truncate">${titleStr}</span>
             </div>
-            <span class="tag-badge ${tagClass} text-[9px] shrink-0">${item.classification}</span>
+            <span class="tag-badge ${tagClass} text-[9px] shrink-0">${localizedClass}</span>
           </div>
           <p class="text-white/60 text-[11px] leading-relaxed line-clamp-2">${descStr}</p>
         </div>
@@ -1009,6 +1258,7 @@ function renderLatestVerifiedIntelligence() {
   const topItems = prioritized.slice(0, 5);
   const itemsToRender = topItems.length >= 3 ? topItems : state.news.slice(0, 5);
   const dict = TRANSLATIONS[state.currentLang];
+  const classLabels = CLASSIFICATION_LABELS[state.currentLang] || CLASSIFICATION_LABELS.en;
 
   if (itemsToRender.length === 0) {
     container.innerHTML = '<div class="py-6 text-center text-white/40">Synchronizing verified dispatches...</div>';
@@ -1024,6 +1274,7 @@ function renderLatestVerifiedIntelligence() {
 
     const tierCode = item.trustTier?.tierCode || 'tier-3';
     const tierName = item.trustTier?.tier || 'TIER 3';
+    const localizedClass = classLabels[item.classification || 'REPORTED'] || (item.classification || 'REPORTED');
 
     return `
       <div class="intel-row flex flex-col space-y-1">
@@ -1032,7 +1283,7 @@ function renderLatestVerifiedIntelligence() {
             <span class="tier-pill ${tierCode}">${tierName}</span>
             <span class="font-bold text-[#388BFD] font-mono">${item.source}</span>
             <span class="text-white/20">|</span>
-            <span class="tag-badge ${tagClass} text-[9px]">${item.classification || 'REPORTED'}</span>
+            <span class="tag-badge ${tagClass} text-[9px]">${localizedClass}</span>
           </div>
           <span class="text-white/40 font-mono text-[10px]">${formatRelativeTime(item.pubTimestamp)}</span>
         </div>
@@ -1055,6 +1306,22 @@ function renderRumorWatch() {
   const overviewContainer = document.getElementById('overviewRumorWatchContainer');
   const fullTableBody = document.getElementById('rumorWatchTableBody');
   const rumorData = state.incident?.rumorWatch || [];
+  const isEn = state.currentLang === 'en';
+
+  const mapTrend = (t) => {
+    if (t === 'rising') return isEn ? '↑ Rising' : '↑ Em Alta';
+    return isEn ? '→ Stable' : '→ Estável';
+  };
+  const mapValue = (v) => {
+    if (isEn) return v;
+    if (v === 'High') return 'Alta';
+    if (v === 'Medium') return 'Média';
+    if (v === 'Low') return 'Baixa';
+    if (v === 'Verified') return 'Verificado';
+    if (v === 'Partial') return 'Parcial';
+    if (v === 'None') return 'Nenhuma';
+    return v;
+  };
 
   if (overviewContainer) {
     overviewContainer.innerHTML = rumorData.slice(0, 3).map(r => `
@@ -1062,24 +1329,24 @@ function renderRumorWatch() {
         <div class="flex items-center justify-between mb-2">
           <span class="font-mono text-xs font-bold text-white/90">${r.topic}</span>
           <span class="text-[10px] font-mono ${r.trend === 'rising' ? 'text-[#D29922]' : 'text-white/50'}">
-            ${r.trend === 'rising' ? '↑ Rising' : '→ Stable'}
+            ${mapTrend(r.trend)}
           </span>
         </div>
         <div class="grid grid-cols-3 gap-1 text-[10px] font-mono text-center mb-2">
           <div class="bg-white/[0.02] p-1 rounded">
-            <span class="text-white/40 block">Virality</span>
-            <span class="text-[#D29922] font-bold">${r.virality}</span>
+            <span class="text-white/40 block">${isEn ? 'Virality' : 'Viralidade'}</span>
+            <span class="text-[#D29922] font-bold">${mapValue(r.virality)}</span>
           </div>
           <div class="bg-white/[0.02] p-1 rounded">
-            <span class="text-white/40 block">Credibility</span>
-            <span class="${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-bold">${r.credibility}</span>
+            <span class="text-white/40 block">${isEn ? 'Credibility' : 'Credibilidade'}</span>
+            <span class="${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-bold">${mapValue(r.credibility)}</span>
           </div>
           <div class="bg-white/[0.02] p-1 rounded">
-            <span class="text-white/40 block">Corroboration</span>
-            <span class="${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'} font-bold">${r.corroboration}</span>
+            <span class="text-white/40 block">${isEn ? 'Corroboration' : 'Corroboração'}</span>
+            <span class="${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'} font-bold">${mapValue(r.corroboration)}</span>
           </div>
         </div>
-        <p class="text-[10px] text-white/50 leading-tight">${r.note}</p>
+        <p class="text-[10px] text-white/50 leading-tight">${isEn ? (r.noteEn || r.note) : (r.notePt || r.note)}</p>
       </div>
     `).join('');
   }
@@ -1089,11 +1356,11 @@ function renderRumorWatch() {
       <tr class="hover:bg-white/[0.02] transition">
         <td class="py-2 px-2 text-white/90 font-bold font-mono">${r.topic}</td>
         <td class="py-2 px-2 text-white/60 font-mono text-[10px]">${r.platform}</td>
-        <td class="py-2 px-2 font-mono text-[#D29922] font-semibold">${r.virality}</td>
-        <td class="py-2 px-2 font-mono ${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-semibold">${r.credibility}</td>
-        <td class="py-2 px-2 font-mono ${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'}">${r.corroboration}</td>
-        <td class="py-2 px-2 font-mono ${r.trend === 'rising' ? 'text-[#D29922]' : 'text-white/40'}">${r.trend === 'rising' ? '↑ Rising' : '→ Stable'}</td>
-        <td class="py-2 px-2 text-white/60 font-sans text-xs">${r.note}</td>
+        <td class="py-2 px-2 font-mono text-[#D29922] font-semibold">${mapValue(r.virality)}</td>
+        <td class="py-2 px-2 font-mono ${r.credibility === 'High' ? 'text-[#2EA043]' : (r.credibility === 'Medium' ? 'text-[#D29922]' : 'text-white/50')} font-semibold">${mapValue(r.credibility)}</td>
+        <td class="py-2 px-2 font-mono ${r.corroboration === 'Verified' ? 'text-[#2EA043]' : 'text-white/50'}">${mapValue(r.corroboration)}</td>
+        <td class="py-2 px-2 font-mono ${r.trend === 'rising' ? 'text-[#D29922]' : 'text-white/40'}">${mapTrend(r.trend)}</td>
+        <td class="py-2 px-2 text-white/60 font-sans text-xs">${isEn ? (r.noteEn || r.note) : (r.notePt || r.note)}</td>
       </tr>
     `).join('');
   }
@@ -1158,10 +1425,15 @@ function renderTimelineArchive() {
   const container = document.getElementById('fullTimelineContainer');
   if (!container) return;
 
-  const timeline = state.incident?.timeline || [];
-  const isEn = state.currentLang === 'en';
+  const rawTimeline = [...(state.incident?.timeline || [])];
+  // Strictly chronological order (earliest to newest)
+  rawTimeline.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
 
-  let filtered = [...timeline];
+  const isEn = state.currentLang === 'en';
+  const classLabels = CLASSIFICATION_LABELS[state.currentLang] || CLASSIFICATION_LABELS.en;
+  const sourcePrefix = isEn ? 'Source:' : 'Fonte:';
+
+  let filtered = [...rawTimeline];
   if (state.timelineFilter !== 'all') {
     filtered = filtered.filter(item => item.classification === state.timelineFilter);
   }
@@ -1186,6 +1458,7 @@ function renderTimelineArchive() {
     const dateStr = isEn ? (item.dateEn || item.date) : (item.datePt || item.date);
     const titleStr = isEn ? (item.titleEn || item.title) : (item.titlePt || item.title);
     const descStr = isEn ? (item.descriptionEn || item.description) : (item.descriptionPt || item.description);
+    const localizedClass = classLabels[item.classification] || item.classification;
 
     return `
       <div class="relative pl-4 pb-4">
@@ -1198,8 +1471,8 @@ function renderTimelineArchive() {
               <span class="text-xs font-bold text-white">${titleStr}</span>
             </div>
             <div class="flex items-center space-x-2">
-              <span class="tag-badge ${tagClass} text-[9px]">${item.classification}</span>
-              ${item.source ? `<span class="text-[10px] text-white/40 font-mono">Source: ${item.source}</span>` : ''}
+              <span class="tag-badge ${tagClass} text-[9px]">${localizedClass}</span>
+              ${item.source ? `<span class="text-[10px] text-white/40 font-mono">${sourcePrefix} ${item.source}</span>` : ''}
             </div>
           </div>
           <p class="text-xs text-white/70 leading-relaxed">${descStr}</p>
@@ -1402,9 +1675,14 @@ function renderSourcesFeed() {
     );
   }
 
+  const isEn = state.currentLang === 'en';
+  const classLabels = CLASSIFICATION_LABELS[state.currentLang] || CLASSIFICATION_LABELS.en;
+
   // Total summary
   if (countSummary) {
-    countSummary.textContent = `${filtered.length} of ${state.news.length} total dispatches`;
+    countSummary.textContent = isEn
+      ? `${filtered.length} of ${state.news.length} total dispatches`
+      : `${filtered.length} de ${state.news.length} despachos no total`;
   }
 
   // Pagination calculation
@@ -1415,7 +1693,11 @@ function renderSourcesFeed() {
   const startIndex = (state.sourcesPage - 1) * state.sourcesPerPage;
   const pageItems = filtered.slice(startIndex, startIndex + state.sourcesPerPage);
 
-  if (pageInfo) pageInfo.textContent = `Page ${state.sourcesPage} of ${totalPages} (${filtered.length} items)`;
+  if (pageInfo) {
+    pageInfo.textContent = isEn
+      ? `Page ${state.sourcesPage} of ${totalPages} (${filtered.length} items)`
+      : `Página ${state.sourcesPage} de ${totalPages} (${filtered.length} itens)`;
+  }
   if (btnPrev) btnPrev.disabled = state.sourcesPage <= 1;
   if (btnNext) btnNext.disabled = state.sourcesPage >= totalPages;
 
@@ -1423,7 +1705,7 @@ function renderSourcesFeed() {
     container.innerHTML = `
       <div class="py-12 text-center text-white/40">
         <i data-lucide="filter-x" class="w-8 h-8 mx-auto mb-2 text-white/20"></i>
-        <p class="text-xs font-mono">No intelligence dispatches match the selected filters.</p>
+        <p class="text-xs font-mono">${isEn ? 'No intelligence dispatches match the selected filters.' : 'Nenhum despacho de inteligência corresponde aos filtros selecionados.'}</p>
       </div>
     `;
     lucide.createIcons();
@@ -1440,6 +1722,7 @@ function renderSourcesFeed() {
     const tierCode = item.trustTier?.tierCode || 'tier-3';
     const tierName = item.trustTier?.tier || 'TIER 3';
     const tierLabel = item.trustTier?.label || tierName;
+    const localizedClass = classLabels[item.classification || 'REPORTED'] || (item.classification || 'REPORTED');
 
     const tagsHtml = (item.locationTags || []).map(t => `
       <span class="px-1.5 py-0.5 rounded text-[9px] bg-white/[0.04] text-white/60 font-mono">${t}</span>
@@ -1452,7 +1735,7 @@ function renderSourcesFeed() {
             <span class="tier-pill ${tierCode}" title="${tierLabel}">${tierName}</span>
             <span class="font-bold text-[#388BFD] font-mono">${item.source}</span>
             <span class="text-white/20">|</span>
-            <span class="tag-badge ${tagClass} text-[9px]">${item.classification || 'REPORTED'}</span>
+            <span class="tag-badge ${tagClass} text-[9px]">${localizedClass}</span>
             <span class="px-1.5 py-0.5 rounded text-[9px] bg-white/[0.04] text-white/50 font-mono">${item.category || 'General'}</span>
           </div>
           <span class="text-white/40 font-mono text-[10px]">${formatRelativeTime(item.pubTimestamp)}</span>

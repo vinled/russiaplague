@@ -113,6 +113,7 @@ Responda APENAS com o JSON válido, sem crases de markdown, sem preâmbulo.`;
  * Chamada à API do Gemini 1.5 Flash para resumir o que se sabe sobre o patógeno
  */
 async function callGeminiPathogenAnalyzer(newsItems, apiKey, lang = 'pt') {
+  const isEn = lang === 'en';
   try {
     const prompt = buildPathogenPrompt(newsItems, lang);
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;

@@ -252,12 +252,18 @@ function analyzeNewsHeuristically(newsItems) {
     result.newMilestones.push({
       date: "2026-10-06",
       dateLabel: "Oct 06",
+      dateEn: "Oct 06, 2026",
+      datePt: "06 Out 2026",
       title: milestoneTitle,
+      titleEn: milestoneTitle,
       titlePt: milestoneTitlePt,
       source: deathSource,
       classification: "DISPUTED",
       description: `Dispatches report cumulative casualties have reached ${maxDeathsDetected} individuals under observation or hospital quarantine; authorities maintain strict information cordon.`,
-      descriptionPt: `Despachos reportam que o total de vítimas fatais atingiu ${maxDeathsDetected} indivíduos sob observação ou quarentena hospitalar; autoridades mantêm rigoroso controle informativo.`
+      descriptionEn: `Dispatches report cumulative casualties have reached ${maxDeathsDetected} individuals under observation or hospital quarantine; authorities maintain strict information cordon.`,
+      descriptionPt: `Despachos reportam que o total de vítimas fatais atingiu ${maxDeathsDetected} indivíduos sob observação ou quarentena hospitalar; autoridades mantêm rigoroso controle informativo.`,
+      isoDate: "2026-10-06T12:00:00Z",
+      timestamp: 1791288000000
     });
   }
 
@@ -265,12 +271,18 @@ function analyzeNewsHeuristically(newsItems) {
     result.newMilestones.push({
       date: "2026-10-06",
       dateLabel: "Oct 06",
+      dateEn: "Oct 06, 2026",
+      datePt: "06 Out 2026",
       title: "US State Dept & International Monitoring Activated",
+      titleEn: "US State Dept & International Monitoring Activated",
       titlePt: "Monitoramento Ativado pelo Departamento de Estado dos EUA",
       source: "Daily Mail / State Dept Wire",
       classification: "OFFICIAL",
       description: "Secretary of State Marco Rubio confirms US surveillance of Siberian biological reports; bilateral diplomatic exchanges on biosecurity containment.",
-      descriptionPt: "Secretário de Estado Marco Rubio confirma vigilância americana sobre relatórios biológicos na Sibéria; trocas diplomáticas bilaterais sobre contenção de biossegurança."
+      descriptionEn: "Secretary of State Marco Rubio confirms US surveillance of Siberian biological reports; bilateral diplomatic exchanges on biosecurity containment.",
+      descriptionPt: "Secretário de Estado Marco Rubio confirma vigilância americana sobre relatórios biológicos na Sibéria; trocas diplomáticas bilaterais sobre contenção de biossegurança.",
+      isoDate: "2026-10-06T08:00:00Z",
+      timestamp: 1791273600000
     });
   }
 
@@ -355,13 +367,14 @@ async function getAutonomousIncidentState(newsItems, forceRefresh = false) {
     for (const milestone of extracted.newMilestones) {
       const exists = baseIncident.timeline.some(t =>
         t.title.toLowerCase().includes(milestone.title.toLowerCase().slice(0, 20)) ||
-        t.date === milestone.date && t.classification === milestone.classification
+        (t.date === milestone.date && t.classification === milestone.classification)
       );
       if (!exists) {
-        // Insere no topo ou na posição cronológica correta
-        baseIncident.timeline.unshift(milestone);
+        baseIncident.timeline.push(milestone);
       }
     }
+    // Ordenação estritamente cronológica por timestamp
+    baseIncident.timeline.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   }
 
   // Atualização dos pontos de monitoramento com Shelekhov Hospital e Cordão Sanitário

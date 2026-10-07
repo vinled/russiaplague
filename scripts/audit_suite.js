@@ -292,8 +292,8 @@ async function runAudit() {
     await client.eval(`window.scrollTo({ top: 0, behavior: 'instant' });`);
     await new Promise(r => setTimeout(r, 200));
 
-    // 5. Teste da Aba TIMELINE
-    console.log('\n⏱️ [TESTE 3/7] Testando Aba "TIMELINE"...');
+    // 5. Teste da Aba TIMELINE & Ordenação Cronológica Rigorosa
+    console.log('\n⏱️ [TESTE 3/7] Testando Aba "TIMELINE" e Ordenação Cronológica Rigorosa...');
     const timelineAudit = await client.eval(`
       (() => {
         const btn = document.getElementById('btnNavTimeline');
@@ -301,17 +301,46 @@ async function runAudit() {
         btn.click();
         const view = document.getElementById('viewTimeline');
         const isVisible = view && !view.classList.contains('hidden');
-        const itemsCount = view ? view.querySelectorAll('#fullTimelineContainer > div').length : 0;
+        const items = Array.from(view ? view.querySelectorAll('#fullTimelineContainer > div') : []);
         const filterBtns = view ? view.querySelectorAll('[data-timeline-filter]').length : 0;
-        return { isVisible, itemsCount, filterBtns };
+
+        // Extrair datas e títulos para verificar a cronologia
+        const extractedEvents = items.map(el => {
+          const dateText = el.querySelector('.font-mono.text-xs')?.textContent.trim() || '';
+          const titleText = el.querySelectorAll('.font-bold.text-white')?.[0]?.textContent.trim() || '';
+          return { dateText, titleText };
+        });
+
+        // Verificar cronologia a partir do estado em memória
+        const rawTimeline = window.outbreakState?.incident?.timeline || [];
+        const isChronological = rawTimeline.every((item, idx) => {
+          if (idx === 0) return true;
+          return (item.timestamp || 0) >= (rawTimeline[idx - 1].timestamp || 0);
+        });
+
+        // Overview milestones também devem estar ordenados
+        const overviewItems = Array.from(document.querySelectorAll('#overviewMilestonesList > div')).map(el => {
+          return el.querySelector('span.font-mono')?.textContent.trim() || '';
+        });
+
+        return {
+          isVisible,
+          itemsCount: items.length,
+          filterBtns,
+          extractedEvents,
+          overviewItems,
+          isChronological,
+          firstEvent: extractedEvents[0],
+          lastEvent: extractedEvents[extractedEvents.length - 1]
+        };
       })()
     `);
 
     await new Promise(r => setTimeout(r, 400));
-    if (timelineAudit.isVisible && timelineAudit.itemsCount > 0 && timelineAudit.filterBtns >= 5) {
-      auditResults.checks.push(`Aba TIMELINE funcional e ativa (${timelineAudit.itemsCount} marcos cronológicos detalhados com ${timelineAudit.filterBtns} filtros de classificação)`);
+    if (timelineAudit.isVisible && timelineAudit.itemsCount > 0 && timelineAudit.filterBtns >= 5 && timelineAudit.isChronological) {
+      auditResults.checks.push(`Aba TIMELINE 100% cronológica (Set 25 -> Out 06): primeiro evento "${timelineAudit.firstEvent?.dateText} - ${timelineAudit.firstEvent?.titleText}", último evento "${timelineAudit.lastEvent?.dateText} - ${timelineAudit.lastEvent?.titleText}"`);
     } else {
-      auditResults.errors.push(`Falha na Aba TIMELINE: ${JSON.stringify(timelineAudit)}`);
+      auditResults.errors.push(`Falha na ordenação cronológica da Timeline: isChronological=${timelineAudit.isChronological}, ${JSON.stringify(timelineAudit.extractedEvents)}`);
     }
     await client.captureScreenshot(path.join(rootDir, 'audit_result_2_timeline.png'));
 
@@ -427,57 +456,93 @@ async function runAudit() {
     }
     await client.captureScreenshot(path.join(rootDir, 'audit_result_5_sources.png'));
 
-    // 8.1. Teste de Alternador Bilíngue EN / PT e Tradução dos Níveis de Ameaça
-    console.log('\n🌐 [TESTE 6.1/9] Testando Alternador de Idioma EN / PT e Tradução de Níveis de Ameaça...');
-    const langAudit = await client.eval(`
+    // 8.1. Auditoria Aprofundada das Traduções em Português (PT)
+    console.log('\n🇧🇷 [TESTE 6.1/9] Executando Auditoria Aprofundada em Português (PT)...');
+    const ptDeepAudit = await client.eval(`
       (() => {
         const btnPt = document.getElementById('langBtnPt');
-        const btnEn = document.getElementById('langBtnEn');
-        if (!btnPt || !btnEn) return { error: 'Botões EN/PT não encontrados' };
+        if (!btnPt) return { error: 'Botão PT não encontrado' };
 
-        // Voltar para Overview
+        // Mudar para Overview e clicar em PT
         document.getElementById('btnNavOverview')?.click();
-
-        // Testar alternância para PT
         btnPt.click();
-        const ptLang = document.documentElement.lang;
-        const ptOverviewLabel = document.querySelector('[data-i18n="navOverview"]')?.textContent;
-        const ptThreatLabel = document.querySelector('[data-i18n="currentThreatTitle"]')?.textContent;
-        const ptBadge = document.getElementById('threatBadgeText')?.textContent;
-        const ptSteps = Array.from(document.querySelectorAll('.threat-step')).map(s => s.textContent.trim());
-        const ptWhatChanged = document.getElementById('whatChangedSummary')?.textContent;
-        const ptGeoLocal = document.getElementById('geoStatusLocal')?.textContent;
-        const ptGeoBorders = document.getElementById('geoStatusBorders')?.textContent;
 
-        const ptThreatOk = (ptBadge === 'MODERADO' || ptBadge === 'ELEVADO') && ptSteps.includes('MODERADO') && ptSteps.includes('BAIXO') && ptSteps.includes('CRÍTICO');
+        const langAttr = document.documentElement.lang;
+        const navOverview = document.querySelector('[data-i18n="navOverview"]')?.textContent.trim();
+        const navTimeline = document.querySelector('[data-i18n="navTimeline"]')?.textContent.trim();
+        const navMap = document.querySelector('[data-i18n="navMap"]')?.textContent.trim();
+        const navIntel = document.querySelector('[data-i18n="navIntelligence"]')?.textContent.trim();
+        const navSources = document.querySelector('[data-i18n="navSources"]')?.textContent.trim();
 
-        // Testar alternância de volta para EN
-        btnEn.click();
-        const enLang = document.documentElement.lang;
-        const enOverviewLabel = document.querySelector('[data-i18n="navOverview"]')?.textContent;
-        const enThreatLabel = document.querySelector('[data-i18n="currentThreatTitle"]')?.textContent;
-        const enBadge = document.getElementById('threatBadgeText')?.textContent;
+        const kpiDeathsLabel = document.querySelector('[data-i18n="kpiDeathsLabel"]')?.textContent.trim();
+        const kpiContactsLabel = document.querySelector('[data-i18n="kpiContactsLabel"]')?.textContent.trim();
+        const kpiDeathsSub = document.querySelector('[data-i18n="kpiDeathsSub"]')?.textContent.trim();
+
+        const threatTitle = document.querySelector('[data-i18n="currentThreatTitle"]')?.textContent.trim();
+        const threatBadge = document.getElementById('threatBadgeText')?.textContent.trim();
+
+        const whatChangedTitle = document.querySelector('[data-i18n="whatChangedTitle"]')?.textContent.trim();
+        const deltaDeaths = document.querySelector('[data-i18n="deltaFatalitiesLabel"]')?.textContent.trim();
+
+        const snapshotTitle = document.querySelector('[data-i18n="snapshotTitle"]')?.textContent.trim();
+        const snapshotH2H = document.querySelector('[data-i18n="snapshotH2HValText"]')?.textContent.trim();
+
+        const evoTableHeading = document.querySelector('[data-i18n="evoTableHeading"]')?.textContent.trim();
+        const evoColDeaths = document.querySelector('[data-i18n="evoColDeaths"]')?.textContent.trim();
+
+        const pathogenTitle = document.querySelector('[data-i18n="pathogenIntelTitle"]')?.textContent.trim();
+        const pathogenEtiology = document.querySelector('[data-i18n="pathogenAgentEtiologyLabel"]')?.textContent.trim();
+
+        // Verificar os badges da Timeline do Overview
+        const overviewBadges = Array.from(document.querySelectorAll('#overviewMilestonesList .tag-badge')).map(b => b.textContent.trim());
+        const overviewDates = Array.from(document.querySelectorAll('#overviewMilestonesList span.font-mono')).map(d => d.textContent.trim());
 
         return {
-          ptOk: ptLang === 'pt' && ptOverviewLabel.includes('PANORAMA') && ptThreatLabel.includes('AMEAÇA'),
-          ptThreatOk,
-          ptBadge,
-          ptSteps,
-          ptWhatChanged,
-          ptGeoLocal,
-          ptGeoBorders,
-          enOk: enLang === 'en' && enOverviewLabel.includes('OVERVIEW') && enThreatLabel.includes('THREAT') && (enBadge === 'GUARDED' || enBadge === 'ELEVATED'),
-          ptOverviewLabel,
-          enOverviewLabel
+          langAttr,
+          nav: { navOverview, navTimeline, navMap, navIntel, navSources },
+          kpis: { kpiDeathsLabel, kpiContactsLabel, kpiDeathsSub },
+          threat: { threatTitle, threatBadge },
+          whatChanged: { whatChangedTitle, deltaDeaths },
+          snapshot: { snapshotTitle, snapshotH2H },
+          evo: { evoTableHeading, evoColDeaths },
+          pathogen: { pathogenTitle, pathogenEtiology },
+          overviewBadges,
+          overviewDates
         };
       })()
     `);
 
-    if (langAudit.ptOk && langAudit.ptThreatOk && langAudit.enOk) {
-      auditResults.checks.push(`Tradução PT dos Níveis de Ameaça validada (Badge: "${langAudit.ptBadge}", Steps: [${langAudit.ptSteps.join(', ')}], Status: ${langAudit.ptGeoLocal})`);
+    await new Promise(r => setTimeout(r, 600));
+
+    if (
+      ptDeepAudit.langAttr === 'pt' &&
+      ptDeepAudit.nav.navOverview === 'PANORAMA' &&
+      ptDeepAudit.nav.navTimeline === 'LINHA DO TEMPO' &&
+      ptDeepAudit.kpis.kpiDeathsLabel === 'ÓBITOS' &&
+      (ptDeepAudit.threat.threatBadge === 'MODERADO' || ptDeepAudit.threat.threatBadge === 'ELEVADO') &&
+      ptDeepAudit.snapshot.snapshotH2H === 'NÃO CONFIRMADA' &&
+      ptDeepAudit.evo.evoColDeaths === 'Óbitos' &&
+      ptDeepAudit.pathogen.pathogenTitle === 'INTELIGÊNCIA DO PATÓGENO'
+    ) {
+      auditResults.checks.push(`Auditoria PT 100% aprovada: Navegação ("${ptDeepAudit.nav.navOverview}"), KPIs ("${ptDeepAudit.kpis.kpiDeathsLabel}"), Ameaça ("${ptDeepAudit.threat.threatBadge}"), Snapshot ("${ptDeepAudit.snapshot.snapshotH2H}"), Patógeno ("${ptDeepAudit.pathogen.pathogenTitle}")`);
     } else {
-      auditResults.errors.push(`Falha na tradução de níveis de ameaça em PT: ${JSON.stringify(langAudit)}`);
+      auditResults.errors.push(`Falha na tradução completa para PT: ${JSON.stringify(ptDeepAudit)}`);
     }
+
+    // Capturar screenshots em Português
+    await client.captureScreenshot(path.join(rootDir, 'audit_result_pt_overview.png'));
+
+    // Ir para a timeline em PT e capturar screenshot
+    await client.eval(`document.getElementById('btnNavTimeline')?.click();`);
+    await new Promise(r => setTimeout(r, 400));
+    await client.captureScreenshot(path.join(rootDir, 'audit_result_pt_timeline.png'));
+
+    // Voltar para EN e Overview
+    await client.eval(`
+      document.getElementById('langBtnEn')?.click();
+      document.getElementById('btnNavOverview')?.click();
+    `);
+    await new Promise(r => setTimeout(r, 300));
 
     // 8.2. Teste do Controle de Zoom no Mapa da Direita (Overview Map)
     console.log('\n🔍 [TESTE 6.2/9] Testando Controle de Zoom no Mapa Overview (#overviewMapPreview)...');
