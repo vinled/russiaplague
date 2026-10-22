@@ -1256,11 +1256,11 @@ function renderLatestVerifiedIntelligence() {
 
   const verifiedPool = state.news.filter(isVerified);
 
-  // Sort primarily by publication recency; break close ties (<12h) by trust tier
+  // Sort primarily by publication recency; break close ties (<2h) by trust tier
   const prioritized = [...verifiedPool].sort((a, b) => {
     const timeDelta = b.pubTimestamp - a.pubTimestamp;
-    const TWELVE_HOURS = 12 * 60 * 60 * 1000;
-    if (Math.abs(timeDelta) > TWELVE_HOURS) {
+    const TWO_HOURS = 2 * 60 * 60 * 1000;
+    if (Math.abs(timeDelta) > TWO_HOURS) {
       return timeDelta;
     }
     const tierWeight = (item) => {

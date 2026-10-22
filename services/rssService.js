@@ -1,5 +1,8 @@
 const Parser = require('rss-parser');
 const parser = new Parser({
+  customFields: {
+    item: ['source', ['source', 'sourceTag']]
+  },
   headers: {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 HealthMonitor/4.0'
   },
@@ -7,6 +10,26 @@ const parser = new Parser({
 });
 
 const FEEDS = [
+  // 1. Feeds em Tempo Real (Janelas de 7 e 14 dias para focar em despachos recentes e atualizados)
+  {
+    name: "Breaking Irkutsk & Siberia Outbreak (Live 7d)",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('when:7d (Irkutsk OR Shelekhov OR "Anti-Plague" OR ("plague" AND Russia) OR ("pneumonic plague") OR Rospotrebnadzor)') + '&hl=en-US&gl=US&ceid=US:en',
+    category: "Foco Irkutsk / Sibéria",
+    priority: "high"
+  },
+  {
+    name: "Breaking Global Wire & Press (Live 14d)",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('when:14d (Irkutsk OR Shelekhov OR ("plague" AND Russia) OR ("Yersinia pestis" AND Russia) OR ("plague lab" AND Russia))') + '&hl=en-US&gl=US&ceid=US:en',
+    category: "International",
+    priority: "official"
+  },
+  {
+    name: "Mídia Lusófona em Tempo Real (Live 7d)",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('when:7d (Irkutsk OR Shelekhov OR ("peste" AND "Rússia") OR ("peste pneumônica") OR ("laboratório" AND "Sibéria") OR "segunda vítima")') + '&hl=pt-BR&gl=BR&ceid=BR:pt-419',
+    category: "Mídia Lusófona",
+    priority: "high"
+  },
+  // 2. Feeds Especializados por Agência e Região
   {
     name: "Reuters & Global Wire",
     url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(Reuters OR "Associated Press" OR "AP News" OR AFP) AND (Irkutsk OR Shelekhov OR "Anti-Plague" OR ("plague" AND Russia))') + '&hl=en-US&gl=US&ceid=US:en',
@@ -15,7 +38,7 @@ const FEEDS = [
   },
   {
     name: "Major Press & International Outlets",
-    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(site:dailymail.co.uk OR site:thetimes.com OR site:theguardian.com OR site:nytimes.com OR site:washingtonpost.com OR site:bbc.com) AND (Irkutsk OR Shelekhov OR "Anti-Plague" OR "plague" OR "Yersinia")') + '&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(site:dailymail.co.uk OR site:thetimes.com OR site:theguardian.com OR site:nytimes.com OR site:washingtonpost.com OR site:bbc.com OR site:abcnews.go.com OR site:politico.eu) AND (Irkutsk OR Shelekhov OR "Anti-Plague" OR "plague" OR "Yersinia")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "International",
     priority: "high"
   },
@@ -136,16 +159,43 @@ function determineClassification(title, source, content) {
 }
 
 /**
- * Extrai o nome real do veículo de imprensa a partir do título do Google News
- * Exemplo: "Inside the Plague Labs - The New York Times" -> title: "Inside the Plague Labs", publisher: "The New York Times"
+ * Extrai e limpa o nome real do veículo de imprensa e o título do despacho
+ * Remove sufixos de branding redundantes e limpa a fonte
  */
-function extractPublisherAndTitle(rawTitle, defaultSource) {
-  if (!rawTitle) return { title: "", publisher: defaultSource };
-  const match = rawTitle.match(/^(.*?)\s+-\s+([^-]+)$/);
-  if (match && match[1] && match[2] && match[2].length <= 50) {
-    return { title: match[1].trim(), publisher: match[2].trim() };
+function cleanPublisherAndTitle(rawTitle, rawSource, defaultFeedName) {
+  let publisher = (typeof rawSource === 'string' ? rawSource : (rawSource?._ || defaultFeedName || '')).trim();
+  let title = (rawTitle || '').trim();
+
+  // Se não houver tag de fonte no item, tenta extrair de "Título - Fonte" ou "Título | Fonte"
+  if (!publisher || publisher === defaultFeedName) {
+    const match = title.match(/^(.*?)\s+[-|]\s+([^-|]+)$/);
+    if (match && match[1] && match[2] && match[2].length <= 50) {
+      title = match[1].trim();
+      publisher = match[2].trim();
+    }
   }
-  return { title: rawTitle.trim(), publisher: defaultSource };
+
+  // Limpar fontes em formato de URL (ex: "https://globalpost.com/" -> "globalpost.com")
+  if (publisher.startsWith('http://') || publisher.startsWith('https://')) {
+    try {
+      const u = new URL(publisher);
+      publisher = u.hostname.replace(/^www\./, '');
+    } catch (e) {}
+  }
+
+  // Limpar taglines repetitivas comuns adicionadas pelo agregador
+  publisher = publisher
+    .replace(/\s*-\s*(?:Breaking News|Latest News|Top Stories|World News|News|Notícias).*$/i, '')
+    .trim();
+
+  // Remover a fonte do final do título para evitar duplicação visual
+  if (publisher && title.toLowerCase().endsWith(' - ' + publisher.toLowerCase())) {
+    title = title.slice(0, title.length - (publisher.length + 3)).trim();
+  } else if (rawSource && typeof rawSource === 'string' && title.toLowerCase().endsWith(' - ' + rawSource.toLowerCase())) {
+    title = title.slice(0, title.length - (rawSource.length + 3)).trim();
+  }
+
+  return { title, publisher: publisher || defaultFeedName };
 }
 
 function determineTrustTier(publisher, source, link) {
@@ -154,56 +204,80 @@ function determineTrustTier(publisher, source, link) {
   const url = (link || "").toLowerCase();
   const combined = pub + " " + src + " " + url;
 
-  // TIER 1: WHO, Reuters, Associated Press, Autoridades Sanitárias Oficiais e Governamentais
+  // TIER 1: Agências oficiais de notícias globais, autoridades de saúde e órgãos governamentais
   if (
-    combined.includes("reuters") || url.includes("reuters.com") ||
-    combined.includes("associated press") || combined.includes("ap news") || url.includes("apnews.com") ||
-    combined.includes("who") || combined.includes("oms") || url.includes("who.int") ||
-    combined.includes("rospotrebnadzor") || combined.includes("cdc") || url.includes("cdc.gov") ||
-    combined.includes("un news") || url.includes("un.org") ||
-    combined.includes("tass") || url.includes("tass.com") ||
-    combined.includes("state department") || combined.includes("state dept")
+    pub.includes("reuters") || url.includes("reuters.com") ||
+    pub.includes("associated press") || pub.includes("ap news") || url.includes("apnews.com") ||
+    pub.includes("afp") || pub.includes("agence france-presse") ||
+    pub.includes("bloomberg") || url.includes("bloomberg.com") ||
+    pub.includes("who") || pub.includes("oms") || url.includes("who.int") ||
+    pub.includes("rospotrebnadzor") || pub.includes("cdc") || url.includes("cdc.gov") ||
+    pub.includes("un news") || url.includes("un.org") ||
+    pub.includes("tass") || url.includes("tass.com") ||
+    pub.includes("interfax") || url.includes("interfax.com") ||
+    pub.includes("ria novosti") || pub.includes("ria.ru") ||
+    pub.includes("state department") || pub.includes("state dept")
   ) {
     return { tier: "TIER 1", tierCode: "tier-1", label: "Tier 1 · Official / Wire" };
   }
 
-  // TIER 2: Grandes veículos internacionais e imprensa de referência
+  // TIER 2: Grandes veículos internacionais, redes de televisão e imprensa de referência
   if (
-    combined.includes("bbc") || url.includes("bbc.") ||
-    combined.includes("daily mail") || url.includes("dailymail.") ||
-    combined.includes("the guardian") || combined.includes("guardian") || url.includes("theguardian.com") ||
-    combined.includes("the new york times") || combined.includes("new york times") || url.includes("nytimes.com") ||
-    combined.includes("the washington post") || combined.includes("washington post") || url.includes("washingtonpost.com") ||
-    combined.includes("the times") || url.includes("thetimes.") ||
-    combined.includes("moscow times") || url.includes("themoscowtimes.com") ||
-    combined.includes("meduza") || url.includes("meduza.io") ||
-    combined.includes("the insider") || url.includes("theins.ru") ||
-    combined.includes("cnbc") || url.includes("cnbc.com") ||
-    combined.includes("npr") || url.includes("npr.org") ||
-    combined.includes("euronews") || url.includes("euronews.com") ||
-    combined.includes("bno news") || combined.includes("bno") || url.includes("bnonews.com") ||
-    combined.includes("think global health") || url.includes("thinkglobalhealth.org") ||
-    combined.includes("radio free europe") || combined.includes("rferl") ||
-    combined.includes("o globo") || combined.includes("globo") ||
-    combined.includes("uol") || combined.includes("gazeta do povo") ||
-    combined.includes("caixin") || combined.includes("mongabay") ||
-    combined.includes("the hill") || combined.includes("politico") ||
-    combined.includes("pbs") || url.includes("pbs.org") ||
-    combined.includes("world health network")
+    pub.includes("abc news") || url.includes("abcnews.go.com") ||
+    pub.includes("cbs news") || url.includes("cbsnews.com") ||
+    pub.includes("nbc news") || url.includes("nbcnews.com") ||
+    pub.includes("cnn") || url.includes("cnn.com") ||
+    pub.includes("bbc") || url.includes("bbc.") ||
+    pub.includes("daily mail") || url.includes("dailymail.") ||
+    pub.includes("the guardian") || pub.includes("guardian") || url.includes("theguardian.com") ||
+    pub.includes("the new york times") || pub.includes("new york times") || url.includes("nytimes.com") ||
+    pub.includes("the washington post") || pub.includes("washington post") || url.includes("washingtonpost.com") ||
+    pub.includes("the times") || url.includes("thetimes.") ||
+    pub.includes("the telegraph") || url.includes("telegraph.co.uk") ||
+    pub.includes("financial times") || url.includes("ft.com") ||
+    pub.includes("wall street journal") || pub.includes("wsj") || url.includes("wsj.com") ||
+    pub.includes("moscow times") || url.includes("themoscowtimes.com") ||
+    pub.includes("meduza") || url.includes("meduza.io") ||
+    pub.includes("the insider") || url.includes("theins.ru") ||
+    pub.includes("novaya gazeta") || pub.includes("baza") ||
+    pub.includes("kommersant") || pub.includes("rbc") ||
+    pub.includes("cnbc") || url.includes("cnbc.com") ||
+    pub.includes("npr") || url.includes("npr.org") ||
+    pub.includes("euronews") || url.includes("euronews.com") ||
+    pub.includes("bno news") || pub.includes("bno") || url.includes("bnonews.com") ||
+    pub.includes("think global health") || url.includes("thinkglobalhealth.org") ||
+    pub.includes("radio free europe") || pub.includes("rferl") ||
+    pub.includes("deutsche welle") || pub.includes("dw.com") ||
+    pub.includes("france 24") || url.includes("france24.com") ||
+    pub.includes("al jazeera") || url.includes("aljazeera.com") ||
+    pub.includes("o globo") || pub.includes("globo") ||
+    pub.includes("folha") || url.includes("folha.uol.com.br") ||
+    pub.includes("estadao") || pub.includes("estadão") ||
+    pub.includes("uol") || pub.includes("gazeta do povo") ||
+    pub.includes("o povo") || pub.includes("jornal primeira página") ||
+    pub.includes("24 канал") || pub.includes("24tv") ||
+    pub.includes("caixin") || pub.includes("mongabay") ||
+    pub.includes("the hill") || pub.includes("politico") ||
+    pub.includes("pbs") || url.includes("pbs.org") ||
+    pub.includes("nature") || pub.includes("science") || pub.includes("lancet") ||
+    pub.includes("cidrap") || pub.includes("promed") ||
+    pub.includes("world health network") || pub.includes("globalpost")
   ) {
     return { tier: "TIER 2", tierCode: "tier-2", label: "Tier 2 · Major Press" };
   }
 
   // TIER 4: Redes sociais / Fontes não verificadas
   if (
-    combined.includes("reddit") || url.includes("reddit.com") ||
-    combined.includes("tiktok") || url.includes("tiktok.com") ||
-    combined.includes("vkontakte") || combined.includes("vk.com")
+    pub.includes("reddit") || url.includes("reddit.com") ||
+    pub.includes("tiktok") || url.includes("tiktok.com") ||
+    pub.includes("vkontakte") || pub.includes("vk.com") ||
+    pub.includes("telegram") || pub.includes("t.me") ||
+    pub.includes("twitter") || pub.includes("x.com")
   ) {
     return { tier: "TIER 4", tierCode: "tier-4", label: "Tier 4 · Social / OSINT" };
   }
 
-  // TIER 3: Mídia regional / Agregadores / Periódicos
+  // TIER 3: Mídia regional / Agregadores / Periódicos acadêmicos
   return { tier: "TIER 3", tierCode: "tier-3", label: "Tier 3 · Regional / Web" };
 }
 
@@ -274,7 +348,7 @@ function cleanHtml(html) {
 function isIncidentRelevant(title, summary, publisher) {
   const text = (title + " " + (summary || "") + " " + (publisher || "")).toLowerCase();
 
-  // Termos específicos com correspondência direta ao foco
+  // 1. Termos específicos com correspondência direta ao foco
   const specificTerms = [
     'irkutsk', 'shelekhov', 'shipilova', 'rospotrebnadzor',
     'anti-plague', 'anti-peste', 'baikalsk', 'baykalsk', 'popova'
@@ -283,14 +357,15 @@ function isIncidentRelevant(title, summary, publisher) {
     return true;
   }
 
-  // Termos de peste/patógeno combinados com geografia russa/siberiana
+  // 2. Termos de peste/patógeno combinados com geografia russa/siberiana (inclui flexões em PT)
   const outbreakTerms = [
     'plague', 'peste', 'yersinia', 'pneumonic', 'pneumônica',
     'chuma', 'bubonic', 'bubônica'
   ];
   const geoTerms = [
-    'russia', 'rússia', 'siberia', 'sibéria', 'moscow', 'moscou',
-    'kremlin', 'siberian'
+    'russia', 'rússia', 'russo', 'russa', 'russos', 'russas',
+    'siberia', 'sibéria', 'siberiano', 'siberiana',
+    'moscow', 'moscou', 'kremlin', 'siberian'
   ];
 
   const hasOutbreak = outbreakTerms.some(t => text.includes(t));
@@ -300,8 +375,13 @@ function isIncidentRelevant(title, summary, publisher) {
     return true;
   }
 
-  // Vigilância diplomática / internacional sobre o surto
-  if ((text.includes('marco rubio') || text.includes('trump') || text.includes('state department')) && (text.includes('plague') || text.includes('peste') || text.includes('outbreak'))) {
+  // 3. Óbito de pesquisador/laboratório ou pneumonia incomum na Rússia/Sibéria
+  if ((text.includes('lab worker') || text.includes('pesquisadora') || text.includes('técnica de laboratório') || text.includes('laboratory') || text.includes('laboratório') || text.includes('pneumonia')) && hasGeo) {
+    return true;
+  }
+
+  // 4. Vigilância diplomática / internacional sobre o surto
+  if ((text.includes('marco rubio') || text.includes('rubio') || text.includes('trump') || text.includes('state department')) && (text.includes('plague') || text.includes('peste') || text.includes('outbreak') || text.includes('surto'))) {
     return true;
   }
 
@@ -326,7 +406,7 @@ async function fetchAllFeeds(forceRefresh = false) {
           const rawTitle = item.title ? item.title.trim() : "";
           const link = item.link || "";
 
-          const { title, publisher } = extractPublisherAndTitle(rawTitle, feedInfo.name);
+          const { title, publisher } = cleanPublisherAndTitle(rawTitle, item.source, feedInfo.name);
           const normalizedTitle = title.toLowerCase().replace(/[^\w\s]/gi, '').slice(0, 50);
 
           if (!title || seenUrls.has(link) || seenTitles.has(normalizedTitle)) {
