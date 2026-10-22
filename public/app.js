@@ -463,19 +463,22 @@ const CLASSIFICATION_LABELS = {
   }
 };
 
-// Map Tile Layer Configurations per Theme
+// Map Tile Layer Configurations per Theme (Open, Free, No API Key Required)
 const TILE_CONFIGS = {
   dark: {
     url: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Esri World Dark'
+    attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+    subdomains: ['a', 'b', 'c']
   },
   'high-contrast': {
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; CartoDB &copy; OpenStreetMap'
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
+    subdomains: ['a', 'b', 'c']
   },
   light: {
     url: 'https://services.arcgisonline.com/arcgis/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
-    attribution: 'Esri World Light Gray'
+    attribution: '&copy; Esri World Light Gray',
+    subdomains: ['a', 'b', 'c']
   }
 };
 
@@ -710,8 +713,10 @@ function updateMapTileLayers(theme) {
       state.overviewMap.removeLayer(state.overviewTileLayer);
     }
     state.overviewTileLayer = L.tileLayer(config.url, {
-      maxZoom: 16,
-      attribution: config.attribution
+      maxZoom: 18,
+      subdomains: config.subdomains || ['a', 'b', 'c'],
+      attribution: config.attribution,
+      errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
     }).addTo(state.overviewMap);
   }
 
@@ -720,8 +725,10 @@ function updateMapTileLayers(theme) {
       state.mainMap.removeLayer(state.mainTileLayer);
     }
     state.mainTileLayer = L.tileLayer(config.url, {
-      maxZoom: 16,
-      attribution: config.attribution
+      maxZoom: 18,
+      subdomains: config.subdomains || ['a', 'b', 'c'],
+      attribution: config.attribution,
+      errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
     }).addTo(state.mainMap);
   }
 }
@@ -1237,23 +1244,35 @@ function renderLatestVerifiedIntelligence() {
   const container = document.getElementById('latestVerifiedContainer');
   if (!container) return;
 
-  // Filter and prioritize top dispatches with highest confidence tiers first (Tier 1 > Tier 2 > Tier 3)
-  const tierRank = (item) => {
-    if (item.trustTier?.tier === 'TIER 1') return 1;
-    if (item.trustTier?.tier === 'TIER 2') return 2;
-    if (item.classification === 'OFFICIAL' || item.classification === 'CONFIRMED') return 2.5;
-    if (item.trustTier?.tier === 'TIER 3') return 3;
-    return 4;
+  // Filter verified dispatches (Tier 1, Tier 2, Official or Confirmed)
+  const isVerified = (item) => {
+    return (
+      item.trustTier?.tier === 'TIER 1' ||
+      item.trustTier?.tier === 'TIER 2' ||
+      item.classification === 'OFFICIAL' ||
+      item.classification === 'CONFIRMED'
+    );
   };
 
-  const prioritized = [...state.news]
-    .filter(n => n.trustTier?.tier === 'TIER 1' || n.trustTier?.tier === 'TIER 2' || n.classification === 'OFFICIAL' || n.classification === 'CONFIRMED')
-    .sort((a, b) => {
-      const rA = tierRank(a);
-      const rB = tierRank(b);
-      if (rA !== rB) return rA - rB;
-      return b.pubTimestamp - a.pubTimestamp;
-    });
+  const verifiedPool = state.news.filter(isVerified);
+
+  // Sort primarily by publication recency; break close ties (<12h) by trust tier
+  const prioritized = [...verifiedPool].sort((a, b) => {
+    const timeDelta = b.pubTimestamp - a.pubTimestamp;
+    const TWELVE_HOURS = 12 * 60 * 60 * 1000;
+    if (Math.abs(timeDelta) > TWELVE_HOURS) {
+      return timeDelta;
+    }
+    const tierWeight = (item) => {
+      if (item.trustTier?.tier === 'TIER 1') return 3;
+      if (item.trustTier?.tier === 'TIER 2') return 2;
+      if (item.classification === 'OFFICIAL' || item.classification === 'CONFIRMED') return 2.5;
+      return 1;
+    };
+    const weightDiff = tierWeight(b) - tierWeight(a);
+    if (weightDiff !== 0) return weightDiff;
+    return timeDelta;
+  });
 
   const topItems = prioritized.slice(0, 5);
   const itemsToRender = topItems.length >= 3 ? topItems : state.news.slice(0, 5);
@@ -1657,7 +1676,7 @@ function renderSourcesFeed() {
   // Source Filter (Req 15)
   if (state.sourcesSource !== 'all') {
     const srcQuery = state.sourcesSource.toLowerCase();
-    filtered = filtered.filter(item => item.source && item.source.toLowerCase().includes(srcQuery));
+    filtered = filtered.filter(item => (item.source && item.source.toLowerCase().includes(srcQuery)) || (item.feedOrigin && item.feedOrigin.toLowerCase().includes(srcQuery)));
   }
 
   // Language Filter (Req 15)
@@ -1850,8 +1869,10 @@ function initOverviewMap() {
 
   const config = TILE_CONFIGS[state.currentTheme] || TILE_CONFIGS.dark;
   state.overviewTileLayer = L.tileLayer(config.url, {
-    maxZoom: 16,
-    attribution: config.attribution
+    maxZoom: 18,
+    subdomains: config.subdomains || ['a', 'b', 'c'],
+    attribution: config.attribution,
+    errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
   }).addTo(state.overviewMap);
 
   // Add subtle ring around epicenter
@@ -1889,8 +1910,10 @@ function initMainMap() {
 
   const config = TILE_CONFIGS[state.currentTheme] || TILE_CONFIGS.dark;
   state.mainTileLayer = L.tileLayer(config.url, {
-    maxZoom: 16,
-    attribution: config.attribution
+    maxZoom: 18,
+    subdomains: config.subdomains || ['a', 'b', 'c'],
+    attribution: config.attribution,
+    errorTileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
   }).addTo(state.mainMap);
 
   state.mainMarkerGroup = L.layerGroup().addTo(state.mainMap);

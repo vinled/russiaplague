@@ -1,7 +1,7 @@
 const Parser = require('rss-parser');
 const parser = new Parser({
   headers: {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 HealthMonitor/3.0'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 HealthMonitor/4.0'
   },
   timeout: 8000
 });
@@ -9,61 +9,61 @@ const parser = new Parser({
 const FEEDS = [
   {
     name: "Reuters & Global Wire",
-    url: 'https://news.google.com/rss/search?q=Reuters+OR+AP+Irkutsk+OR+"plague"+Russia&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(Reuters OR "Associated Press" OR "AP News" OR AFP) AND (Irkutsk OR Shelekhov OR "Anti-Plague" OR ("plague" AND Russia))') + '&hl=en-US&gl=US&ceid=US:en',
     category: "International",
     priority: "official"
   },
   {
-    name: "Daily Mail & UK Press (Plague / Irkutsk)",
-    url: 'https://news.google.com/rss/search?q=site:dailymail.co.uk+OR+site:thetimes.com+Irkutsk+OR+plague+OR+Shelekhov&hl=en-US&gl=US&ceid=US:en',
+    name: "Major Press & International Outlets",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(site:dailymail.co.uk OR site:thetimes.com OR site:theguardian.com OR site:nytimes.com OR site:washingtonpost.com OR site:bbc.com) AND (Irkutsk OR Shelekhov OR "Anti-Plague" OR "plague" OR "Yersinia")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "International",
     priority: "high"
   },
   {
-    name: "Alerta de Segunda Vítima / Fatalities (Google News)",
-    url: 'https://news.google.com/rss/search?q=("second victim"+OR+"second death"+OR+"segunda vitima"+OR+"second person"+OR+"two dead")+AND+(Irkutsk+OR+plague+OR+Shelekhov)&hl=en-US&gl=US&ceid=US:en',
+    name: "Alerta Irkutsk & Instituto Anti-Peste (Google News EN)",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(Irkutsk OR Shelekhov OR Shipilova OR "Anti-Plague" OR Rospotrebnadzor OR "Yersinia pestis") AND (plague OR pneumonia OR quarantine OR outbreak OR victim)') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Foco Irkutsk / Sibéria",
     priority: "high"
   },
   {
-    name: "Alerta Irkutsk & Laboratório (Google News EN)",
-    url: 'https://news.google.com/rss/search?q=Irkutsk+OR+Shipilova+OR+"Anti-Plague"+OR+Rospotrebnadzor&hl=en-US&gl=US&ceid=US:en',
+    name: "Alerta de Vítimas & Hospitais de Shelekhov",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('("second victim" OR "second death" OR "segunda vitima" OR "second person" OR "two dead" OR "hospital quarantine") AND (Irkutsk OR plague OR Shelekhov)') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Foco Irkutsk / Sibéria",
     priority: "high"
   },
   {
     name: "Mídia Independente Russa & OSINT Sibéria",
-    url: 'https://news.google.com/rss/search?q=(Shelekhov+OR+Baikalsk+OR+"Lyudi Baikala"+OR+"The Insider"+OR+"Baza"+OR+"Moscow Times")+AND+(plague+OR+pneumonia+OR+quarantine)&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('("Shelekhov" OR "Baikalsk" OR "Lyudi Baikala" OR "The Insider" OR "Baza" OR "Moscow Times" OR "Meduza") AND (plague OR pneumonia OR quarantine OR "anti-plague")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Rússia / Regional",
     priority: "high"
   },
   {
-    name: "Surtos & Vírus na Rússia (Google News EN)",
-    url: 'https://news.google.com/rss/search?q=Russia+outbreak+OR+plague+OR+virus+OR+pneumonia&hl=en-US&gl=US&ceid=US:en',
+    name: "Surtos & Biossegurança na Rússia (Google News EN)",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(Russia OR Siberia OR Siberian) AND (Irkutsk OR "plague outbreak" OR "pneumonic plague" OR "anti-plague")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Rússia / Regional",
     priority: "high"
   },
   {
     name: "Reações Diplomáticas & Biossegurança EUA/Rússia",
-    url: 'https://news.google.com/rss/search?q=("Marco Rubio"+OR+"Donald Trump"+OR+"State Department")+AND+("plague"+OR+"Irkutsk"+OR+"Russia outbreak")&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('("Marco Rubio" OR "Donald Trump" OR "State Department" OR "White House") AND ("plague" OR "Irkutsk" OR "Siberian lab" OR "biological outbreak")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "International",
     priority: "high"
   },
   {
-    name: "BNO News & Alertas Urgentes de Surtos",
-    url: 'https://news.google.com/rss/search?q=BNO+News+OR+outbreak+Russia+Irkutsk&hl=en-US&gl=US&ceid=US:en',
+    name: "BNO News & Alertas Globais de Surtos",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('("BNO News" OR BNO OR "World Health Network") AND (outbreak OR plague OR Russia OR Irkutsk)') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Alertas de Desastres / BNO",
     priority: "high"
   },
   {
-    name: "Reddit OSINT WorldNews",
-    url: 'https://news.google.com/rss/search?q=site:reddit.com+Irkutsk+OR+plague+OR+"Russia+virus"&hl=en-US&gl=US&ceid=US:en',
+    name: "Reddit OSINT WorldNews & Epidemics",
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('site:reddit.com AND (Irkutsk OR "plague Russia" OR "Russian plague" OR "Shelekhov")') + '&hl=en-US&gl=US&ceid=US:en',
     category: "Comunidade OSINT / Reddit",
     priority: "medium"
   },
   {
     name: "Notícias em Português (Google News PT)",
-    url: 'https://news.google.com/rss/search?q=Irkutsk+OR+peste+Rússia+OR+vírus+Sibéria+OR+"segunda vítima"&hl=pt-BR&gl=BR&ceid=BR:pt-419',
+    url: 'https://news.google.com/rss/search?q=' + encodeURIComponent('(Irkutsk OR Shelekhov OR ("peste" AND "Rússia") OR ("vírus" AND "Sibéria") OR ("laboratório" AND "Sibéria") OR "segunda vítima")') + '&hl=pt-BR&gl=BR&ceid=BR:pt-419',
     category: "Mídia Lusófona",
     priority: "medium"
   },
@@ -72,24 +72,7 @@ const FEEDS = [
     url: 'https://www.who.int/rss-feeds/news-english.xml',
     category: "Vigilância Internacional",
     priority: "official"
-  },
-  {
-    name: "Medical Xpress (Virologia & Epidemiologia)",
-    url: 'https://medicalxpress.com/rss-feed/',
-    category: "Ciência & Epidemiologia",
-    priority: "science"
   }
-];
-
-const RELEVANT_KEYWORDS = [
-  'irkutsk', 'plague', 'peste', 'yersinia', 'shipilova', 'rospotrebnadzor',
-  'shelekhov', 'siberia', 'sibéria', 'quarantine', 'quarentena', 'surto',
-  'outbreak', 'pneumonic', 'pneumônica', 'biolab', 'bactéria', 'bacteria',
-  'epidemic', 'epidemia', 'contágio', 'contagion', 'infection', 'infecção',
-  'pathogen', 'patógeno', 'disease', 'doença', 'sanitary', 'sanitária',
-  'bno news', 'health', 'saúde', 'who', 'oms', 'second victim', 'second death',
-  'second person', 'segunda vítima', 'segunda vitima', 'segundo óbito', 'segundo obito',
-  'two dead', 'duas mortes', 'lyudi baikala', 'baikalsk', 'baykalsk', 'rubio', 'chuma'
 ];
 
 // Cache em memória
@@ -103,7 +86,7 @@ const CACHE_DURATION_MS = 60 * 1000; // 60 segundos de cache
  */
 function determineSeverity(title, content) {
   const text = (title + " " + (content || "")).toLowerCase();
-  
+
   // Reservado exclusivamente para mudanças críticas
   if (
     text.includes("secondary transmission confirmed") ||
@@ -152,42 +135,75 @@ function determineClassification(title, source, content) {
   return "REPORTED";
 }
 
-function determineTrustTier(source, link) {
+/**
+ * Extrai o nome real do veículo de imprensa a partir do título do Google News
+ * Exemplo: "Inside the Plague Labs - The New York Times" -> title: "Inside the Plague Labs", publisher: "The New York Times"
+ */
+function extractPublisherAndTitle(rawTitle, defaultSource) {
+  if (!rawTitle) return { title: "", publisher: defaultSource };
+  const match = rawTitle.match(/^(.*?)\s+-\s+([^-]+)$/);
+  if (match && match[1] && match[2] && match[2].length <= 50) {
+    return { title: match[1].trim(), publisher: match[2].trim() };
+  }
+  return { title: rawTitle.trim(), publisher: defaultSource };
+}
+
+function determineTrustTier(publisher, source, link) {
+  const pub = (publisher || "").toLowerCase();
   const src = (source || "").toLowerCase();
   const url = (link || "").toLowerCase();
+  const combined = pub + " " + src + " " + url;
 
-  // TIER 1: WHO, Reuters, Autoridades Sanitárias Oficiais
+  // TIER 1: WHO, Reuters, Associated Press, Autoridades Sanitárias Oficiais e Governamentais
   if (
-    src.includes("who") || src.includes("oms") ||
-    src.includes("reuters") || url.includes("reuters.com") ||
-    src.includes("rospotrebnadzor") || src.includes("cdc") ||
-    url.includes("who.int")
+    combined.includes("reuters") || url.includes("reuters.com") ||
+    combined.includes("associated press") || combined.includes("ap news") || url.includes("apnews.com") ||
+    combined.includes("who") || combined.includes("oms") || url.includes("who.int") ||
+    combined.includes("rospotrebnadzor") || combined.includes("cdc") || url.includes("cdc.gov") ||
+    combined.includes("un news") || url.includes("un.org") ||
+    combined.includes("tass") || url.includes("tass.com") ||
+    combined.includes("state department") || combined.includes("state dept")
   ) {
     return { tier: "TIER 1", tierCode: "tier-1", label: "Tier 1 · Official / Wire" };
   }
 
   // TIER 2: Grandes veículos internacionais e imprensa de referência
   if (
-    src.includes("bbc") || src.includes("cnn") || src.includes("bno") ||
-    src.includes("daily mail") || src.includes("mail online") || url.includes("dailymail.") ||
-    src.includes("moscow times") || src.includes("the guardian") ||
-    src.includes("the times") || url.includes("thetimes.") ||
-    src.includes("the insider") || url.includes("theins.ru") ||
-    src.includes("time") || src.includes("medical xpress") ||
-    url.includes("bbc.") || url.includes("cnn.")
+    combined.includes("bbc") || url.includes("bbc.") ||
+    combined.includes("daily mail") || url.includes("dailymail.") ||
+    combined.includes("the guardian") || combined.includes("guardian") || url.includes("theguardian.com") ||
+    combined.includes("the new york times") || combined.includes("new york times") || url.includes("nytimes.com") ||
+    combined.includes("the washington post") || combined.includes("washington post") || url.includes("washingtonpost.com") ||
+    combined.includes("the times") || url.includes("thetimes.") ||
+    combined.includes("moscow times") || url.includes("themoscowtimes.com") ||
+    combined.includes("meduza") || url.includes("meduza.io") ||
+    combined.includes("the insider") || url.includes("theins.ru") ||
+    combined.includes("cnbc") || url.includes("cnbc.com") ||
+    combined.includes("npr") || url.includes("npr.org") ||
+    combined.includes("euronews") || url.includes("euronews.com") ||
+    combined.includes("bno news") || combined.includes("bno") || url.includes("bnonews.com") ||
+    combined.includes("think global health") || url.includes("thinkglobalhealth.org") ||
+    combined.includes("radio free europe") || combined.includes("rferl") ||
+    combined.includes("o globo") || combined.includes("globo") ||
+    combined.includes("uol") || combined.includes("gazeta do povo") ||
+    combined.includes("caixin") || combined.includes("mongabay") ||
+    combined.includes("the hill") || combined.includes("politico") ||
+    combined.includes("pbs") || url.includes("pbs.org") ||
+    combined.includes("world health network")
   ) {
     return { tier: "TIER 2", tierCode: "tier-2", label: "Tier 2 · Major Press" };
   }
 
   // TIER 4: Redes sociais / Fontes não verificadas
   if (
-    src.includes("reddit") || src.includes("tiktok") ||
-    url.includes("reddit.com") || url.includes("tiktok.com")
+    combined.includes("reddit") || url.includes("reddit.com") ||
+    combined.includes("tiktok") || url.includes("tiktok.com") ||
+    combined.includes("vkontakte") || combined.includes("vk.com")
   ) {
     return { tier: "TIER 4", tierCode: "tier-4", label: "Tier 4 · Social / OSINT" };
   }
 
-  // TIER 3: Mídia regional / Agregadores
+  // TIER 3: Mídia regional / Agregadores / Periódicos
   return { tier: "TIER 3", tierCode: "tier-3", label: "Tier 3 · Regional / Web" };
 }
 
@@ -198,7 +214,7 @@ function determineCategory(title, source, content) {
   if (src.includes("who") || src.includes("oms") || text.includes("who") || text.includes("oms")) return "WHO";
   if (src.includes("reddit") || text.includes("tiktok") || text.includes("viral")) return "Social";
   if (text.includes("lab") || text.includes("laborat") || text.includes("institute") || text.includes("instituto") || text.includes("bioprotection")) return "Laboratory";
-  if (src.includes("medical xpress") || text.includes("yersinia") || text.includes("pathogen") || text.includes("scientific")) return "Scientific";
+  if (src.includes("science") || text.includes("yersinia") || text.includes("pathogen") || text.includes("scientific") || text.includes("virolog")) return "Scientific";
   if (src.includes("rospotrebnadzor") || text.includes("autoridades") || text.includes("inquérito") || text.includes("investigative committee")) return "Official";
   if (text.includes("border") || text.includes("fronteira") || text.includes("mongolia") || text.includes("china") || text.includes("rubio") || text.includes("international")) return "International";
   if (text.includes("irkutsk") || text.includes("shelekhov") || text.includes("siberia") || text.includes("russia")) return "Russia";
@@ -221,19 +237,26 @@ function extractLocationTags(title, content) {
 }
 
 function determineCountry(title, source, content) {
-  const text = (title + " " + (content || "")).toLowerCase();
-  const src = (source || "").toLowerCase();
+  const text = (title + " " + (content || "") + " " + (source || "")).toLowerCase();
   if (text.includes("mongolia") || text.includes("mongólia")) return "Mongolia";
   if (text.includes("china") || text.includes("pequim") || text.includes("beijing") || text.includes("harbin")) return "China";
-  if (text.includes("who") || text.includes("oms") || src.includes("who") || src.includes("oms")) return "Multilateral / WHO";
-  if (src.includes("português") || src.includes("lusófona") || text.includes("brasil") || text.includes("brazil")) return "Brazil / Lusophone";
+  if (text.includes("who") || text.includes("oms") || (source && (source.toLowerCase().includes("who") || source.toLowerCase().includes("oms")))) return "Multilateral / WHO";
+  if (text.includes("brasil") || text.includes("brazil") || (source && source.toLowerCase().includes("português")) || (source && source.toLowerCase().includes("lusófona")) || text.includes("globo") || text.includes("uol") || text.includes("folha")) return "Brazil / Lusophone";
   if (text.includes("russia") || text.includes("rússia") || text.includes("irkutsk") || text.includes("siberia") || text.includes("sibéria") || text.includes("shelekhov") || text.includes("moscow") || text.includes("moscou") || text.includes("rospotrebnadzor")) return "Russia";
   return "International";
 }
 
-function determineLanguage(feedName, title, content) {
-  const text = title + " " + (content || "");
-  if (feedName.includes("PT") || feedName.includes("Português") || /[áàãâéêíóôõúç]/i.test(text)) {
+function determineLanguage(feedName, title, content, publisher) {
+  const text = (title + " " + (content || "") + " " + (publisher || "") + " " + (feedName || "")).toLowerCase();
+  if (
+    feedName.includes("PT") ||
+    feedName.includes("Português") ||
+    feedName.includes("Lusófona") ||
+    text.includes("globo") ||
+    text.includes("uol") ||
+    text.includes("gazeta do povo") ||
+    /[áàãâéêíóôõúç]/i.test(title + " " + (content || ""))
+  ) {
     return "pt";
   }
   return "en";
@@ -244,10 +267,51 @@ function cleanHtml(html) {
   return html.replace(/<[^>]*>?/gm, '').replace(/&nbsp;/g, ' ').trim();
 }
 
-async function fetchAllFeeds() {
+/**
+ * Validação rigorosa de relevância para o incidente de Irkutsk / Sibéria / Peste na Rússia
+ * Evita contaminação por notícias médicas genéricas não relacionadas
+ */
+function isIncidentRelevant(title, summary, publisher) {
+  const text = (title + " " + (summary || "") + " " + (publisher || "")).toLowerCase();
+
+  // Termos específicos com correspondência direta ao foco
+  const specificTerms = [
+    'irkutsk', 'shelekhov', 'shipilova', 'rospotrebnadzor',
+    'anti-plague', 'anti-peste', 'baikalsk', 'baykalsk', 'popova'
+  ];
+  if (specificTerms.some(term => text.includes(term))) {
+    return true;
+  }
+
+  // Termos de peste/patógeno combinados com geografia russa/siberiana
+  const outbreakTerms = [
+    'plague', 'peste', 'yersinia', 'pneumonic', 'pneumônica',
+    'chuma', 'bubonic', 'bubônica'
+  ];
+  const geoTerms = [
+    'russia', 'rússia', 'siberia', 'sibéria', 'moscow', 'moscou',
+    'kremlin', 'siberian'
+  ];
+
+  const hasOutbreak = outbreakTerms.some(t => text.includes(t));
+  const hasGeo = geoTerms.some(t => text.includes(t));
+
+  if (hasOutbreak && hasGeo) {
+    return true;
+  }
+
+  // Vigilância diplomática / internacional sobre o surto
+  if ((text.includes('marco rubio') || text.includes('trump') || text.includes('state department')) && (text.includes('plague') || text.includes('peste') || text.includes('outbreak'))) {
+    return true;
+  }
+
+  return false;
+}
+
+async function fetchAllFeeds(forceRefresh = false) {
   const now = Date.now();
-  if (cachedNews.length > 0 && lastFetchTime && (now - lastFetchTime < CACHE_DURATION_MS)) {
-    return { news: cachedNews, fromCache: true, lastUpdated: new Date(lastFetchTime).toISOString() };
+  if (!forceRefresh && cachedNews.length > 0 && lastFetchTime && (now - lastFetchTime < CACHE_DURATION_MS)) {
+    return { news: cachedNews, fromCache: true, lastUpdated: new Date(lastFetchTime).toISOString(), total: cachedNews.length };
   }
 
   const allItems = [];
@@ -259,30 +323,32 @@ async function fetchAllFeeds() {
       const feed = await parser.parseURL(feedInfo.url);
       if (feed && feed.items) {
         for (const item of feed.items) {
-          const title = item.title ? item.title.trim() : "";
+          const rawTitle = item.title ? item.title.trim() : "";
           const link = item.link || "";
 
+          const { title, publisher } = extractPublisherAndTitle(rawTitle, feedInfo.name);
           const normalizedTitle = title.toLowerCase().replace(/[^\w\s]/gi, '').slice(0, 50);
+
           if (!title || seenUrls.has(link) || seenTitles.has(normalizedTitle)) {
+            continue;
+          }
+
+          const summary = cleanHtml(item.contentSnippet || item.content || item.summary || "");
+
+          // Validação de relevância específica para o incidente
+          if (!isIncidentRelevant(title, summary, publisher)) {
             continue;
           }
 
           seenUrls.add(link);
           seenTitles.add(normalizedTitle);
 
-          const summary = cleanHtml(item.contentSnippet || item.content || item.summary || "");
-          const combined = (title + " " + summary).toLowerCase();
-          const isEpidemicRelated = RELEVANT_KEYWORDS.some(kw => combined.includes(kw));
-          if (!isEpidemicRelated) {
-            continue;
-          }
-
           const severity = determineSeverity(title, summary);
-          const classification = determineClassification(title, feedInfo.name, summary);
-          const trustTier = determineTrustTier(feedInfo.name, link);
-          const category = determineCategory(title, feedInfo.name, summary);
-          const country = determineCountry(title, feedInfo.name, summary);
-          const language = determineLanguage(feedInfo.name, title, summary);
+          const classification = determineClassification(title, publisher, summary);
+          const trustTier = determineTrustTier(publisher, feedInfo.name, link);
+          const category = determineCategory(title, publisher, summary);
+          const country = determineCountry(title, publisher, summary);
+          const language = determineLanguage(feedInfo.name, title, summary, publisher);
           const locationTags = extractLocationTags(title, summary);
           const pubDate = item.pubDate || item.isoDate || new Date().toISOString();
 
@@ -290,7 +356,8 @@ async function fetchAllFeeds() {
             id: Buffer.from(link || title).toString('base64').substring(0, 16),
             title,
             link,
-            source: feedInfo.name,
+            source: publisher,
+            feedOrigin: feedInfo.name,
             category,
             country,
             language,
@@ -319,6 +386,7 @@ async function fetchAllFeeds() {
       title: "Russian media claims a second victim has died from 'plague outbreak' at infection zone hospital as Kremlin scrambles to cover up details",
       link: "https://www.dailymail.com/news/article-16186315/Russian-media-claims-second-victim-died-plague-outbreak-infection-zone-hospital-Kremlin-scrambles-cover-details.html",
       source: "Daily Mail Online",
+      feedOrigin: "Daily Mail Online",
       category: "Foco Irkutsk / Sibéria",
       country: "Russia",
       language: "en",
@@ -336,6 +404,7 @@ async function fetchAllFeeds() {
       title: "US State Department & Rubio closely monitoring Siberian plague reports; Trump offers containment assistance",
       link: "https://www.dailymail.com/news/article-16186315/Russian-media-claims-second-victim-died-plague-outbreak-infection-zone-hospital-Kremlin-scrambles-cover-details.html#us-monitoring",
       source: "Daily Mail / State Dept Wire",
+      feedOrigin: "Daily Mail Online",
       category: "International",
       country: "International",
       language: "en",

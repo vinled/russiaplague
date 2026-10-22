@@ -57,12 +57,10 @@ function broadcastSSE(eventType, data) {
 app.get('/api/news', async (req, res) => {
   try {
     const forceRefresh = req.query.refresh === 'true';
+    const { news, lastUpdated } = await fetchAllFeeds(forceRefresh);
     if (forceRefresh) {
-      const result = await fetchAllFeeds();
-      broadcastSSE('news_updated', { total: result.news.length });
+      broadcastSSE('news_updated', { total: news.length });
     }
-
-    const { news, lastUpdated } = await fetchAllFeeds();
     let filtered = [...news];
 
     if (req.query.q) {
